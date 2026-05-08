@@ -153,7 +153,7 @@ export default function AddCardPage() {
             onClick={() => handleGiftBrandSelect('general')}
           >
             <img src={CARD_TEMPLATES.find(t => t.id === 'gift-general')?.bgImageUrl} alt="" className={styles.brandImage} aria-hidden="true" />
-            <span className={styles.brandLabel}>כללי</span>
+            <span className={styles.brandLabel}>גיפט קארד כללי</span>
           </button>
 
           <button
