@@ -26,7 +26,7 @@ export default function AddCardPage() {
   const fileRef = useRef<HTMLInputElement>(null)
   const calendarRef = useRef<HTMLInputElement>(null)
 
-  const [step, setStep] = useState<'template' | 'form'>('template')
+  const [step, setStep] = useState<'template' | 'gift-brand' | 'form'>('template')
   const [selectedTemplate, setSelectedTemplate] = useState<string | null>(null)
   const [selectedCategory, setSelectedCategory] = useState<CardCategory>('other')
   const [name, setName] = useState('')
@@ -45,6 +45,20 @@ export default function AddCardPage() {
     setSelectedTemplate(templateId)
     setSelectedCategory(category)
     setName(templateName)
+    if (category === 'gift') {
+      setStep('gift-brand')
+    } else {
+      setStep('form')
+    }
+  }
+
+  const handleGiftBrandSelect = (brand: 'general' | 'buyme') => {
+    if (brand === 'buyme') {
+      setSelectedTemplate('gift-buyme')
+      setName('BuyMe')
+    } else {
+      setSelectedTemplate('gift-general')
+    }
     setStep('form')
   }
 
@@ -120,6 +134,42 @@ export default function AddCardPage() {
     )
   }
 
+  if (step === 'gift-brand') {
+    return (
+      <div className={styles.page}>
+        <header className={styles.header}>
+          <button type="button" className={styles.backBtn} aria-label="חזרה" onClick={() => setStep('template')}>
+            <ChevronIcon />
+          </button>
+          <h1 className={styles.title}>בחר סוג כרטיס מתנה</h1>
+          <div className={styles.headerSpacer} />
+        </header>
+
+        <div className={styles.brandGrid}>
+          <button
+            type="button"
+            className={styles.brandCard}
+            aria-label="כרטיס מתנה כללי"
+            onClick={() => handleGiftBrandSelect('general')}
+          >
+            <img src="/images/gift-general.svg" alt="" className={styles.brandImage} aria-hidden="true" />
+            <span className={styles.brandLabel}>כללי</span>
+          </button>
+
+          <button
+            type="button"
+            className={styles.brandCard}
+            aria-label="כרטיס BuyMe"
+            onClick={() => handleGiftBrandSelect('buyme')}
+          >
+            <img src="/images/gift-buyme.svg" alt="" className={styles.brandImage} aria-hidden="true" />
+            <span className={styles.brandLabel}>BuyMe</span>
+          </button>
+        </div>
+      </div>
+    )
+  }
+
   if (step === 'template') {
     return (
       <div className={styles.page}>
@@ -132,7 +182,7 @@ export default function AddCardPage() {
         </header>
 
         <div className={styles.templateGrid}>
-          {CARD_TEMPLATES.map(t => (
+          {CARD_TEMPLATES.filter(t => !t.hidden).map(t => (
             <button
               type="button"
               key={t.id}
@@ -166,9 +216,17 @@ export default function AddCardPage() {
       {template && (
         <div
           className={styles.preview}
-          style={{ '--card-bg': template.bgColor, '--card-color': template.textColor } as React.CSSProperties}
+          style={{
+            '--card-bg': template.bgImageUrl ? `url(${template.bgImageUrl})` : template.bgColor,
+            '--card-color': template.textColor,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+          } as React.CSSProperties}
         >
-          {imagePreview && <img src={imagePreview} alt="" className={styles.previewBg} aria-hidden="true" />}
+          {imagePreview && !template.bgImageUrl && (
+            <img src={imagePreview} alt="" className={styles.previewBg} aria-hidden="true" />
+          )}
+          {template.bgImageUrl && <div className={styles.previewBrandOverlay} />}
           <div className={styles.previewInner}>
             <span className={styles.previewIcon}>{template.icon}</span>
             <div>

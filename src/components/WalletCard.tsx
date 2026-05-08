@@ -38,7 +38,14 @@ export function WalletCard({ card, compact = false }: Props) {
       <button
         type="button"
         className={`${styles.card} ${compact ? styles.compact : ''}`}
-        style={{ '--card-bg': template.bgColor, '--card-color': template.textColor } as React.CSSProperties}
+        style={{
+          '--card-bg': template.bgImageUrl && !card.image_url
+            ? `url(${template.bgImageUrl})`
+            : template.bgColor,
+          '--card-color': template.textColor,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+        } as React.CSSProperties}
         onPointerDown={startPress}
         onPointerUp={endPress}
         onPointerLeave={endPress}
@@ -47,6 +54,9 @@ export function WalletCard({ card, compact = false }: Props) {
       >
         {card.image_url && (
           <img src={card.image_url} alt="" className={styles.bgImage} aria-hidden="true" />
+        )}
+        {template.bgImageUrl && !card.image_url && (
+          <div className={styles.brandOverlay} />
         )}
         <div className={styles.inner}>
           <div className={styles.top}>
@@ -124,9 +134,19 @@ function EnlargedCard({ card, template, onClose }: {
     >
       <div
         className={styles.enlargedCard}
-        style={{ '--card-bg': template.bgColor, '--card-color': template.textColor } as React.CSSProperties}
+        style={{
+          '--card-bg': template.bgImageUrl && !card.image_url
+            ? `url(${template.bgImageUrl})`
+            : template.bgColor,
+          '--card-color': template.textColor,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+        } as React.CSSProperties}
         onClick={e => e.stopPropagation()}
       >
+        {template.bgImageUrl && !card.image_url && (
+          <div className={styles.brandOverlay} />
+        )}
         <div className={styles.enlargedInner}>
           <div className={styles.enlargedTop}>
             <span className={styles.enlargedIcon}>{template.icon}</span>

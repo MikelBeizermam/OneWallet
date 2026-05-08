@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 856 540" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <radialGradient id="glow" cx="50%" cy="60%" r="42%">
+      <stop offset="0%" stop-color="#7B1FCD" stop-opacity="0.95"/>
+      <stop offset="55%" stop-color="#4A0F8A" stop-opacity="0.55"/>
+      <stop offset="100%" stop-color="#050010" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <!-- Dark background -->
+  <rect width="856" height="540" fill="#080010"/>
+  <!-- Purple glow -->
+  <ellipse cx="428" cy="330" rx="310" ry="270" fill="url(#glow)"/>
+
+  <!-- "Gift Card" title -->
+  <text x="428" y="108"
+        text-anchor="middle"
+        font-family="Georgia, 'Times New Roman', serif"
+        font-size="74"
+        fill="#C084FC"
+        font-style="italic">Gift Card</text>
+
+  <!-- Gift box body -->
+  <rect x="283" y="308" width="290" height="186" rx="10"
+        fill="none" stroke="white" stroke-width="13"/>
+  <!-- Gift box lid -->
+  <rect x="262" y="254" width="332" height="62" rx="10"
+        fill="none" stroke="white" stroke-width="13"/>
+  <!-- Vertical ribbon -->
+  <line x1="428" y1="254" x2="428" y2="494"
+        stroke="white" stroke-width="13"/>
+  <!-- Horizontal ribbon on lid -->
+  <line x1="283" y1="285" x2="573" y2="285"
+        stroke="white" stroke-width="13"/>
+  <!-- Bow left loop -->
+  <path d="M428,254 Q390,195 364,212 Q340,230 428,254"
+        fill="none" stroke="white" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- Bow right loop -->
+  <path d="M428,254 Q466,195 492,212 Q516,230 428,254"
+        fill="none" stroke="white" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

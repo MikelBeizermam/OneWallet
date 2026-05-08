@@ -8,6 +8,8 @@ export interface CardTemplate {
   textColor: string
   accentColor: string
   icon: string
+  bgImageUrl?: string
+  hidden?: boolean
 }
 
 export const CARD_TEMPLATES: CardTemplate[] = [
@@ -46,6 +48,28 @@ export const CARD_TEMPLATES: CardTemplate[] = [
     textColor: '#FFFFFF',
     accentColor: '#DDD6FE',
     icon: '🎁',
+  },
+  {
+    id: 'gift-general',
+    name: 'כרטיס מתנה כללי',
+    category: 'gift',
+    bgColor: '#080010',
+    textColor: '#FFFFFF',
+    accentColor: '#9333EA',
+    icon: '🎁',
+    bgImageUrl: '/images/gift-general.svg',
+    hidden: true,
+  },
+  {
+    id: 'gift-buyme',
+    name: 'BuyMe',
+    category: 'gift',
+    bgColor: '#F5A623',
+    textColor: '#FFFFFF',
+    accentColor: '#FDE68A',
+    icon: '🎁',
+    bgImageUrl: '/images/gift-buyme.svg',
+    hidden: true,
   },
   {
     id: 'visit',

@@ -110,10 +110,20 @@ export default function CardViewPage() {
       {/* Card visual */}
       <div
         className={styles.cardVisual}
-        style={{ '--card-bg': template.bgColor, '--card-color': template.textColor } as React.CSSProperties}
+        style={{
+          '--card-bg': template.bgImageUrl && !card.image_url
+            ? `url(${template.bgImageUrl})`
+            : template.bgColor,
+          '--card-color': template.textColor,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+        } as React.CSSProperties}
       >
         {card.image_url && (
           <img src={card.image_url} alt="" className={styles.cardBgImage} aria-hidden="true" />
+        )}
+        {template.bgImageUrl && !card.image_url && (
+          <div className={styles.cardBrandOverlay} />
         )}
         <div className={styles.cardInner}>
           <div className={styles.cardTop}>
