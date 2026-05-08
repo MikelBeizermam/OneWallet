@@ -12,7 +12,15 @@
       "Bash(git commit *)",
       "Bash(gh auth *)",
       "Bash(git push *)",
-      "Bash(curl -s -o /dev/null -w \"%{http_code}\" https://one-wallet-six.vercel.app/login)"
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" https://one-wallet-six.vercel.app/login)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" --max-time 5 \"https://buyme.co.il/assets/images/logo.png\")",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" --max-time 5 \"https://buyme.co.il/assets/img/logo.png\")",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" --max-time 5 \"https://buyme.co.il/imagesnew/logo.png\")",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" --max-time 5 \"https://buyme.co.il/images/logo.png\")",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" --max-time 5 \"https://buyme-images.s3.eu-central-1.amazonaws.com/logo.png\")",
+      "WebFetch(domain:buyme.co.il)",
+      "Bash(curl -s -o /tmp/buyme-logo.png --max-time 10 -A 'Mozilla/5.0 \\(Macintosh; Intel Mac OS X 10_15_7\\) AppleWebKit/537.36 \\(KHTML, like Gecko\\) Chrome/120.0.0.0 Safari/537.36' -H 'Accept: image/png,image/*;q=0.8' -H 'Referer: https://buyme.co.il/' https://buyme.co.il/images/fav/apple-touch-icon.png)",
+      "Read(//private/tmp/**)"
     ]
   }
 }

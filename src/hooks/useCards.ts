@@ -32,5 +32,17 @@ export function useCards() {
     return error
   }
 
-  return { cards, loading, error, refetch: fetchCards, deleteCard }
+  const reorderCards = async (orderedIds: string[]) => {
+    setCards(prev => {
+      const map = new Map(prev.map(c => [c.id, c]))
+      return orderedIds.map((id, i) => ({ ...map.get(id)!, sort_order: i }))
+    })
+    await Promise.all(
+      orderedIds.map((id, i) =>
+        supabase.from('cards').update({ sort_order: i }).eq('id', id)
+      )
+    )
+  }
+
+  return { cards, loading, error, refetch: fetchCards, deleteCard, reorderCards }
 }

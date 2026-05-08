@@ -5,7 +5,23 @@ import { useCards } from '@/hooks/useCards'
 import { WalletCard } from '@/components/WalletCard'
 import { BottomNav } from '@/components/BottomNav'
 import { CATEGORY_LABELS } from '@/lib/cardTemplates'
-import type { CardCategory } from '@/types/database'
+import type { CardCategory, Card } from '@/types/database'
+import {
+  DndContext,
+  closestCenter,
+  TouchSensor,
+  MouseSensor,
+  useSensor,
+  useSensors,
+  type DragEndEvent,
+} from '@dnd-kit/core'
+import {
+  arrayMove,
+  SortableContext,
+  useSortable,
+  verticalListSortingStrategy,
+} from '@dnd-kit/sortable'
+import { CSS } from '@dnd-kit/utilities'
 import styles from './HomePage.module.css'
 
 const TABS: Array<{ key: 'all' | CardCategory; label: string }> = [
@@ -22,9 +38,16 @@ const TABS: Array<{ key: 'all' | CardCategory; label: string }> = [
 export default function HomePage() {
   const { user } = useAuth()
   const navigate = useNavigate()
-  const { cards, loading } = useCards()
+  const { cards, loading, reorderCards } = useCards()
   const [activeTab, setActiveTab] = useState<'all' | CardCategory>('all')
   const [search, setSearch] = useState('')
+  const [isReordering, setIsReordering] = useState(false)
+  const [localOrder, setLocalOrder] = useState<Card[]>([])
+
+  const sensors = useSensors(
+    useSensor(MouseSensor, { activationConstraint: { distance: 5 } }),
+    useSensor(TouchSensor, { activationConstraint: { delay: 150, tolerance: 5 } }),
+  )
 
   const firstName = user?.user_metadata?.full_name?.split(' ')[0] ?? 'שלי'
 
@@ -34,6 +57,26 @@ export default function HomePage() {
     if (search.trim()) result = result.filter(c => c.name.includes(search.trim()))
     return result
   }, [cards, activeTab, search])
+
+  const enterReorder = () => {
+    setLocalOrder([...cards])
+    setIsReordering(true)
+  }
+
+  const exitReorder = async () => {
+    setIsReordering(false)
+    await reorderCards(localOrder.map(c => c.id))
+  }
+
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event
+    if (!over || active.id === over.id) return
+    setLocalOrder(prev => {
+      const oldIndex = prev.findIndex(c => c.id === active.id)
+      const newIndex = prev.findIndex(c => c.id === over.id)
+      return arrayMove(prev, oldIndex, newIndex)
+    })
+  }
 
   return (
     <div className={styles.page}>
@@ -52,36 +95,68 @@ export default function HomePage() {
         <p className={styles.subtitle}>{cards.length} כרטיסים שמורים</p>
       </section>
 
-      <div className={styles.searchRow}>
-        <div className={styles.searchWrapper}>
-          <span className={styles.searchIcon}><SearchIcon /></span>
-          <input
-            className={styles.searchInput}
-            placeholder="חפש כרטיס..."
-            value={search}
-            onChange={e => setSearch(e.target.value)}
-          />
-        </div>
-      </div>
+      {!isReordering && (
+        <>
+          <div className={styles.searchRow}>
+            <div className={styles.searchWrapper}>
+              <span className={styles.searchIcon}><SearchIcon /></span>
+              <input
+                className={styles.searchInput}
+                placeholder="חפש כרטיס..."
+                value={search}
+                onChange={e => setSearch(e.target.value)}
+              />
+            </div>
+          </div>
 
-      <div className={styles.tabs}>
-        {TABS.map(tab => (
-          <button
-            type="button"
-            key={tab.key}
-            className={`${styles.tab} ${activeTab === tab.key ? styles.tabActive : ''}`}
-            onClick={() => setActiveTab(tab.key)}
-          >
-            {tab.label}
-          </button>
-        ))}
-      </div>
+          <div className={styles.tabs}>
+            {TABS.map(tab => (
+              <button
+                type="button"
+                key={tab.key}
+                className={`${styles.tab} ${activeTab === tab.key ? styles.tabActive : ''}`}
+                onClick={() => setActiveTab(tab.key)}
+              >
+                {tab.label}
+              </button>
+            ))}
+          </div>
+        </>
+      )}
 
       <div className={styles.cardsArea}>
+        {/* Reorder toolbar */}
+        {!loading && cards.length > 1 && (
+          <div className={styles.reorderBar}>
+            {isReordering ? (
+              <>
+                <span className={styles.reorderHint}>גרור כרטיסים לשינוי סדר</span>
+                <button type="button" className={styles.doneBtn} onClick={exitReorder}>
+                  סיימתי ✓
+                </button>
+              </>
+            ) : (
+              <button type="button" className={styles.reorderBtn} onClick={enterReorder} aria-label="סדר כרטיסים">
+                <SortIcon />
+              </button>
+            )}
+          </div>
+        )}
+
         {loading ? (
           <div className={styles.loadingState}>
             {[1, 2, 3].map(i => <div key={i} className={styles.skeleton} />)}
           </div>
+        ) : isReordering ? (
+          <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+            <SortableContext items={localOrder.map(c => c.id)} strategy={verticalListSortingStrategy}>
+              <div className={styles.cardsList}>
+                {localOrder.map(card => (
+                  <SortableCard key={card.id} card={card} />
+                ))}
+              </div>
+            </SortableContext>
+          </DndContext>
         ) : filtered.length === 0 ? (
           <div className={styles.emptyState}>
             <div className={styles.emptyIcon}><WalletEmptyIcon /></div>
@@ -94,11 +169,7 @@ export default function HomePage() {
                 : 'הוסף את הכרטיס הראשון שלך ותתחיל לארגן את הארנק הדיגיטלי'}
             </p>
             {!search && (
-              <button
-                type="button"
-                className={styles.addFirstBtn}
-                onClick={() => navigate('/add')}
-              >
+              <button type="button" className={styles.addFirstBtn} onClick={() => navigate('/add')}>
                 + הוסף כרטיס
               </button>
             )}
@@ -112,11 +183,31 @@ export default function HomePage() {
         )}
       </div>
 
-      <button type="button" className={styles.fab} onClick={() => navigate('/add')} aria-label="הוסף כרטיס">
-        <PlusIcon />
-      </button>
+      {!isReordering && (
+        <button type="button" className={styles.fab} onClick={() => navigate('/add')} aria-label="הוסף כרטיס">
+          <PlusIcon />
+        </button>
+      )}
 
       <BottomNav />
+    </div>
+  )
+}
+
+function SortableCard({ card }: { card: Card }) {
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: card.id })
+  return (
+    <div
+      ref={setNodeRef}
+      style={{ transform: CSS.Transform.toString(transform), transition, opacity: isDragging ? 0.4 : 1 }}
+      className={styles.sortableRow}
+    >
+      <div className={styles.dragHandle} {...attributes} {...listeners}>
+        <DragHandleIcon />
+      </div>
+      <div className={styles.sortableCard}>
+        <WalletCard card={card} compact />
+      </div>
     </div>
   )
 }
@@ -129,6 +220,12 @@ function SearchIcon() {
 }
 function PlusIcon() {
   return <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><path d="M12 5v14M5 12h14"/></svg>
+}
+function SortIcon() {
+  return <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M3 6h18M7 12h10M11 18h2"/></svg>
+}
+function DragHandleIcon() {
+  return <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><circle cx="9" cy="6" r="1" fill="currentColor"/><circle cx="15" cy="6" r="1" fill="currentColor"/><circle cx="9" cy="12" r="1" fill="currentColor"/><circle cx="15" cy="12" r="1" fill="currentColor"/><circle cx="9" cy="18" r="1" fill="currentColor"/><circle cx="15" cy="18" r="1" fill="currentColor"/></svg>
 }
 function WalletEmptyIcon() {
   return (

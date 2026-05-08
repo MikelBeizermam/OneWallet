@@ -238,3 +238,74 @@
 .fab:active {
   transform: translateX(-50%) translateX(-calc(var(--max-width) / 2 - var(--space-4) - 28px)) scale(0.93);
 }
+
+/* ── Reorder mode ── */
+.reorderBar {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 0 var(--space-4) var(--space-2);
+  gap: var(--space-3);
+}
+
+.reorderBtn {
+  width: 34px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-white);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  color: var(--color-text-muted);
+  transition: background 0.15s, color 0.15s;
+}
+
+.reorderBtn:hover {
+  background: var(--color-accent);
+  color: var(--color-primary);
+}
+
+.reorderHint {
+  font-size: 13px;
+  color: var(--color-text-muted);
+  font-family: var(--font-family);
+}
+
+.doneBtn {
+  padding: 8px 18px;
+  background: var(--color-primary);
+  color: var(--color-white);
+  border-radius: var(--radius);
+  font-size: 14px;
+  font-weight: 600;
+  font-family: var(--font-family);
+  transition: opacity 0.15s;
+}
+
+.doneBtn:hover { opacity: 0.88; }
+
+.sortableRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.dragHandle {
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-text-muted);
+  cursor: grab;
+  touch-action: none;
+}
+
+.dragHandle:active { cursor: grabbing; }
+
+.sortableCard {
+  flex: 1;
+  min-width: 0;
+}
