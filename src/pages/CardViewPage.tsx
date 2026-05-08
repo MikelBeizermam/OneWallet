@@ -155,7 +155,7 @@ export default function CardViewPage() {
             className={styles.giftBalanceBtn}
             onClick={() => { setSpentAmount(''); setShowBalanceModal(true) }}
           >
-            💸 השתמשת? עדכן את היתרה
+            השתמשת? עדכן את היתרה 💸
           </button>
         </div>
       )}
