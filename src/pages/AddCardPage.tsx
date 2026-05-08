@@ -4,6 +4,7 @@ import { supabase } from '@/lib/supabase'
 import { useAuth } from '@/contexts/AuthContext'
 import { CARD_TEMPLATES, CATEGORY_LABELS, FIELD_LABELS } from '@/lib/cardTemplates'
 import type { CardCategory } from '@/types/database'
+import { CardCropper } from '@/components/CardCropper'
 import styles from './AddCardPage.module.css'
 
 function formatDateInput(raw: string): string {
@@ -34,6 +35,7 @@ export default function AddCardPage() {
   const [giftBalance, setGiftBalance] = useState('')
   const [imageFile, setImageFile] = useState<File | null>(null)
   const [imagePreview, setImagePreview] = useState<string | null>(null)
+  const [cropSrc, setCropSrc] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
 
@@ -58,8 +60,13 @@ export default function AddCardPage() {
   const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (!file) return
-    setImageFile(file)
-    setImagePreview(URL.createObjectURL(file))
+    setCropSrc(URL.createObjectURL(file))
+  }
+
+  const handleCropDone = (croppedFile: File) => {
+    setImageFile(croppedFile)
+    setImagePreview(URL.createObjectURL(croppedFile))
+    setCropSrc(null)
   }
 
   const uploadImage = async (): Promise<string | null> => {
@@ -101,6 +108,16 @@ export default function AddCardPage() {
       navigate('/home')
     }
     setLoading(false)
+  }
+
+  if (cropSrc) {
+    return (
+      <CardCropper
+        imageSrc={cropSrc}
+        onCropDone={handleCropDone}
+        onCancel={() => setCropSrc(null)}
+      />
+    )
   }
 
   if (step === 'template') {
