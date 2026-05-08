@@ -45,7 +45,7 @@ export function WalletStack({ cards }: Props) {
               zIndex: isActive ? 50 : index + 1,
               transition: 'transform 0.35s cubic-bezier(0.34,1.25,0.64,1)',
               ...(isActive ? {
-                transform: 'translateY(-18px) scale(1.02)',
+                transform: 'translateY(-18px) scale(1.2)',
                 filter: 'drop-shadow(0 12px 28px rgba(0,0,0,0.32))',
               } : {}),
             }}
