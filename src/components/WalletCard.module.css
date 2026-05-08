@@ -88,6 +88,19 @@
   font-family: 'Courier New', monospace;
   letter-spacing: 2px;
   opacity: 0.8;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 6px;
+  direction: ltr;
+}
+
+.numberDigits {
+  font-weight: 700;
+}
+
+.numberDots {
+  opacity: 0.6;
 }
 
 .expiry {
