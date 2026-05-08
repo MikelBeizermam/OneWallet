@@ -152,7 +152,7 @@ export default function AddCardPage() {
             aria-label="כרטיס מתנה כללי"
             onClick={() => handleGiftBrandSelect('general')}
           >
-            <img src="/images/gift-general.svg" alt="" className={styles.brandImage} aria-hidden="true" />
+            <img src={CARD_TEMPLATES.find(t => t.id === 'gift-general')?.bgImageUrl} alt="" className={styles.brandImage} aria-hidden="true" />
             <span className={styles.brandLabel}>כללי</span>
           </button>
 
@@ -162,7 +162,7 @@ export default function AddCardPage() {
             aria-label="כרטיס BuyMe"
             onClick={() => handleGiftBrandSelect('buyme')}
           >
-            <img src="/images/gift-buyme.svg" alt="" className={styles.brandImage} aria-hidden="true" />
+            <img src={CARD_TEMPLATES.find(t => t.id === 'gift-buyme')?.bgImageUrl} alt="" className={styles.brandImage} aria-hidden="true" />
             <span className={styles.brandLabel}>BuyMe</span>
           </button>
         </div>
