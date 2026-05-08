@@ -1,0 +1,212 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  min-height: 100dvh;
+  background: var(--color-background);
+  padding-bottom: calc(var(--nav-height) + var(--space-4));
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-6) var(--space-4) var(--space-2);
+}
+
+.title {
+  font-size: 26px;
+  font-weight: 700;
+}
+
+.addBtn {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius);
+  background: var(--color-primary);
+  color: var(--color-white);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Search */
+.searchRow {
+  padding: var(--space-2) var(--space-4);
+}
+
+.searchWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.searchIcon {
+  position: absolute;
+  left: var(--space-4);
+  color: var(--color-placeholder);
+  display: flex;
+  pointer-events: none;
+}
+
+.searchInput {
+  width: 100%;
+  background: var(--color-white);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: 12px var(--space-4) 12px 44px;
+  font-size: 15px;
+  font-family: var(--font-family);
+  color: var(--color-text);
+  direction: rtl;
+  transition: border-color 0.15s;
+}
+
+.searchInput::placeholder { color: var(--color-placeholder); }
+.searchInput:focus {
+  outline: none;
+  border-color: var(--color-secondary);
+  box-shadow: 0 0 0 3px rgba(212, 184, 150, 0.2);
+}
+
+.clearBtn {
+  position: absolute;
+  right: var(--space-3);
+  color: var(--color-placeholder);
+  display: flex;
+  padding: var(--space-1);
+}
+
+/* Category pills */
+.categoryRow {
+  display: flex;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  overflow-x: auto;
+}
+
+.categoryRow::-webkit-scrollbar { display: none; }
+
+.catPill {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: 7px var(--space-3);
+  border-radius: var(--radius-full);
+  font-size: 13px;
+  font-weight: 500;
+  font-family: var(--font-family);
+  background: var(--color-white);
+  color: var(--color-text-muted);
+  border: 1px solid var(--color-border);
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+
+.catPillActive {
+  background: var(--color-primary);
+  color: var(--color-white);
+  border-color: var(--color-primary);
+}
+
+.catCount {
+  background: rgba(255,255,255,0.25);
+  border-radius: var(--radius-full);
+  font-size: 11px;
+  font-weight: 700;
+  padding: 1px 6px;
+  min-width: 18px;
+  text-align: center;
+}
+
+.catPill:not(.catPillActive) .catCount {
+  background: var(--color-border);
+  color: var(--color-text-muted);
+}
+
+/* Body */
+.body {
+  flex: 1;
+  padding: var(--space-3) var(--space-4);
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.cardRow {
+  position: relative;
+}
+
+.cardDeleteBtn {
+  position: absolute;
+  top: var(--space-3);
+  left: var(--space-3);
+  z-index: 10;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius);
+  background: rgba(226, 75, 74, 0.15);
+  color: var(--color-error);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(4px);
+  transition: background 0.15s;
+}
+
+.cardDeleteBtn:hover { background: rgba(226, 75, 74, 0.3); }
+
+/* Skeletons */
+.skeletons {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.skeleton {
+  height: 180px;
+  border-radius: var(--radius-lg);
+  background: var(--color-border);
+  animation: pulse 1.6s ease-in-out infinite;
+  will-change: opacity;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.4; }
+}
+
+/* Empty state */
+.empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-3);
+  padding: var(--space-10) var(--space-6);
+  text-align: center;
+}
+
+.emptyEmoji { font-size: 48px; }
+
+.emptyText {
+  font-size: 15px;
+  color: var(--color-text-muted);
+  font-family: var(--font-family);
+  line-height: 1.5;
+}
+
+.emptyAddBtn {
+  background: var(--color-primary);
+  color: var(--color-white);
+  border-radius: var(--radius);
+  padding: 12px var(--space-6);
+  font-size: 15px;
+  font-weight: 600;
+  font-family: var(--font-family);
+  margin-top: var(--space-2);
+}

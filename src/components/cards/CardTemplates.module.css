@@ -1,0 +1,267 @@
+/* ── Israeli ID Card ── */
+.idCard {
+  width: 100%;
+  max-width: 360px;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #D4B896;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+  font-family: var(--font-family);
+  direction: rtl;
+}
+
+.idHeader {
+  background: #1A1208;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+}
+
+.idFlag { font-size: 18px; }
+
+.idHeaderText {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.idState {
+  font-size: 10px;
+  color: rgba(255,255,255,0.7);
+  letter-spacing: 1px;
+}
+
+.idTitle {
+  font-size: 14px;
+  font-weight: 700;
+  color: #FAF8F5;
+}
+
+.idEmblem {
+  font-size: 20px;
+  color: rgba(255,255,255,0.5);
+}
+
+.idBody {
+  display: flex;
+  gap: 12px;
+  padding: 12px;
+}
+
+.idPhotoBox {
+  width: 80px;
+  height: 96px;
+  flex-shrink: 0;
+  border-radius: 6px;
+  overflow: hidden;
+  background: rgba(26,18,8,0.1);
+  border: 1px solid rgba(26,18,8,0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(26,18,8,0.4);
+}
+
+.idPhoto {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.idPhotoPlaceholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+}
+
+.idFields {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  justify-content: center;
+}
+
+.idField {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.idFieldLabel {
+  font-size: 9px;
+  color: rgba(26,18,8,0.5);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.idFieldValue {
+  font-size: 13px;
+  font-weight: 600;
+  color: #1A1208;
+}
+
+.idFooter {
+  background: #1A1208;
+  padding: 5px 12px;
+  text-align: center;
+}
+
+.idFooterText {
+  font-size: 9px;
+  color: rgba(255,255,255,0.5);
+  letter-spacing: 2px;
+}
+
+/* ── Driver's License ── */
+.licenseCard {
+  width: 100%;
+  max-width: 360px;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #8C7355;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+  font-family: var(--font-family);
+  direction: rtl;
+}
+
+.licenseHeader {
+  background: linear-gradient(135deg, #5a4535, #8C7355);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-bottom: 1px solid rgba(255,255,255,0.15);
+}
+
+.licenseFlag { font-size: 16px; }
+
+.licenseHeaderText {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.licenseState {
+  font-size: 9px;
+  color: rgba(255,255,255,0.6);
+  letter-spacing: 1px;
+}
+
+.licenseTitle {
+  font-size: 13px;
+  font-weight: 700;
+  color: #FAF8F5;
+}
+
+.licenseTitleEn {
+  font-size: 9px;
+  color: rgba(255,255,255,0.5);
+  letter-spacing: 1px;
+}
+
+.licenseEU {
+  font-size: 11px;
+  font-weight: 800;
+  color: rgba(255,255,255,0.4);
+  border: 1px solid rgba(255,255,255,0.3);
+  border-radius: 3px;
+  padding: 2px 5px;
+}
+
+.licenseBody {
+  display: flex;
+  gap: 12px;
+  padding: 12px;
+}
+
+.licensePhotoBox {
+  width: 72px;
+  height: 88px;
+  flex-shrink: 0;
+  border-radius: 6px;
+  overflow: hidden;
+  background: rgba(255,255,255,0.15);
+  border: 1px solid rgba(255,255,255,0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(255,255,255,0.5);
+}
+
+.licensePhoto {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.licensePhotoPlaceholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+}
+
+.licenseFields {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.licenseField {
+  display: flex;
+  gap: 5px;
+  align-items: flex-start;
+}
+
+.licenseFieldNum {
+  font-size: 9px;
+  color: rgba(255,255,255,0.4);
+  min-width: 18px;
+  padding-top: 2px;
+}
+
+.licenseFieldLabel {
+  font-size: 9px;
+  color: rgba(255,255,255,0.55);
+  display: block;
+}
+
+.licenseFieldValue {
+  font-size: 12px;
+  font-weight: 600;
+  color: #FAF8F5;
+  display: block;
+}
+
+.licenseFooter {
+  padding: 8px 12px 10px;
+  background: rgba(0,0,0,0.1);
+}
+
+.licenseBarcode {
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+  height: 24px;
+  opacity: 0.3;
+}
+
+.licenseBar {
+  width: 2px;
+  background: #FAF8F5;
+  border-radius: 1px;
+}
+
+/* Shared */
+.mono {
+  font-family: 'Courier New', monospace;
+  letter-spacing: 1px;
+}

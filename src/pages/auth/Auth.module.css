@@ -1,0 +1,121 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  min-height: 100dvh;
+  padding: var(--space-8) var(--space-6) var(--space-6);
+  gap: var(--space-6);
+  background: var(--color-background);
+  position: relative;
+}
+
+.logoSection {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-3);
+  padding-top: var(--space-8);
+}
+
+.logoIcon {
+  width: 72px;
+  height: 72px;
+  background: var(--color-primary);
+  border-radius: var(--radius-lg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-white);
+  margin-bottom: var(--space-2);
+  box-shadow: var(--shadow-md);
+}
+
+.appName {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--color-text);
+  letter-spacing: -0.5px;
+}
+
+.title {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.tagline {
+  font-size: 14px;
+  color: var(--color-text-muted);
+  text-align: center;
+  line-height: 1.6;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.forgotLink {
+  font-size: 13px;
+  color: var(--color-primary);
+  text-align: left;
+  align-self: flex-start;
+  font-weight: 500;
+}
+
+.footer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-6);
+  margin-top: auto;
+}
+
+.switchText {
+  font-size: 14px;
+  color: var(--color-text-muted);
+  text-align: center;
+}
+
+.switchLink {
+  color: var(--color-primary);
+  font-weight: 600;
+}
+
+.biometricRow {
+  display: flex;
+  gap: var(--space-4);
+  justify-content: center;
+}
+
+.biometricBtn {
+  width: 52px;
+  height: 52px;
+  border-radius: var(--radius);
+  background: var(--color-white);
+  border: 1px solid var(--color-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-primary);
+  transition: background 0.15s;
+}
+
+.biometricBtn:hover {
+  background: var(--color-accent);
+}
+
+.backBtn {
+  position: absolute;
+  top: var(--space-6);
+  right: var(--space-4);
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius);
+  color: var(--color-text);
+  background: var(--color-white);
+  border: 1px solid var(--color-border);
+}

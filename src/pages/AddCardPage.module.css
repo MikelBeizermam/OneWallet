@@ -1,0 +1,198 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  min-height: 100dvh;
+  background: var(--color-background);
+  padding-bottom: var(--space-8);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-4);
+  gap: var(--space-3);
+}
+
+.backBtn {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-white);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  color: var(--color-text);
+  flex-shrink: 0;
+}
+
+.title {
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.headerSpacer {
+  width: 40px;
+}
+
+/* Template grid */
+.templateGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-3);
+  padding: var(--space-2) var(--space-4) var(--space-6);
+}
+
+.templateCard {
+  background: var(--card-bg, var(--color-accent));
+  color: var(--card-color, var(--color-text));
+  border-radius: var(--radius-lg);
+  padding: var(--space-4);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-2);
+  min-height: 120px;
+  box-shadow: var(--shadow-card);
+  transition: transform 0.15s, box-shadow 0.15s;
+  text-align: right;
+}
+
+.templateCard:active {
+  transform: scale(0.96);
+  box-shadow: var(--shadow-sm);
+}
+
+.templateIcon {
+  font-size: 28px;
+}
+
+.templateName {
+  font-size: 14px;
+  font-weight: 700;
+  font-family: var(--font-family);
+  line-height: 1.3;
+}
+
+.templateCategory {
+  font-size: 11px;
+  font-weight: 500;
+  font-family: var(--font-family);
+  color: var(--card-muted, var(--color-text-muted));
+}
+
+/* Preview card */
+.preview {
+  background: var(--card-bg, var(--color-accent));
+  color: var(--card-color, var(--color-text));
+  margin: 0 var(--space-4) var(--space-4);
+  border-radius: var(--radius-lg);
+  height: 160px;
+  overflow: hidden;
+  position: relative;
+  box-shadow: var(--shadow-lg);
+}
+
+.previewBg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.2;
+}
+
+.previewInner {
+  position: relative;
+  z-index: 1;
+  padding: var(--space-4);
+  display: flex;
+  align-items: flex-end;
+  gap: var(--space-3);
+  height: 100%;
+}
+
+.previewIcon {
+  font-size: 32px;
+}
+
+.previewName {
+  font-size: 18px;
+  font-weight: 700;
+  font-family: var(--font-family);
+}
+
+.previewNumber {
+  font-size: 13px;
+  font-family: 'Courier New', monospace;
+  letter-spacing: 2px;
+  opacity: 0.8;
+}
+
+.previewDate {
+  font-size: 12px;
+  font-family: var(--font-family);
+  opacity: 0.7;
+}
+
+/* Date row */
+.dateRow {
+  display: flex;
+  gap: var(--space-2);
+  align-items: center;
+}
+
+.dateRow .input-field {
+  flex: 1;
+}
+
+.calendarBtn {
+  width: 48px;
+  height: 48px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-white);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  color: var(--color-primary);
+  transition: background 0.15s;
+}
+
+.calendarBtn:hover {
+  background: var(--color-accent);
+}
+
+/* Form */
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  padding: 0 var(--space-4);
+}
+
+.uploadBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-4);
+  background: var(--color-white);
+  border: 1.5px dashed var(--color-secondary);
+  border-radius: var(--radius);
+  color: var(--color-primary);
+  font-size: 14px;
+  font-weight: 500;
+  font-family: var(--font-family);
+  transition: background 0.15s;
+}
+
+.uploadBtn:hover {
+  background: var(--color-accent);
+}
+
+.hiddenInput {
+  display: none;
+}
