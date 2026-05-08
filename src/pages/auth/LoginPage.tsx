@@ -80,14 +80,6 @@ export default function LoginPage() {
           <Link to="/register" className={styles.switchLink}>הצטרף עכשיו</Link>
         </p>
 
-        <div className={styles.biometricRow}>
-          <button className={styles.biometricBtn} type="button" aria-label="כניסה עם טביעת אצבע">
-            <FingerprintIcon />
-          </button>
-          <button className={styles.biometricBtn} type="button" aria-label="כניסה עם זיהוי פנים">
-            <FaceIdIcon />
-          </button>
-        </div>
       </div>
     </div>
   )
