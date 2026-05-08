@@ -1,10 +1,11 @@
-import { useState } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import type { Card } from '@/types/database'
 import { WalletCard } from './WalletCard'
 
-const PEEK = 76   // px visible per card
-const CARD_H = 180
+const PEEK = 76      // px visible per card in normal stack
+const CARD_H = 180   // card height
+const BOTTOM_PEEK = 28  // px visible per card when slid to bottom
 
 interface Props {
   cards: Card[]
@@ -13,6 +14,16 @@ interface Props {
 export function WalletStack({ cards }: Props) {
   const [activeId, setActiveId] = useState<string | null>(null)
   const navigate = useNavigate()
+  const containerRef = useRef<HTMLDivElement>(null)
+  const [containerH, setContainerH] = useState(0)
+
+  useEffect(() => {
+    const el = containerRef.current
+    if (!el) return
+    const ro = new ResizeObserver(() => setContainerH(el.clientHeight))
+    ro.observe(el)
+    return () => ro.disconnect()
+  }, [])
 
   const handlePress = (cardId: string) => {
     if (activeId === cardId) {
@@ -22,32 +33,41 @@ export function WalletStack({ cards }: Props) {
     }
   }
 
-  const totalHeight = cards.length > 0
-    ? PEEK * (cards.length - 1) + CARD_H
-    : 0
+  const getTranslateY = (index: number): number => {
+    if (!activeId || containerH === 0) return 0
+    const activeIndex = cards.findIndex(c => c.id === activeId)
+    if (index <= activeIndex) return 0
+
+    // cards below active → slide to bottom of container
+    const fromBottom = cards.length - 1 - index  // 0 = last card
+    const targetTop = containerH - CARD_H - fromBottom * BOTTOM_PEEK
+    const baseTop = index * PEEK
+    return Math.max(targetTop - baseTop, 0)
+  }
+
+  const normalHeight = cards.length > 0 ? PEEK * (cards.length - 1) + CARD_H : 0
 
   return (
     <div
-      style={{ position: 'relative', height: totalHeight, marginBottom: 24 }}
+      ref={containerRef}
+      style={{ position: 'relative', flex: 1, minHeight: normalHeight }}
       onClick={() => setActiveId(null)}
     >
       {cards.map((card, index) => {
         const isActive = activeId === card.id
-        const top = index * PEEK
+        const ty = getTranslateY(index)
         return (
           <div
             key={card.id}
             style={{
               position: 'absolute',
-              top,
+              top: index * PEEK,
               left: 0,
               right: 0,
               zIndex: isActive ? 50 : index + 1,
-              transition: 'transform 0.35s cubic-bezier(0.34,1.25,0.64,1)',
-              ...(isActive ? {
-                transform: 'translateY(-18px) scale(1.02)',
-                filter: 'drop-shadow(0 12px 28px rgba(0,0,0,0.32))',
-              } : {}),
+              transition: 'transform 0.42s cubic-bezier(0.34, 1.1, 0.64, 1)',
+              transform: `translateY(${ty + (isActive ? -10 : 0)}px)`,
+              ...(isActive ? { filter: 'drop-shadow(0 14px 28px rgba(0,0,0,0.3))' } : {}),
             }}
             onClick={e => e.stopPropagation()}
           >
