@@ -27,6 +27,7 @@ export default function RegisterPage() {
       password,
       options: {
         data: { full_name: fullName },
+        emailRedirectTo: 'https://one-wallet-six.vercel.app/login',
       },
     })
 
@@ -38,17 +39,25 @@ export default function RegisterPage() {
       }
     } else {
       setSuccess(true)
-      setTimeout(() => navigate('/home'), 1500)
     }
     setLoading(false)
   }
 
   if (success) {
     return (
-      <div className={styles.page} style={{ justifyContent: 'center', alignItems: 'center', textAlign: 'center', gap: '16px' }}>
-        <div style={{ fontSize: '48px' }}>✅</div>
-        <h2>ברוך הבא!</h2>
-        <p style={{ color: 'var(--color-text-muted)' }}>החשבון נוצר בהצלחה</p>
+      <div className={styles.page}>
+        <div className={styles.confirmBox}>
+          <span className={styles.confirmEmoji}>📧</span>
+          <h2 className={styles.confirmTitle}>בדוק את האימייל שלך!</h2>
+          <p className={styles.confirmText}>
+            שלחנו לך אימייל אישור לכתובת<br />
+            <span className={styles.confirmEmail}>{email}</span><br /><br />
+            לחץ על הקישור באימייל כדי לאשר את החשבון ואז תוכל להיכנס.
+          </p>
+          <button type="button" className="btn btn-primary" onClick={() => navigate('/login')}>
+            אל מסך הכניסה
+          </button>
+        </div>
       </div>
     )
   }
