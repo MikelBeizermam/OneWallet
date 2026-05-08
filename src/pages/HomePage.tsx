@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { useAuth } from '@/contexts/AuthContext'
 import { useCards } from '@/hooks/useCards'
 import { WalletCard } from '@/components/WalletCard'
+import { WalletStack } from '@/components/WalletStack'
 import { BottomNav } from '@/components/BottomNav'
 import { CATEGORY_LABELS } from '@/lib/cardTemplates'
 import type { CardCategory, Card } from '@/types/database'
@@ -175,11 +176,7 @@ export default function HomePage() {
             )}
           </div>
         ) : (
-          <div className={styles.cardsList}>
-            {filtered.map(card => (
-              <WalletCard key={card.id} card={card} />
-            ))}
-          </div>
+          <WalletStack key={`${activeTab}-${search}`} cards={filtered} />
         )}
       </div>
 
