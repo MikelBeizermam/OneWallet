@@ -34,12 +34,12 @@ export const CARD_TEMPLATES: CardTemplate[] = [
   },
   {
     id: 'loyalty',
-    name: 'כרטיס נאמנות',
+    name: 'רישיון נשק',
     category: 'loyalty',
-    bgColor: '#1A1208',
+    bgColor: '#1C2526',
     textColor: '#FAF8F5',
-    accentColor: '#D4B896',
-    icon: '⭐',
+    accentColor: '#6B7280',
+    icon: '🔫',
   },
   {
     id: 'gift',
@@ -95,7 +95,7 @@ export const CARD_TEMPLATES: CardTemplate[] = [
 export const CATEGORY_LABELS: Record<CardCategory, string> = {
   id: 'תעודות',
   license: 'רישיונות',
-  loyalty: 'נאמנות',
+  loyalty: 'רישיון נשק',
   gift: 'גיפט קארד',
   visit: 'ביקור',
   other: 'אחר',
@@ -122,8 +122,8 @@ export const FIELD_LABELS: Record<CardCategory, FieldLabels> = {
     datePlaceholder: 'DD/MM/YYYY',
   },
   loyalty: {
-    numberLabel: 'מספר חבר',
-    numberPlaceholder: '0000-0000-0000',
+    numberLabel: 'מספר רישיון',
+    numberPlaceholder: '000000000',
     dateLabel: 'תאריך תפוגה',
     datePlaceholder: 'DD/MM/YYYY',
   },
