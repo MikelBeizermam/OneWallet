@@ -1,4 +1,5 @@
 import { useRef, useState } from 'react'
+import { createPortal } from 'react-dom'
 import { useNavigate } from 'react-router-dom'
 import type { Card } from '@/types/database'
 import { getTemplate, CATEGORY_LABELS } from '@/lib/cardTemplates'
@@ -97,7 +98,7 @@ export function WalletCard({ card, compact = false, onPress }: Props) {
 
 /* ── תמונה אמיתית בגדול ── */
 function ImageOverlay({ src, name, onClose }: { src: string; name: string; onClose: () => void }) {
-  return (
+  return createPortal(
     <div
       className={styles.overlay}
       role="dialog"
@@ -119,7 +120,8 @@ function ImageOverlay({ src, name, onClose }: { src: string; name: string; onClo
       </button>
 
       <p className={styles.overlayHint}>לחץ מחוץ לתמונה לסגירה</p>
-    </div>
+    </div>,
+    document.body
   )
 }
 
@@ -129,7 +131,7 @@ function EnlargedCard({ card, template, onClose }: {
   template: ReturnType<typeof getTemplate>
   onClose: () => void
 }) {
-  return (
+  return createPortal(
     <div
       className={styles.overlay}
       role="dialog"
@@ -180,7 +182,8 @@ function EnlargedCard({ card, template, onClose }: {
       </div>
 
       <p className={styles.overlayHint}>לחץ מחוץ לכרטיס לסגירה</p>
-    </div>
+    </div>,
+    document.body
   )
 }
 

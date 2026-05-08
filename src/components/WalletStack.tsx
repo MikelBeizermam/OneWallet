@@ -34,7 +34,6 @@ export function WalletStack({ cards }: Props) {
       {cards.map((card, index) => {
         const isActive = activeId === card.id
         const top = index * PEEK
-        const isLast = index === cards.length - 1
         return (
           <div
             key={card.id}
@@ -44,11 +43,11 @@ export function WalletStack({ cards }: Props) {
               left: 0,
               right: 0,
               zIndex: isActive ? 50 : index + 1,
-              transition: 'transform 0.35s cubic-bezier(0.34,1.25,0.64,1), filter 0.35s ease',
-              transform: isActive
-                ? 'translateY(-18px) scale(1.02)'
-                : isLast ? 'none' : 'none',
-              filter: isActive ? 'drop-shadow(0 12px 28px rgba(0,0,0,0.32))' : 'none',
+              transition: 'transform 0.35s cubic-bezier(0.34,1.25,0.64,1)',
+              ...(isActive ? {
+                transform: 'translateY(-18px) scale(1.02)',
+                filter: 'drop-shadow(0 12px 28px rgba(0,0,0,0.32))',
+              } : {}),
             }}
             onClick={e => e.stopPropagation()}
           >
