@@ -134,7 +134,12 @@ function EnlargedCard({ card, template, onClose }: {
           </div>
           <div className={styles.enlargedBottom}>
             <h2 className={styles.enlargedName}>{card.name}</h2>
-            {card.card_number && <p className={styles.enlargedNumber}>{card.card_number}</p>}
+            {card.card_number && (
+              <p className={styles.enlargedNumber}>
+                <span className={styles.numberDots}>••••</span>
+                <span className={styles.numberDigits}>{card.card_number.slice(-4)}</span>
+              </p>
+            )}
             {card.expiry_date && <p className={styles.enlargedExpiry}>{card.expiry_date}</p>}
           </div>
         </div>

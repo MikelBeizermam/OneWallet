@@ -139,6 +139,8 @@
   font-family: 'Courier New', monospace;
   letter-spacing: 2px;
   opacity: 0.85;
+  direction: ltr;
+  text-align: right;
 }
 
 .cardExpiry {
