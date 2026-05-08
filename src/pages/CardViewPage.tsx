@@ -15,6 +15,9 @@ export default function CardViewPage() {
   const [showImage, setShowImage] = useState(false)
   const [deleting, setDeleting] = useState(false)
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
+  const [showBalanceModal, setShowBalanceModal] = useState(false)
+  const [spentAmount, setSpentAmount] = useState('')
+  const [savingBalance, setSavingBalance] = useState(false)
 
   useEffect(() => {
     if (!id) return
@@ -34,6 +37,25 @@ export default function CardViewPage() {
     setDeleting(true)
     await deleteCard(id)
     navigate('/home')
+  }
+
+  const currentBalance = card?.category === 'gift'
+    ? parseFloat((card.metadata as Record<string, string>)?.balance ?? '0') || 0
+    : 0
+
+  const handleUpdateBalance = async () => {
+    if (!id || !card) return
+    const spent = parseFloat(spentAmount) || 0
+    const newBalance = Math.max(0, currentBalance - spent)
+    setSavingBalance(true)
+    await supabase.from('cards').update({
+      metadata: { ...(card.metadata as object), balance: String(newBalance) }
+    }).eq('id', id)
+    setCard(c => c ? { ...c, metadata: { ...(c.metadata as object), balance: String(newBalance) } } : c)
+    setSpentAmount('')
+    setSavingBalance(false)
+    setShowBalanceModal(false)
+    if (newBalance === 0) setShowDeleteConfirm(true)
   }
 
   if (loading) {
@@ -121,6 +143,23 @@ export default function CardViewPage() {
         </button>
       </div>
 
+      {/* Gift card balance widget */}
+      {card.category === 'gift' && (
+        <div className={styles.giftBalanceBox}>
+          <div className={styles.giftBalanceTop}>
+            <span className={styles.giftBalanceLabel}>יתרה בכרטיס</span>
+            <span className={styles.giftBalanceAmount}>₪{currentBalance.toFixed(0)}</span>
+          </div>
+          <button
+            type="button"
+            className={styles.giftBalanceBtn}
+            onClick={() => { setSpentAmount(''); setShowBalanceModal(true) }}
+          >
+            💸 השתמשת? עדכן את היתרה
+          </button>
+        </div>
+      )}
+
       {/* Details */}
       <div className={styles.details}>
         <h3 className={styles.detailsTitle}>פרטי הכרטיס</h3>
@@ -158,6 +197,44 @@ export default function CardViewPage() {
             <CloseIcon />
           </button>
           <p className={styles.overlayHint}>לחץ מחוץ לתמונה לסגירה</p>
+        </div>
+      )}
+
+      {/* Balance update modal */}
+      {showBalanceModal && (
+        <div className={styles.modalOverlay} role="dialog" aria-modal="true">
+          <div className={styles.modal}>
+            <h3 className={styles.modalTitle}>עדכון יתרה 🎁</h3>
+            <p className={styles.modalText}>יתרה נוכחית: <strong>₪{currentBalance.toFixed(0)}</strong></p>
+            <div className="input-group">
+              <label className="input-label" htmlFor="spent-amount">כמה השתמשת? (₪)</label>
+              <input
+                id="spent-amount"
+                className="input-field"
+                placeholder="לדוגמה: 50"
+                value={spentAmount}
+                onChange={e => setSpentAmount(e.target.value.replace(/[^0-9.]/g, ''))}
+                inputMode="decimal"
+                autoFocus
+              />
+            </div>
+            {spentAmount && (
+              <p className={styles.balancePreview}>
+                יתרה לאחר עדכון: <strong>₪{Math.max(0, currentBalance - (parseFloat(spentAmount) || 0)).toFixed(0)}</strong>
+                {Math.max(0, currentBalance - (parseFloat(spentAmount) || 0)) === 0 && (
+                  <span className={styles.balanceEmpty}> · הכרטיס נגמר!</span>
+                )}
+              </p>
+            )}
+            <div className={styles.modalActions}>
+              <button type="button" className="btn btn-secondary" onClick={() => setShowBalanceModal(false)} disabled={savingBalance}>
+                ביטול
+              </button>
+              <button type="button" className={styles.confirmSaveBtn} onClick={handleUpdateBalance} disabled={savingBalance || !spentAmount}>
+                {savingBalance ? <span className="spinner" /> : 'עדכן'}
+              </button>
+            </div>
+          </div>
         </div>
       )}
 

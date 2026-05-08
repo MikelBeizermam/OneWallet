@@ -337,3 +337,74 @@
 }
 
 .confirmDeleteBtn:disabled { opacity: 0.6; }
+
+.confirmSaveBtn {
+  flex: 1;
+  padding: 14px;
+  background: var(--color-primary);
+  color: var(--color-white);
+  border-radius: var(--radius);
+  font-size: 15px;
+  font-weight: 600;
+  font-family: var(--font-family);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.15s;
+}
+
+.confirmSaveBtn:disabled { opacity: 0.6; }
+
+/* Gift card balance widget */
+.giftBalanceBox {
+  margin: 0 var(--space-4) var(--space-4);
+  background: linear-gradient(135deg, #7C3AED, #5B21B6);
+  border-radius: var(--radius-lg);
+  padding: var(--space-4) var(--space-5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.giftBalanceTop {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.giftBalanceLabel {
+  font-size: 13px;
+  color: rgba(255,255,255,0.7);
+  font-family: var(--font-family);
+  font-weight: 500;
+}
+
+.giftBalanceAmount {
+  font-size: 32px;
+  font-weight: 800;
+  color: #FFFFFF;
+  font-family: var(--font-family);
+}
+
+.giftBalanceBtn {
+  width: 100%;
+  padding: 12px;
+  background: rgba(255,255,255,0.15);
+  border: 1px solid rgba(255,255,255,0.25);
+  border-radius: var(--radius);
+  font-size: 14px;
+  font-weight: 600;
+  font-family: var(--font-family);
+  color: #FFFFFF;
+  transition: background 0.15s;
+}
+
+.giftBalanceBtn:hover { background: rgba(255,255,255,0.25); }
+
+.balancePreview {
+  font-size: 14px;
+  color: var(--color-text-muted);
+  font-family: var(--font-family);
+}
+
+.balanceEmpty { color: var(--color-error); font-weight: 600; }
