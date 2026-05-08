@@ -122,7 +122,7 @@ export default function CardViewPage() {
           </div>
           <div className={styles.cardBottom}>
             <h2 className={styles.cardName}>{card.name}</h2>
-            {card.card_number && <p className={styles.cardNumber}>{card.card_number}</p>}
+            {card.card_number && <p className={styles.cardNumber}>{card.card_number.slice(0, 4)} ••••</p>}
             {card.expiry_date && <p className={styles.cardExpiry}>{card.expiry_date}</p>}
           </div>
         </div>

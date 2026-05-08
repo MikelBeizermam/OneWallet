@@ -60,7 +60,7 @@ export function WalletCard({ card, compact = false }: Props) {
           </div>
           <div className={styles.bottom}>
             <h3 className={styles.name}>{card.name}</h3>
-            {card.card_number && <p className={styles.number}>•••• {card.card_number.slice(-4)}</p>}
+            {card.card_number && <p className={styles.number}>{card.card_number.slice(0, 4)} ••••</p>}
             {card.expiry_date && <p className={styles.expiry}>{card.expiry_date}</p>}
           </div>
         </div>
