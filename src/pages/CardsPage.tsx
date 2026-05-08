@@ -7,13 +7,13 @@ import type { CardCategory } from '@/types/database'
 import styles from './CardsPage.module.css'
 
 const CATEGORIES: Array<{ key: 'all' | CardCategory; label: string; emoji: string }> = [
-  { key: 'all',     label: 'הכל',      emoji: '🗂️' },
-  { key: 'id',      label: 'תעודות',   emoji: '🪪' },
-  { key: 'license', label: 'רישיונות', emoji: '🚗' },
-  { key: 'loyalty', label: 'נאמנות',   emoji: '⭐' },
-  { key: 'credit',  label: 'אשראי',    emoji: '💳' },
-  { key: 'visit',   label: 'ביקור',    emoji: '📇' },
-  { key: 'other',   label: 'אחר',      emoji: '📋' },
+  { key: 'all',     label: 'הכל',        emoji: '🗂️' },
+  { key: 'id',      label: 'תעודות',     emoji: '🪪' },
+  { key: 'license', label: 'רישיונות',   emoji: '🚗' },
+  { key: 'loyalty', label: 'נאמנות',     emoji: '⭐' },
+  { key: 'gift',    label: 'גיפט קארד',  emoji: '🎁' },
+  { key: 'visit',   label: 'ביקור',      emoji: '📇' },
+  { key: 'other',   label: 'אחר',        emoji: '📋' },
 ]
 
 export default function CardsPage() {

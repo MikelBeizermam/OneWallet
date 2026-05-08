@@ -31,6 +31,7 @@ export default function AddCardPage() {
   const [name, setName] = useState('')
   const [cardNumber, setCardNumber] = useState('')
   const [dateDisplay, setDateDisplay] = useState('')
+  const [giftBalance, setGiftBalance] = useState('')
   const [imageFile, setImageFile] = useState<File | null>(null)
   const [imagePreview, setImagePreview] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
@@ -91,7 +92,7 @@ export default function AddCardPage() {
       expiry_date: dateDisplay.trim() || null,
       image_url: imageUrl,
       template_id: selectedTemplate,
-      metadata: {},
+      metadata: selectedCategory === 'gift' && giftBalance ? { balance: giftBalance } : {},
     })
 
     if (error) {
@@ -238,6 +239,20 @@ export default function AddCardPage() {
             />
           </div>
         </div>
+
+        {selectedCategory === 'gift' && (
+          <div className="input-group">
+            <label className="input-label" htmlFor="gift-balance">יתרה בכרטיס (₪)</label>
+            <input
+              id="gift-balance"
+              className="input-field"
+              placeholder="לדוגמה: 150"
+              value={giftBalance}
+              onChange={e => setGiftBalance(e.target.value.replace(/[^0-9.]/g, ''))}
+              inputMode="decimal"
+            />
+          </div>
+        )}
 
         <div className="input-group">
           <label className="input-label" htmlFor="card-category">קטגוריה</label>

@@ -128,6 +128,9 @@ export default function CardViewPage() {
         <DetailRow label="קטגוריה" value={CATEGORY_LABELS[card.category]} />
         {card.card_number && <DetailRow label="מספר" value={card.card_number} />}
         {card.expiry_date && <DetailRow label="תאריך" value={card.expiry_date} />}
+        {card.category === 'gift' && (card.metadata as Record<string, string>)?.balance && (
+          <DetailRow label="יתרה בכרטיס" value={`₪${(card.metadata as Record<string, string>).balance}`} />
+        )}
         <DetailRow label="נוסף בתאריך" value={new Date(card.created_at).toLocaleDateString('he-IL')} />
       </div>
 

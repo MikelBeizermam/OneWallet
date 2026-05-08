@@ -13,7 +13,7 @@ const TABS: Array<{ key: 'all' | CardCategory; label: string }> = [
   { key: 'id', label: CATEGORY_LABELS.id },
   { key: 'license', label: CATEGORY_LABELS.license },
   { key: 'loyalty', label: CATEGORY_LABELS.loyalty },
-  { key: 'credit', label: CATEGORY_LABELS.credit },
+  { key: 'gift', label: CATEGORY_LABELS.gift },
   { key: 'visit', label: CATEGORY_LABELS.visit },
   { key: 'other', label: CATEGORY_LABELS.other },
 ]

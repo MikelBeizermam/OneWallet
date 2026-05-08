@@ -39,13 +39,13 @@ export const CARD_TEMPLATES: CardTemplate[] = [
     icon: '⭐',
   },
   {
-    id: 'credit',
-    name: 'כרטיס אשראי',
-    category: 'credit',
-    bgColor: '#2C2C2E',
+    id: 'gift',
+    name: 'כרטיס מתנה',
+    category: 'gift',
+    bgColor: '#7C3AED',
     textColor: '#FFFFFF',
-    accentColor: '#D4B896',
-    icon: '💳',
+    accentColor: '#DDD6FE',
+    icon: '🎁',
   },
   {
     id: 'visit',
@@ -71,7 +71,7 @@ export const CATEGORY_LABELS: Record<CardCategory, string> = {
   id: 'תעודות',
   license: 'רישיונות',
   loyalty: 'נאמנות',
-  credit: 'אשראי',
+  gift: 'גיפט קארד',
   visit: 'ביקור',
   other: 'אחר',
 }
@@ -102,11 +102,11 @@ export const FIELD_LABELS: Record<CardCategory, FieldLabels> = {
     dateLabel: 'תאריך תפוגה',
     datePlaceholder: 'DD/MM/YYYY',
   },
-  credit: {
-    numberLabel: 'מספר כרטיס',
-    numberPlaceholder: '0000-0000-0000-0000',
+  gift: {
+    numberLabel: 'קוד כרטיס',
+    numberPlaceholder: 'XXXX-XXXX-XXXX',
     dateLabel: 'תאריך תפוגה',
-    datePlaceholder: 'MM/YY',
+    datePlaceholder: 'DD/MM/YYYY',
   },
   visit: {
     numberLabel: 'מספר',

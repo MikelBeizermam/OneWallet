@@ -11,7 +11,8 @@
       "Bash(git add *)",
       "Bash(git commit *)",
       "Bash(gh auth *)",
-      "Bash(git push *)"
+      "Bash(git push *)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" https://one-wallet-six.vercel.app/login)"
     ]
   }
 }
