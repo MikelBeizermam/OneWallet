@@ -68,7 +68,7 @@ export const CARD_TEMPLATES: CardTemplate[] = [
     textColor: '#FFFFFF',
     accentColor: '#FDE68A',
     icon: '🎁',
-    bgImageUrl: '/images/gift-buyme.svg',
+    bgImageUrl: '/images/gift-buyme.png',
     hidden: true,
   },
   {
