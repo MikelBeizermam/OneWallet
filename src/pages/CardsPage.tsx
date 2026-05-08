@@ -10,8 +10,9 @@ const CATEGORIES: Array<{ key: 'all' | CardCategory; label: string; emoji: strin
   { key: 'all',     label: 'הכל',        emoji: '🗂️' },
   { key: 'id',      label: 'תעודות',     emoji: '🪪' },
   { key: 'license', label: 'רישיונות',   emoji: '🚗' },
-  { key: 'loyalty', label: 'נאמנות',     emoji: '⭐' },
+  { key: 'loyalty', label: 'רישיון נשק', emoji: '🔫' },
   { key: 'gift',    label: 'גיפט קארד',  emoji: '🎁' },
+  { key: 'student', label: 'סטודנט',     emoji: '🎓' },
   { key: 'visit',   label: 'ביקור',      emoji: '📇' },
   { key: 'other',   label: 'אחר',        emoji: '📋' },
 ]

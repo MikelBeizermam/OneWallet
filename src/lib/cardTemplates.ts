@@ -73,6 +73,15 @@ export const CARD_TEMPLATES: CardTemplate[] = [
     hidden: true,
   },
   {
+    id: 'student',
+    name: 'כרטיס סטודנט',
+    category: 'student',
+    bgColor: '#1E3A8A',
+    textColor: '#FFFFFF',
+    accentColor: '#93C5FD',
+    icon: '🎓',
+  },
+  {
     id: 'visit',
     name: 'כרטיס ביקור',
     category: 'visit',
@@ -97,6 +106,7 @@ export const CATEGORY_LABELS: Record<CardCategory, string> = {
   license: 'רישיונות',
   loyalty: 'רישיון נשק',
   gift: 'גיפט קארד',
+  student: 'סטודנט',
   visit: 'ביקור',
   other: 'אחר',
 }
@@ -131,6 +141,12 @@ export const FIELD_LABELS: Record<CardCategory, FieldLabels> = {
     numberLabel: 'קוד כרטיס',
     numberPlaceholder: 'XXXX-XXXX-XXXX',
     dateLabel: 'תאריך תפוגה',
+    datePlaceholder: 'DD/MM/YYYY',
+  },
+  student: {
+    numberLabel: 'מספר סטודנט',
+    numberPlaceholder: '000000000',
+    dateLabel: 'תוקף עד',
     datePlaceholder: 'DD/MM/YYYY',
   },
   visit: {
