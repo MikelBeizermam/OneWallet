@@ -1,4 +1,5 @@
 import type { CardCategory } from '@/types/database'
+import buymeLogoUrl from '@/assets/gift-buyme.png'
 
 export interface CardTemplate {
   id: string
@@ -68,7 +69,7 @@ export const CARD_TEMPLATES: CardTemplate[] = [
     textColor: '#FFFFFF',
     accentColor: '#FDE68A',
     icon: '🎁',
-    bgImageUrl: '/images/gift-buyme.png',
+    bgImageUrl: buymeLogoUrl,
     hidden: true,
   },
   {
