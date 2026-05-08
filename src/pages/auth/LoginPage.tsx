@@ -114,25 +114,3 @@ function LockIcon() {
   )
 }
 
-function FingerprintIcon() {
-  return (
-    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M12 10a2 2 0 00-2 2c0 1.5-.5 3-1.5 4"/>
-      <path d="M12 10a2 2 0 012 2c0 3 1 5.5 3 7"/>
-      <path d="M12 10V7a5 5 0 00-5 5c0 3-1 6-3 8"/>
-      <path d="M12 10V7a5 5 0 015 5c0 2.5.5 5 1.5 7"/>
-      <path d="M8.5 6.5A7 7 0 0119 12"/>
-    </svg>
-  )
-}
-
-function FaceIdIcon() {
-  return (
-    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M3 7V5a2 2 0 012-2h2M17 3h2a2 2 0 012 2v2M21 17v2a2 2 0 01-2 2h-2M7 21H5a2 2 0 01-2-2v-2"/>
-      <circle cx="9" cy="10" r="1" fill="currentColor"/>
-      <circle cx="15" cy="10" r="1" fill="currentColor"/>
-      <path d="M9 15a3 3 0 006 0"/>
-    </svg>
-  )
-}
