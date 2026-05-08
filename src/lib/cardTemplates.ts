@@ -18,9 +18,9 @@ export const CARD_TEMPLATES: CardTemplate[] = [
     id: 'id_il',
     name: 'תעודת זהות ישראלית',
     category: 'id',
-    bgColor: '#D4B896',
-    textColor: '#1A1208',
-    accentColor: '#8C7355',
+    bgColor: '#4A96B8',
+    textColor: '#FFFFFF',
+    accentColor: '#A8D8EF',
     icon: '🪪',
   },
   {
