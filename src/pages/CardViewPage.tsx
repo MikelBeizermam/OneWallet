@@ -17,6 +17,7 @@ export default function CardViewPage() {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
   const [showBalanceModal, setShowBalanceModal] = useState(false)
   const [spentAmount, setSpentAmount] = useState('')
+  const [spentPlace, setSpentPlace] = useState('')
   const [savingBalance, setSavingBalance] = useState(false)
 
   useEffect(() => {
@@ -39,20 +40,26 @@ export default function CardViewPage() {
     navigate('/home')
   }
 
-  const currentBalance = card?.category === 'gift'
-    ? parseFloat((card.metadata as Record<string, string>)?.balance ?? '0') || 0
-    : 0
+  type GiftMeta = { balance: string; history?: { date: string; amount: number; place: string }[] }
+  const giftMeta = card?.category === 'gift' ? (card.metadata as GiftMeta) : null
+  const currentBalance = parseFloat(giftMeta?.balance ?? '0') || 0
+  const history = giftMeta?.history ?? []
 
   const handleUpdateBalance = async () => {
     if (!id || !card) return
     const spent = parseFloat(spentAmount) || 0
     const newBalance = Math.max(0, currentBalance - spent)
+    const today = new Date().toLocaleDateString('he-IL')
+    const newEntry = { date: today, amount: spent, place: spentPlace.trim() || 'לא צוין' }
+    const newMeta: GiftMeta = {
+      balance: String(newBalance),
+      history: [newEntry, ...history],
+    }
     setSavingBalance(true)
-    await supabase.from('cards').update({
-      metadata: { ...(card.metadata as object), balance: String(newBalance) }
-    }).eq('id', id)
-    setCard(c => c ? { ...c, metadata: { ...(c.metadata as object), balance: String(newBalance) } } : c)
+    await supabase.from('cards').update({ metadata: newMeta }).eq('id', id)
+    setCard(c => c ? { ...c, metadata: newMeta } : c)
     setSpentAmount('')
+    setSpentPlace('')
     setSavingBalance(false)
     setShowBalanceModal(false)
     if (newBalance === 0) setShowDeleteConfirm(true)
@@ -145,19 +152,36 @@ export default function CardViewPage() {
 
       {/* Gift card balance widget */}
       {card.category === 'gift' && (
-        <div className={styles.giftBalanceBox}>
-          <div className={styles.giftBalanceTop}>
-            <span className={styles.giftBalanceLabel}>יתרה בכרטיס</span>
-            <span className={styles.giftBalanceAmount}>₪{currentBalance.toFixed(0)}</span>
+        <>
+          <div className={styles.giftBalanceBox}>
+            <div className={styles.giftBalanceTop}>
+              <span className={styles.giftBalanceLabel}>יתרה בכרטיס</span>
+              <span className={styles.giftBalanceAmount}>₪{currentBalance.toFixed(0)}</span>
+            </div>
+            <button
+              type="button"
+              className={styles.giftBalanceBtn}
+              onClick={() => { setSpentAmount(''); setSpentPlace(''); setShowBalanceModal(true) }}
+            >
+              השתמשת? עדכן את היתרה 💸
+            </button>
           </div>
-          <button
-            type="button"
-            className={styles.giftBalanceBtn}
-            onClick={() => { setSpentAmount(''); setShowBalanceModal(true) }}
-          >
-            השתמשת? עדכן את היתרה 💸
-          </button>
-        </div>
+
+          {history.length > 0 && (
+            <div className={styles.historyBox}>
+              <h3 className={styles.historyTitle}>היסטוריית שימוש</h3>
+              {history.map((item, i) => (
+                <div key={i} className={styles.historyRow}>
+                  <div className={styles.historyLeft}>
+                    <span className={styles.historyPlace}>{item.place}</span>
+                    <span className={styles.historyDate}>{item.date}</span>
+                  </div>
+                  <span className={styles.historyAmount}>-₪{item.amount}</span>
+                </div>
+              ))}
+            </div>
+          )}
+        </>
       )}
 
       {/* Details */}
@@ -216,6 +240,16 @@ export default function CardViewPage() {
                 onChange={e => setSpentAmount(e.target.value.replace(/[^0-9.]/g, ''))}
                 inputMode="decimal"
                 autoFocus
+              />
+            </div>
+            <div className="input-group">
+              <label className="input-label" htmlFor="spent-place">איפה בזבזת?</label>
+              <input
+                id="spent-place"
+                className="input-field"
+                placeholder="לדוגמה: זארה, קפה גרג..."
+                value={spentPlace}
+                onChange={e => setSpentPlace(e.target.value)}
               />
             </div>
             {spentAmount && (

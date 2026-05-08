@@ -401,6 +401,61 @@
 
 .giftBalanceBtn:hover { background: rgba(255,255,255,0.25); }
 
+.historyBox {
+  margin: 0 var(--space-4) var(--space-4);
+  background: var(--color-white);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border);
+  overflow: hidden;
+}
+
+.historyTitle {
+  font-size: 12px;
+  font-weight: 700;
+  padding: var(--space-3) var(--space-4);
+  border-bottom: 1px solid var(--color-border);
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-family: var(--font-family);
+}
+
+.historyRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--space-3) var(--space-4);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.historyRow:last-child { border-bottom: none; }
+
+.historyLeft {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.historyPlace {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-text);
+  font-family: var(--font-family);
+}
+
+.historyDate {
+  font-size: 12px;
+  color: var(--color-text-muted);
+  font-family: var(--font-family);
+}
+
+.historyAmount {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--color-error);
+  font-family: var(--font-family);
+}
+
 .balancePreview {
   font-size: 14px;
   color: var(--color-text-muted);
