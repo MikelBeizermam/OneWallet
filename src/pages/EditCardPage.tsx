@@ -25,6 +25,7 @@ export default function EditCardPage() {
   const { user } = useAuth()
   const fileRef = useRef<HTMLInputElement>(null)
   const calendarRef = useRef<HTMLInputElement>(null)
+  const expiryCalendarRef = useRef<HTMLInputElement>(null)
 
   const [card, setCard] = useState<Card | null>(null)
   const [name, setName] = useState('')
@@ -33,6 +34,9 @@ export default function EditCardPage() {
   const [category, setCategory] = useState<CardCategory>('other')
   const [imageFile, setImageFile] = useState<File | null>(null)
   const [imagePreview, setImagePreview] = useState<string | null>(null)
+  const [holderName, setHolderName] = useState('')
+  const [validYear, setValidYear] = useState('')
+  const [licenseExpiry, setLicenseExpiry] = useState('')
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
@@ -47,6 +51,9 @@ export default function EditCardPage() {
         setDateDisplay(data.expiry_date ?? '')
         setCategory(data.category)
         setImagePreview(data.image_url ?? null)
+        setHolderName((data.metadata as Record<string, string>)?.holder_name ?? '')
+        setValidYear((data.metadata as Record<string, string>)?.valid_year ?? '')
+        setLicenseExpiry((data.metadata as Record<string, string>)?.license_expiry ?? '')
       }
       setLoading(false)
     })
@@ -92,6 +99,9 @@ export default function EditCardPage() {
       card_number: cardNumber.trim() || null,
       expiry_date: dateDisplay.trim() || null,
       ...(imageUrl !== undefined && { image_url: imageUrl }),
+      ...(category === 'loyalty' ? { metadata: { ...(holderName.trim() ? { holder_name: holderName.trim() } : {}) } } : {}),
+      ...(category === 'student' ? { metadata: { ...(validYear ? { valid_year: validYear } : {}) } } : {}),
+      ...(category === 'license' ? { metadata: { ...(licenseExpiry.trim() ? { license_expiry: licenseExpiry.trim() } : {}) } } : {}),
     }).eq('id', id)
 
     if (error) {
@@ -193,6 +203,19 @@ export default function EditCardPage() {
           />
         </div>
 
+        {category === 'loyalty' && (
+          <div className="input-group">
+            <label className="input-label" htmlFor="edit-holder-name">שם הבעלים</label>
+            <input
+              id="edit-holder-name"
+              className="input-field"
+              placeholder="שם פרטי ושם משפחה"
+              value={holderName}
+              onChange={e => setHolderName(e.target.value)}
+            />
+          </div>
+        )}
+
         <div className="input-group">
           <label className="input-label" htmlFor="edit-date">{fieldLabels.dateLabel}</label>
           <div className={styles.dateRow}>
@@ -223,6 +246,57 @@ export default function EditCardPage() {
             />
           </div>
         </div>
+
+        {category === 'license' && (
+          <div className="input-group">
+            <label className="input-label" htmlFor="edit-license-expiry">תאריך תוקף</label>
+            <div className={styles.dateRow}>
+              <input
+                id="edit-license-expiry"
+                className="input-field"
+                placeholder="DD/MM/YYYY"
+                value={licenseExpiry}
+                onChange={e => setLicenseExpiry(formatDateInput(e.target.value))}
+                inputMode="numeric"
+                maxLength={10}
+              />
+              <button
+                type="button"
+                className={styles.calendarBtn}
+                aria-label="בחר תאריך תוקף מלוח שנה"
+                onClick={() => expiryCalendarRef.current?.showPicker?.()}
+              >
+                <CalendarIcon />
+              </button>
+              <input
+                ref={expiryCalendarRef}
+                type="date"
+                title="בחר תאריך תוקף"
+                aria-label="בחר תאריך תוקף"
+                className={styles.hiddenInput}
+                onChange={e => setLicenseExpiry(fromNativeDate(e.target.value))}
+              />
+            </div>
+          </div>
+        )}
+
+        {category === 'student' && (
+          <div className="input-group">
+            <label className="input-label" htmlFor="edit-valid-year">תוקף (שנה)</label>
+            <select
+              id="edit-valid-year"
+              className="input-field"
+              title="בחר שנת תוקף"
+              value={validYear}
+              onChange={e => setValidYear(e.target.value)}
+            >
+              <option value="">בחר שנה</option>
+              {Array.from({ length: 12 }, (_, i) => new Date().getFullYear() + i).map(y => (
+                <option key={y} value={String(y)}>{y}</option>
+              ))}
+            </select>
+          </div>
+        )}
 
         <div className="input-group">
           <label className="input-label" htmlFor="edit-category">קטגוריה</label>

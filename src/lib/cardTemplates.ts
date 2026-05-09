@@ -126,8 +126,8 @@ export const FIELD_LABELS: Record<CardCategory, FieldLabels> = {
     datePlaceholder: 'DD/MM/YYYY',
   },
   license: {
-    numberLabel: 'מספר רישיון',
-    numberPlaceholder: '00000000',
+    numberLabel: 'מספר תעודת זהות',
+    numberPlaceholder: '000000000',
     dateLabel: 'תאריך הנפקה',
     datePlaceholder: 'DD/MM/YYYY',
   },
@@ -144,9 +144,9 @@ export const FIELD_LABELS: Record<CardCategory, FieldLabels> = {
     datePlaceholder: 'DD/MM/YYYY',
   },
   student: {
-    numberLabel: 'מספר סטודנט',
+    numberLabel: 'מספר תעודת זהות',
     numberPlaceholder: '000000000',
-    dateLabel: 'תוקף עד',
+    dateLabel: 'תאריך לידה',
     datePlaceholder: 'DD/MM/YYYY',
   },
   visit: {

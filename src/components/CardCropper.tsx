@@ -33,20 +33,15 @@ function autoDetectCard(img: HTMLImageElement): Crop {
       return (d[i] * 77 + d[i + 1] * 150 + d[i + 2] * 29) >> 8
     }
 
-    // Average brightness of the border pixels → background
     let bgSum = 0, bgCount = 0
     for (let x = 0; x < W; x++) { bgSum += gray(x, 0) + gray(x, H - 1); bgCount += 2 }
     for (let y = 1; y < H - 1; y++) { bgSum += gray(0, y) + gray(W - 1, y); bgCount += 2 }
     const bgBrightness = bgSum / bgCount
 
-    // Threshold: pixels that differ from background by this amount are "card"
     const THRESH = 18
-
-    // Row and column average brightness
     const rowAvg = (y: number) => { let s = 0; for (let x = 0; x < W; x++) s += gray(x, y); return s / W }
     const colAvg = (x: number) => { let s = 0; for (let y = 0; y < H; y++) s += gray(x, y); return s / H }
 
-    // Scan inward from each edge until a row/column differs from background
     let top = 0, bottom = H, left = 0, right = W
     for (let y = 2; y < H / 2; y++) {
       if (Math.abs(rowAvg(y) - bgBrightness) > THRESH) { top = Math.max(0, y - 3); break }
@@ -64,12 +59,10 @@ function autoDetectCard(img: HTMLImageElement): Crop {
     const detW = ((right - left) / W) * 100
     const detH = ((bottom - top) / H) * 100
 
-    // If detected region is unreasonably small or large, fall back
     if (detW < 25 || detH < 25 || detW > 97 || detH > 97) {
       return defaultCrop(img.width, img.height)
     }
 
-    // Center a card-aspect crop on the detected region
     const cx = ((left + right) / 2 / W) * 100
     const cy = ((top + bottom) / 2 / H) * 100
     const cropW = Math.min(detW + 2, 98)
@@ -78,7 +71,6 @@ function autoDetectCard(img: HTMLImageElement): Crop {
     const x = Math.max(0, cx - cropW / 2)
     const y = Math.max(0, cy - cropH / 2)
 
-    // Validate final crop fits in bounds
     if (x + cropW > 100 || y + cropH > 100) return defaultCrop(img.width, img.height)
 
     return { unit: '%', x, y, width: cropW, height: cropH }
@@ -89,16 +81,78 @@ function autoDetectCard(img: HTMLImageElement): Crop {
 
 export function CardCropper({ imageSrc, onCropDone, onCancel }: Props) {
   const imgRef = useRef<HTMLImageElement>(null)
+  const [currentSrc, setCurrentSrc] = useState(imageSrc)
   const [crop, setCrop] = useState<Crop>()
   const [completedCrop, setCompletedCrop] = useState<PixelCrop>()
   const [busy, setBusy] = useState(false)
+  const [rotating, setRotating] = useState(false)
+  const [tiltDeg, setTiltDeg] = useState(0)
+  const [applying, setApplying] = useState(false)
+  const blobUrls = useRef<string[]>([])
 
   const onImageLoad = useCallback((e: React.SyntheticEvent<HTMLImageElement>) => {
     const img = e.currentTarget
     setCrop(autoDetectCard(img))
   }, [])
 
-  const handleDone = async () => {
+  const handleRotate = () => {
+    const img = imgRef.current
+    if (!img) return
+    setRotating(true)
+
+    const canvas = document.createElement('canvas')
+    canvas.width = img.naturalHeight
+    canvas.height = img.naturalWidth
+    const ctx = canvas.getContext('2d')!
+    ctx.translate(canvas.width / 2, canvas.height / 2)
+    ctx.rotate(Math.PI / 2)
+    ctx.drawImage(img, -img.naturalWidth / 2, -img.naturalHeight / 2)
+
+    canvas.toBlob(blob => {
+      setRotating(false)
+      if (!blob) return
+      const url = URL.createObjectURL(blob)
+      blobUrls.current.push(url)
+      setCurrentSrc(url)
+      setCrop(undefined)
+      setCompletedCrop(undefined)
+    }, 'image/jpeg', 0.95)
+  }
+
+  const handleApplyTilt = () => {
+    const img = imgRef.current
+    if (!img || tiltDeg === 0) return
+    setApplying(true)
+
+    const rad = tiltDeg * Math.PI / 180
+    const sin = Math.abs(Math.sin(rad))
+    const cos = Math.abs(Math.cos(rad))
+    const W = img.naturalWidth
+    const H = img.naturalHeight
+    const cw = Math.round(W * cos + H * sin)
+    const ch = Math.round(W * sin + H * cos)
+
+    const canvas = document.createElement('canvas')
+    canvas.width = cw
+    canvas.height = ch
+    const ctx = canvas.getContext('2d')!
+    ctx.translate(cw / 2, ch / 2)
+    ctx.rotate(rad)
+    ctx.drawImage(img, -W / 2, -H / 2)
+
+    canvas.toBlob(blob => {
+      setApplying(false)
+      if (!blob) return
+      const url = URL.createObjectURL(blob)
+      blobUrls.current.push(url)
+      setCurrentSrc(url)
+      setTiltDeg(0)
+      setCrop(undefined)
+      setCompletedCrop(undefined)
+    }, 'image/jpeg', 0.95)
+  }
+
+  const handleDone = () => {
     const image = imgRef.current
     if (!image || !completedCrop) return
     setBusy(true)
@@ -110,26 +164,6 @@ export function CardCropper({ imageSrc, onCropDone, onCancel }: Props) {
     const sw = Math.round(completedCrop.width * scaleX)
     const sh = Math.round(completedCrop.height * scaleY)
 
-    // Primary: createImageBitmap with crop rect — handles HEIC on iOS
-    try {
-      const blob = await fetch(imageSrc).then(r => r.blob())
-      const bitmap = await createImageBitmap(blob, sx, sy, sw, sh)
-      const canvas = document.createElement('canvas')
-      canvas.width = bitmap.width
-      canvas.height = bitmap.height
-      canvas.getContext('2d')!.drawImage(bitmap, 0, 0)
-      bitmap.close()
-      await new Promise<void>((res, rej) =>
-        canvas.toBlob(b => {
-          if (!b) { rej(new Error('toBlob')); return }
-          onCropDone(new File([b], 'card-cropped.jpg', { type: 'image/jpeg' }))
-          res()
-        }, 'image/jpeg', 0.92)
-      )
-      return
-    } catch {}
-
-    // Fallback: canvas drawImage (JPEG / PNG)
     const canvas = document.createElement('canvas')
     canvas.width = sw
     canvas.height = sh
@@ -138,38 +172,88 @@ export function CardCropper({ imageSrc, onCropDone, onCancel }: Props) {
     ctx.drawImage(image, sx, sy, sw, sh, 0, 0, sw, sh)
     canvas.toBlob(b => {
       setBusy(false)
+      blobUrls.current.forEach(u => URL.revokeObjectURL(u))
       if (!b) return
       onCropDone(new File([b], 'card-cropped.jpg', { type: 'image/jpeg' }))
     }, 'image/jpeg', 0.92)
   }
 
+  const handleCancel = () => {
+    blobUrls.current.forEach(u => URL.revokeObjectURL(u))
+    onCancel()
+  }
+
   return (
     <div className={styles.overlay}>
       <div className={styles.box}>
-        <p className={styles.hint}>התמונה זוהתה אוטומטית — גרור לכוונון מדויק</p>
+        <div className={styles.topBar}>
+          <p className={styles.hint}>גרור לכוונון מדויק</p>
+          <button
+            type="button"
+            className={styles.rotateBtn}
+            onClick={handleRotate}
+            disabled={busy || rotating}
+            aria-label="סובב תמונה 90°"
+          >
+            {rotating ? <span className={`spinner ${styles.spinnerSm}`} /> : <RotateIcon />}
+            <span>סובב</span>
+          </button>
+        </div>
         <div className={styles.cropArea}>
           <ReactCrop
             crop={crop}
             onChange={c => setCrop(c)}
             onComplete={c => setCompletedCrop(c)}
-            aspect={CARD_ASPECT}
+            keepSelection
           >
             <img
               ref={imgRef}
-              src={imageSrc}
+              src={currentSrc}
               alt="חתוך כרטיס"
               className={styles.img}
+              style={{ '--tilt': `${tiltDeg}deg` } as React.CSSProperties}
               onLoad={onImageLoad}
             />
           </ReactCrop>
         </div>
+        <div className={styles.tiltRow}>
+          <span className={styles.tiltLabel}>{tiltDeg > 0 ? '+' : ''}{tiltDeg.toFixed(1)}°</span>
+          <input
+            type="range"
+            className={styles.tiltSlider}
+            min={-20}
+            max={20}
+            step={0.5}
+            value={tiltDeg}
+            aria-label="יישור טיה"
+            onChange={e => setTiltDeg(Number(e.target.value))}
+          />
+          <button
+            type="button"
+            className={styles.applyBtn}
+            onClick={handleApplyTilt}
+            disabled={tiltDeg === 0 || applying || busy}
+          >
+            {applying ? <span className={`spinner ${styles.spinnerSm}`} /> : 'החל'}
+          </button>
+        </div>
+
         <div className={styles.actions}>
-          <button type="button" className={styles.cancelBtn} onClick={onCancel} disabled={busy}>ביטול</button>
+          <button type="button" className={styles.cancelBtn} onClick={handleCancel} disabled={busy}>ביטול</button>
           <button type="button" className={styles.doneBtn} onClick={handleDone} disabled={!completedCrop || busy}>
             {busy ? <span className="spinner" /> : '✓ חתוך ושמור'}
           </button>
         </div>
       </div>
     </div>
+  )
+}
+
+function RotateIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M23 4v6h-6" />
+      <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10" />
+    </svg>
   )
 }

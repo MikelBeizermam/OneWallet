@@ -70,6 +70,7 @@ export default function AddCardPage() {
   const navigate = useNavigate()
   const { user } = useAuth()
   const calendarRef = useRef<HTMLInputElement>(null)
+  const expiryCalendarRef = useRef<HTMLInputElement>(null)
 
   const [step, setStep] = useState<'template' | 'gift-brand' | 'form'>('template')
   const [selectedTemplate, setSelectedTemplate] = useState<string | null>(null)
@@ -77,11 +78,15 @@ export default function AddCardPage() {
   const [name, setName] = useState('')
   const [cardNumber, setCardNumber] = useState('')
   const [dateDisplay, setDateDisplay] = useState('')
+  const [licenseExpiry, setLicenseExpiry] = useState('')
+  const [holderName, setHolderName] = useState('')
+  const [validYear, setValidYear] = useState('')
   const [giftBalance, setGiftBalance] = useState('')
   const [imageFile, setImageFile] = useState<File | null>(null)
   const [imagePreview, setImagePreview] = useState<string | null>(null)
   const [cropSrc, setCropSrc] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
+  const [converting, setConverting] = useState(false)
   const [error, setError] = useState('')
 
   const fieldLabels = FIELD_LABELS[selectedCategory]
@@ -115,11 +120,24 @@ export default function AddCardPage() {
     setDateDisplay(fromNativeDate(e.target.value))
   }
 
-  const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
+  const handleImageChange = async (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (!file) return
-    setImageFile(file)
-    setCropSrc(URL.createObjectURL(file))
+    setConverting(true)
+    let finalFile: File = file
+    try {
+      const bitmap = await createImageBitmap(file)
+      const canvas = document.createElement('canvas')
+      canvas.width = bitmap.width
+      canvas.height = bitmap.height
+      canvas.getContext('2d')!.drawImage(bitmap, 0, 0)
+      bitmap.close()
+      const blob = await new Promise<Blob | null>(res => canvas.toBlob(res, 'image/jpeg', 0.95))
+      if (blob) finalFile = new File([blob], 'image.jpg', { type: 'image/jpeg' })
+    } catch {}
+    setConverting(false)
+    setImageFile(finalFile)
+    setCropSrc(URL.createObjectURL(finalFile))
   }
 
   const handleCropDone = (croppedFile: File) => {
@@ -161,7 +179,12 @@ export default function AddCardPage() {
       expiry_date: dateDisplay.trim() || null,
       image_url: imageUrl,
       template_id: selectedTemplate,
-      metadata: selectedCategory === 'gift' && giftBalance ? { balance: giftBalance } : {},
+      metadata: {
+        ...(selectedCategory === 'gift' && giftBalance ? { balance: giftBalance } : {}),
+        ...(selectedCategory === 'loyalty' && holderName.trim() ? { holder_name: holderName.trim() } : {}),
+        ...(selectedCategory === 'student' && validYear ? { valid_year: validYear } : {}),
+        ...(selectedCategory === 'license' && licenseExpiry.trim() ? { license_expiry: licenseExpiry.trim() } : {}),
+      },
     })
 
     if (insertError) {
@@ -287,14 +310,17 @@ export default function AddCardPage() {
           className={`${styles.uploadBtn} ${imagePreview ? styles.uploadBtnDone : ''}`}
           aria-label={imagePreview ? 'החלף תמונת כרטיס' : 'הוסף תמונת כרטיס'}
         >
-          <CameraIcon />
-          <span>{imagePreview ? '✓ תמונה נבחרה — לחץ להחלפה' : 'הוסף תמונה (אופציונלי)'}</span>
+          {converting ? <span className="spinner" /> : <CameraIcon />}
+          <span>
+            {converting ? 'מעבד תמונה...' : imagePreview ? '✓ תמונה נבחרה — לחץ להחלפה' : 'הוסף תמונה (אופציונלי)'}
+          </span>
           <input
             type="file"
             accept="image/*"
             aria-label="בחר תמונה לכרטיס"
             className={styles.hiddenInput}
             onChange={handleImageChange}
+            disabled={converting}
           />
         </label>
 
@@ -309,6 +335,19 @@ export default function AddCardPage() {
             required
           />
         </div>
+
+        {selectedCategory === 'loyalty' && (
+          <div className="input-group">
+            <label className="input-label" htmlFor="holder-name">שם הבעלים</label>
+            <input
+              id="holder-name"
+              className="input-field"
+              placeholder="שם פרטי ושם משפחה"
+              value={holderName}
+              onChange={e => setHolderName(e.target.value)}
+            />
+          </div>
+        )}
 
         <div className="input-group">
           <label className="input-label" htmlFor="card-number">{fieldLabels.numberLabel}</label>
@@ -352,6 +391,57 @@ export default function AddCardPage() {
             />
           </div>
         </div>
+
+        {selectedCategory === 'license' && (
+          <div className="input-group">
+            <label className="input-label" htmlFor="license-expiry">תאריך תוקף</label>
+            <div className={styles.dateRow}>
+              <input
+                id="license-expiry"
+                className="input-field"
+                placeholder="DD/MM/YYYY"
+                value={licenseExpiry}
+                onChange={e => setLicenseExpiry(formatDateInput(e.target.value))}
+                inputMode="numeric"
+                maxLength={10}
+              />
+              <button
+                type="button"
+                className={styles.calendarBtn}
+                aria-label="בחר תאריך תוקף מלוח שנה"
+                onClick={() => expiryCalendarRef.current?.showPicker?.()}
+              >
+                <CalendarIcon />
+              </button>
+              <input
+                ref={expiryCalendarRef}
+                type="date"
+                title="בחר תאריך תוקף"
+                aria-label="בחר תאריך תוקף"
+                className={styles.hiddenInput}
+                onChange={e => setLicenseExpiry(fromNativeDate(e.target.value))}
+              />
+            </div>
+          </div>
+        )}
+
+        {selectedCategory === 'student' && (
+          <div className="input-group">
+            <label className="input-label" htmlFor="valid-year">תוקף (שנה)</label>
+            <select
+              id="valid-year"
+              className="input-field"
+              title="בחר שנת תוקף"
+              value={validYear}
+              onChange={e => setValidYear(e.target.value)}
+            >
+              <option value="">בחר שנה</option>
+              {Array.from({ length: 12 }, (_, i) => new Date().getFullYear() + i).map(y => (
+                <option key={y} value={String(y)}>{y}</option>
+              ))}
+            </select>
+          </div>
+        )}
 
         {selectedCategory === 'gift' && (
           <div className="input-group">

@@ -201,6 +201,15 @@ export default function CardViewPage() {
         <DetailRow label="קטגוריה" value={CATEGORY_LABELS[card.category]} />
         {card.card_number && <DetailRow label="מספר" value={card.card_number} />}
         {card.expiry_date && <DetailRow label="תאריך" value={card.expiry_date} />}
+        {card.category === 'license' && (card.metadata as Record<string, string>)?.license_expiry && (
+          <DetailRow label="תאריך תוקף" value={(card.metadata as Record<string, string>).license_expiry} />
+        )}
+        {card.category === 'loyalty' && (card.metadata as Record<string, string>)?.holder_name && (
+          <DetailRow label="שם הבעלים" value={(card.metadata as Record<string, string>).holder_name} />
+        )}
+        {card.category === 'student' && (card.metadata as Record<string, string>)?.valid_year && (
+          <DetailRow label="תוקף" value={(card.metadata as Record<string, string>).valid_year} />
+        )}
         {card.category === 'gift' && (card.metadata as Record<string, string>)?.balance && (
           <DetailRow label="יתרה בכרטיס" value={`₪${(card.metadata as Record<string, string>).balance}`} />
         )}
