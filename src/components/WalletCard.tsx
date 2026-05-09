@@ -61,9 +61,9 @@ export function WalletCard({ card, compact = false, onPress }: Props) {
         {card.image_url && (
           <img src={card.image_url} alt="" className={styles.bgImage} aria-hidden="true" />
         )}
-        {template.bgImageUrl && !card.image_url && (
+        {(template.bgImageUrl && !card.image_url) || card.image_url ? (
           <div className={styles.brandOverlay} />
-        )}
+        ) : null}
         <div className={styles.inner}>
           <div className={styles.top}>
             <div

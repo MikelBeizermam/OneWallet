@@ -19,6 +19,27 @@ function fromNativeDate(native: string): string {
   return `${dd}/${mm}/${yyyy}`
 }
 
+// Compress image to base64 JPEG using canvas (avoids Supabase Storage entirely)
+function toBase64(file: File, maxW = 900, quality = 0.78): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const img = new Image()
+    const blobUrl = URL.createObjectURL(file)
+    img.onload = () => {
+      URL.revokeObjectURL(blobUrl)
+      const ratio = Math.min(maxW / img.width, 1)
+      const canvas = document.createElement('canvas')
+      canvas.width = Math.round(img.width * ratio)
+      canvas.height = Math.round(img.height * ratio)
+      const ctx = canvas.getContext('2d')
+      if (!ctx) { reject(new Error('no canvas')); return }
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height)
+      resolve(canvas.toDataURL('image/jpeg', quality))
+    }
+    img.onerror = () => { URL.revokeObjectURL(blobUrl); reject(new Error('load failed')) }
+    img.src = blobUrl
+  })
+}
+
 export default function AddCardPage() {
   const navigate = useNavigate()
   const { user } = useAuth()
@@ -61,8 +82,7 @@ export default function AddCardPage() {
   }
 
   const handleDateTyping = (e: ChangeEvent<HTMLInputElement>) => {
-    const formatted = formatDateInput(e.target.value)
-    setDateDisplay(formatted)
+    setDateDisplay(formatDateInput(e.target.value))
   }
 
   const handleCalendarChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -72,31 +92,8 @@ export default function AddCardPage() {
   const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (!file) return
-    // Set the file immediately — never rely on async conversion completing
     setImageFile(file)
-    // Blob URL always works for preview (even HEIC on iOS Safari)
     setImagePreview(URL.createObjectURL(file))
-  }
-
-  const uploadImage = async (): Promise<string | null> => {
-    if (!imageFile || !user) return null
-    const ext = (imageFile.name.split('.').pop() ?? 'jpg').toLowerCase()
-    const path = `${user.id}/${Date.now()}.${ext}`
-    const { error: uploadError } = await supabase.storage
-      .from('card-images')
-      .upload(path, imageFile, { upsert: true, contentType: imageFile.type || 'image/jpeg' })
-    if (uploadError) {
-      setError('שגיאה בהעלאת התמונה: ' + uploadError.message)
-      return null
-    }
-    // Signed URL works for both public and private buckets (10-year expiry)
-    const { data: signed, error: signErr } = await supabase.storage
-      .from('card-images')
-      .createSignedUrl(path, 315360000)
-    if (!signErr && signed?.signedUrl) return signed.signedUrl
-    // Fallback: public URL (works if bucket is set to public in Supabase dashboard)
-    const { data } = supabase.storage.from('card-images').getPublicUrl(path)
-    return data.publicUrl
   }
 
   const handleSubmit = async (e: FormEvent) => {
@@ -107,10 +104,18 @@ export default function AddCardPage() {
     setError('')
     setLoading(true)
 
-    const imageUrl = await uploadImage()
-    if (imageFile && imageUrl === null) { setLoading(false); return }
+    let imageUrl: string | null = null
+    if (imageFile) {
+      try {
+        imageUrl = await toBase64(imageFile)
+      } catch {
+        setError('שגיאה בעיבוד התמונה, נסה תמונה אחרת')
+        setLoading(false)
+        return
+      }
+    }
 
-    const { error } = await supabase.from('cards').insert({
+    const { error: insertError } = await supabase.from('cards').insert({
       user_id: user.id,
       name: name.trim(),
       category: selectedCategory,
@@ -121,8 +126,8 @@ export default function AddCardPage() {
       metadata: selectedCategory === 'gift' && giftBalance ? { balance: giftBalance } : {},
     })
 
-    if (error) {
-      setError('שגיאה בשמירת הכרטיס: ' + error.message)
+    if (insertError) {
+      setError('שגיאה בשמירת הכרטיס: ' + insertError.message)
     } else {
       navigate('/home')
     }
@@ -218,10 +223,10 @@ export default function AddCardPage() {
             backgroundPosition: 'center',
           } as React.CSSProperties}
         >
-          {imagePreview && !template.bgImageUrl && (
+          {imagePreview && (
             <img src={imagePreview} alt="" className={styles.previewBg} aria-hidden="true" />
           )}
-          {template.bgImageUrl && <div className={styles.previewBrandOverlay} />}
+          <div className={styles.previewOverlay} />
           <div className={styles.previewInner}>
             <span className={styles.previewIcon}>{template.icon}</span>
             <div>
@@ -238,12 +243,12 @@ export default function AddCardPage() {
 
         <button
           type="button"
-          className={styles.uploadBtn}
+          className={`${styles.uploadBtn} ${imagePreview ? styles.uploadBtnDone : ''}`}
           aria-label={imagePreview ? 'החלף תמונת כרטיס' : 'הוסף תמונת כרטיס'}
           onClick={() => fileRef.current?.click()}
         >
           <CameraIcon />
-          <span>{imagePreview ? 'החלף תמונה' : 'הוסף תמונה (אופציונלי)'}</span>
+          <span>{imagePreview ? '✓ תמונה נבחרה — לחץ להחלפה' : 'הוסף תמונה (אופציונלי)'}</span>
         </button>
         <input
           ref={fileRef}
