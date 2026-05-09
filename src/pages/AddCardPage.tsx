@@ -20,30 +20,17 @@ function fromNativeDate(native: string): string {
   return `${dd}/${mm}/${yyyy}`
 }
 
-// Card aspect ratio (width ÷ height, matching the 180px card in the UI)
-const CARD_RATIO = 2.0
-
-// Center-crop source to card ratio, then scale to maxW, output JPEG base64
+// Resize source image to maxW, output JPEG base64 (no cropping — crop done by CardCropper)
 function drawToJpeg(source: CanvasImageSource, sw: number, sh: number, maxW: number, quality: number): string {
-  // Center-crop to card aspect ratio
-  let sx = 0, sy = 0, cropW = sw, cropH = sh
-  if (sw / sh > CARD_RATIO) {
-    cropW = Math.round(sh * CARD_RATIO)
-    sx = Math.round((sw - cropW) / 2)
-  } else {
-    cropH = Math.round(sw / CARD_RATIO)
-    sy = Math.round((sh - cropH) / 2)
-  }
-
-  const scale = Math.min(maxW / cropW, 1)
-  const w = Math.max(1, Math.round(cropW * scale))
-  const h = Math.max(1, Math.round(cropH * scale))
+  const scale = Math.min(maxW / sw, 1)
+  const w = Math.max(1, Math.round(sw * scale))
+  const h = Math.max(1, Math.round(sh * scale))
   const canvas = document.createElement('canvas')
   canvas.width = w
   canvas.height = h
   const ctx = canvas.getContext('2d')
   if (!ctx) throw new Error('no ctx')
-  ctx.drawImage(source, sx, sy, cropW, cropH, 0, 0, w, h)
+  ctx.drawImage(source, 0, 0, w, h)
   const result = canvas.toDataURL('image/jpeg', quality)
   if (result.length < 500) throw new Error('empty canvas output')
   return result
