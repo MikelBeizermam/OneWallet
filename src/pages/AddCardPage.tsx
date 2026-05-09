@@ -19,23 +19,45 @@ function fromNativeDate(native: string): string {
   return `${dd}/${mm}/${yyyy}`
 }
 
-// Compress image to base64 JPEG using canvas (avoids Supabase Storage entirely)
+// Compress image to base64 JPEG via canvas, with FileReader fallback for HEIC
 function toBase64(file: File, maxW = 900, quality = 0.78): Promise<string> {
   return new Promise((resolve, reject) => {
-    const img = new Image()
     const blobUrl = URL.createObjectURL(file)
-    img.onload = () => {
+
+    const useFileReader = () => {
       URL.revokeObjectURL(blobUrl)
-      const ratio = Math.min(maxW / img.width, 1)
-      const canvas = document.createElement('canvas')
-      canvas.width = Math.round(img.width * ratio)
-      canvas.height = Math.round(img.height * ratio)
-      const ctx = canvas.getContext('2d')
-      if (!ctx) { reject(new Error('no canvas')); return }
-      ctx.drawImage(img, 0, 0, canvas.width, canvas.height)
-      resolve(canvas.toDataURL('image/jpeg', quality))
+      const reader = new FileReader()
+      reader.onload = () => {
+        if (typeof reader.result === 'string' && reader.result.length > 100) {
+          resolve(reader.result)
+        } else {
+          reject(new Error('FileReader returned empty result'))
+        }
+      }
+      reader.onerror = () => reject(new Error('FileReader error'))
+      reader.readAsDataURL(file)
     }
-    img.onerror = () => { URL.revokeObjectURL(blobUrl); reject(new Error('load failed')) }
+
+    const img = new Image()
+    img.onload = () => {
+      try {
+        URL.revokeObjectURL(blobUrl)
+        const w = Math.max(1, Math.round(img.width * Math.min(maxW / img.width, 1)))
+        const h = Math.max(1, Math.round(img.height * Math.min(maxW / img.width, 1)))
+        const canvas = document.createElement('canvas')
+        canvas.width = w
+        canvas.height = h
+        const ctx = canvas.getContext('2d')
+        if (!ctx) { useFileReader(); return }
+        ctx.drawImage(img, 0, 0, w, h)
+        const result = canvas.toDataURL('image/jpeg', quality)
+        if (result.length < 200) { useFileReader(); return }
+        resolve(result)
+      } catch {
+        useFileReader()
+      }
+    }
+    img.onerror = () => useFileReader()
     img.src = blobUrl
   })
 }
@@ -43,7 +65,6 @@ function toBase64(file: File, maxW = 900, quality = 0.78): Promise<string> {
 export default function AddCardPage() {
   const navigate = useNavigate()
   const { user } = useAuth()
-  const fileRef = useRef<HTMLInputElement>(null)
   const calendarRef = useRef<HTMLInputElement>(null)
 
   const [step, setStep] = useState<'template' | 'gift-brand' | 'form'>('template')
@@ -241,24 +262,20 @@ export default function AddCardPage() {
       <form className={styles.form} onSubmit={handleSubmit} noValidate>
         {error && <div className="alert alert-error">{error}</div>}
 
-        <button
-          type="button"
+        <label
           className={`${styles.uploadBtn} ${imagePreview ? styles.uploadBtnDone : ''}`}
           aria-label={imagePreview ? 'החלף תמונת כרטיס' : 'הוסף תמונת כרטיס'}
-          onClick={() => fileRef.current?.click()}
         >
           <CameraIcon />
           <span>{imagePreview ? '✓ תמונה נבחרה — לחץ להחלפה' : 'הוסף תמונה (אופציונלי)'}</span>
-        </button>
-        <input
-          ref={fileRef}
-          type="file"
-          accept="image/*"
-          title="בחר תמונה לכרטיס"
-          aria-label="בחר תמונה לכרטיס"
-          className={styles.hiddenInput}
-          onChange={handleImageChange}
-        />
+          <input
+            type="file"
+            accept="image/*"
+            aria-label="בחר תמונה לכרטיס"
+            className={styles.hiddenInput}
+            onChange={handleImageChange}
+          />
+        </label>
 
         <div className="input-group">
           <label className="input-label" htmlFor="card-name">שם הכרטיס *</label>

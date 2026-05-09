@@ -181,6 +181,7 @@
 }
 
 .uploadBtn {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -194,6 +195,7 @@
   font-weight: 500;
   font-family: var(--font-family);
   transition: background 0.15s;
+  cursor: pointer;
 }
 
 .uploadBtn:hover {
@@ -207,7 +209,12 @@
 }
 
 .hiddenInput {
-  display: none;
+  position: absolute;
+  width: 0.1px;
+  height: 0.1px;
+  opacity: 0;
+  overflow: hidden;
+  pointer-events: none;
 }
 
 /* Gift brand picker */
