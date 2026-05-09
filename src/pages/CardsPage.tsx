@@ -1,9 +1,9 @@
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useCards } from '@/hooks/useCards'
 import { WalletCard } from '@/components/WalletCard'
 import { BottomNav } from '@/components/BottomNav'
-import type { CardCategory } from '@/types/database'
+import type { CardCategory, Card } from '@/types/database'
 import styles from './CardsPage.module.css'
 
 const CATEGORIES: Array<{ key: 'all' | CardCategory; label: string; emoji: string }> = [
@@ -114,27 +114,91 @@ export default function CardsPage() {
         ) : (
           <div className={styles.list}>
             {filtered.map(card => (
-              <div key={card.id} className={styles.cardRow}>
-                <WalletCard card={card} />
-                <button
-                  type="button"
-                  className={styles.cardDeleteBtn}
-                  aria-label={`מחק ${card.name}`}
-                  onClick={async () => {
-                    if (confirm(`למחוק את "${card.name}"?`)) {
-                      await deleteCard(card.id)
-                    }
-                  }}
-                >
-                  <TrashIcon />
-                </button>
-              </div>
+              <SwipeableCardRow
+                key={card.id}
+                card={card}
+                onDelete={() => deleteCard(card.id)}
+              />
             ))}
           </div>
         )}
       </div>
 
       <BottomNav />
+    </div>
+  )
+}
+
+const DELETE_W = 80
+
+function SwipeableCardRow({ card, onDelete }: { card: Card; onDelete: () => void }) {
+  const [offset, setOffset] = useState(0)
+  const [isOpen, setIsOpen] = useState(false)
+  const [animate, setAnimate] = useState(false)
+  const startX = useRef(0)
+  const dragging = useRef(false)
+  const swiped = useRef(false)
+
+  const snapTo = (open: boolean) => {
+    setAnimate(true)
+    setOffset(open ? DELETE_W : 0)
+    setIsOpen(open)
+  }
+
+  const onPointerDown = (e: React.PointerEvent) => {
+    startX.current = e.clientX
+    dragging.current = true
+    swiped.current = false
+    setAnimate(false)
+  }
+
+  const onPointerMove = (e: React.PointerEvent) => {
+    if (!dragging.current) return
+    const dx = e.clientX - startX.current
+    const base = isOpen ? DELETE_W : 0
+    const next = Math.max(0, Math.min(base + dx, DELETE_W))
+    if (Math.abs(dx) > 6) {
+      swiped.current = true
+      setOffset(next)
+    }
+  }
+
+  const onPointerUp = () => {
+    if (!dragging.current) return
+    dragging.current = false
+    if (swiped.current) snapTo(offset > DELETE_W * 0.4)
+  }
+
+  return (
+    <div
+      className={styles.swipeRow}
+      onPointerDown={onPointerDown}
+      onPointerMove={onPointerMove}
+      onPointerUp={onPointerUp}
+      onPointerCancel={() => snapTo(false)}
+    >
+      <div className={styles.deleteReveal}>
+        <button
+          type="button"
+          className={styles.deleteBtn}
+          onClick={() => {
+            snapTo(false)
+            if (confirm(`למחוק את "${card.name}"?`)) onDelete()
+          }}
+        >
+          <TrashIcon />
+          <span className={styles.deleteBtnLabel}>מחק</span>
+        </button>
+      </div>
+      <div
+        className={styles.swipeCard}
+        style={{
+          transform: `translateX(${offset}px)`,
+          transition: animate ? 'transform 0.28s cubic-bezier(0.25, 1, 0.5, 1)' : 'none',
+        }}
+      >
+        <WalletCard card={card} onPress={isOpen ? () => snapTo(false) : undefined} />
+      </div>
     </div>
   )
 }
