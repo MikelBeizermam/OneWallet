@@ -4,9 +4,13 @@
   background: rgba(0, 0, 0, 0.92);
   z-index: 400;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
   padding: var(--space-4);
+  /* Prevent page scroll during crop drag on iOS */
+  touch-action: none;
+  overflow: hidden;
 }
 
 .box {
@@ -16,35 +20,45 @@
   max-width: 420px;
   display: flex;
   flex-direction: column;
-  gap: var(--space-4);
+  gap: var(--space-3);
   padding: var(--space-4);
-  max-height: 90dvh;
+  /* Fixed layout — don't let content changes cause jumps */
+  max-height: 92dvh;
+  overflow: hidden;
 }
 
 .hint {
-  font-size: 14px;
+  font-size: 13px;
   color: var(--color-text-muted);
   text-align: center;
   font-family: var(--font-family);
+  flex-shrink: 0;
 }
 
 .cropArea {
-  overflow: auto;
+  /* overflow: hidden prevents scroll-jump when crop handle reaches edge */
+  overflow: hidden;
   display: flex;
   justify-content: center;
+  align-items: center;
   border-radius: var(--radius);
   background: #111;
+  flex: 1;
+  min-height: 0;
 }
 
 .img {
-  max-width: 100%;
-  max-height: 60dvh;
   display: block;
+  max-width: 100%;
+  max-height: 58dvh;
+  /* Prevent layout shift when ReactCrop adds its wrapper */
+  object-fit: contain;
 }
 
 .actions {
   display: flex;
   gap: var(--space-3);
+  flex-shrink: 0;
 }
 
 .cancelBtn {
