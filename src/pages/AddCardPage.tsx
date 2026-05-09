@@ -82,13 +82,19 @@ export default function AddCardPage() {
     if (!imageFile || !user) return null
     const ext = (imageFile.name.split('.').pop() ?? 'jpg').toLowerCase()
     const path = `${user.id}/${Date.now()}.${ext}`
-    const { error } = await supabase.storage
+    const { error: uploadError } = await supabase.storage
       .from('card-images')
       .upload(path, imageFile, { upsert: true, contentType: imageFile.type || 'image/jpeg' })
-    if (error) {
-      setError('שגיאה בהעלאת התמונה: ' + error.message)
+    if (uploadError) {
+      setError('שגיאה בהעלאת התמונה: ' + uploadError.message)
       return null
     }
+    // Signed URL works for both public and private buckets (10-year expiry)
+    const { data: signed, error: signErr } = await supabase.storage
+      .from('card-images')
+      .createSignedUrl(path, 315360000)
+    if (!signErr && signed?.signedUrl) return signed.signedUrl
+    // Fallback: public URL (works if bucket is set to public in Supabase dashboard)
     const { data } = supabase.storage.from('card-images').getPublicUrl(path)
     return data.publicUrl
   }
