@@ -36,13 +36,20 @@ export function WalletStack({ cards }: Props) {
   const getTranslateY = (index: number): number => {
     if (!activeId || containerH === 0) return 0
     const activeIndex = cards.findIndex(c => c.id === activeId)
-    if (index <= activeIndex) return 0
 
-    // cards below active → slide to bottom of container
-    const fromBottom = cards.length - 1 - index  // 0 = last card
+    if (index === activeIndex) {
+      // active card → move to very top
+      return -(activeIndex * PEEK)
+    }
+
+    // all other cards → slide to bottom, preserving their relative order
+    const others = cards.map((_, i) => i).filter(i => i !== activeIndex)
+    const posInOthers = others.indexOf(index)
+    const fromBottom = (others.length - 1) - posInOthers  // 0 = bottommost
+
     const targetTop = containerH - CARD_H - fromBottom * BOTTOM_PEEK
     const baseTop = index * PEEK
-    return Math.max(targetTop - baseTop, 0)
+    return targetTop - baseTop
   }
 
   const normalHeight = cards.length > 0 ? PEEK * (cards.length - 1) + CARD_H : 0
