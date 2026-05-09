@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { supabase } from '@/lib/supabase'
 import { useAuth } from '@/contexts/AuthContext'
 import { CARD_TEMPLATES, CATEGORY_LABELS, FIELD_LABELS } from '@/lib/cardTemplates'
+import { CardCropper } from '@/components/CardCropper'
 import type { CardCategory } from '@/types/database'
 import styles from './AddCardPage.module.css'
 
@@ -92,6 +93,7 @@ export default function AddCardPage() {
   const [giftBalance, setGiftBalance] = useState('')
   const [imageFile, setImageFile] = useState<File | null>(null)
   const [imagePreview, setImagePreview] = useState<string | null>(null)
+  const [cropSrc, setCropSrc] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
 
@@ -130,7 +132,19 @@ export default function AddCardPage() {
     const file = e.target.files?.[0]
     if (!file) return
     setImageFile(file)
-    setImagePreview(URL.createObjectURL(file))
+    setCropSrc(URL.createObjectURL(file))
+  }
+
+  const handleCropDone = (croppedFile: File) => {
+    setImageFile(croppedFile)
+    setImagePreview(URL.createObjectURL(croppedFile))
+    setCropSrc(null)
+  }
+
+  const handleCropCancel = () => {
+    setCropSrc(null)
+    setImageFile(null)
+    setImagePreview(null)
   }
 
   const handleSubmit = async (e: FormEvent) => {
@@ -239,6 +253,10 @@ export default function AddCardPage() {
   }
 
   const template = CARD_TEMPLATES.find(t => t.id === selectedTemplate)
+
+  if (cropSrc) {
+    return <CardCropper imageSrc={cropSrc} onCropDone={handleCropDone} onCancel={handleCropCancel} />
+  }
 
   return (
     <div className={styles.page}>
