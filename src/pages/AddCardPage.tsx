@@ -4,7 +4,6 @@ import { supabase } from '@/lib/supabase'
 import { useAuth } from '@/contexts/AuthContext'
 import { CARD_TEMPLATES, CATEGORY_LABELS, FIELD_LABELS } from '@/lib/cardTemplates'
 import type { CardCategory } from '@/types/database'
-import { CardCropper } from '@/components/CardCropper'
 import styles from './AddCardPage.module.css'
 
 function formatDateInput(raw: string): string {
@@ -35,7 +34,6 @@ export default function AddCardPage() {
   const [giftBalance, setGiftBalance] = useState('')
   const [imageFile, setImageFile] = useState<File | null>(null)
   const [imagePreview, setImagePreview] = useState<string | null>(null)
-  const [cropSrc, setCropSrc] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
 
@@ -75,14 +73,23 @@ export default function AddCardPage() {
     const file = e.target.files?.[0]
     if (!file) return
     const reader = new FileReader()
-    reader.onload = () => setCropSrc(reader.result as string)
+    reader.onload = () => {
+      const dataUrl = reader.result as string
+      setImagePreview(dataUrl)
+      // Convert to JPEG via canvas (handles HEIC from iOS camera)
+      const img = new Image()
+      img.onload = () => {
+        const canvas = document.createElement('canvas')
+        canvas.width = img.naturalWidth
+        canvas.height = img.naturalHeight
+        canvas.getContext('2d')!.drawImage(img, 0, 0)
+        canvas.toBlob(blob => {
+          if (blob) setImageFile(new File([blob], 'card.jpg', { type: 'image/jpeg' }))
+        }, 'image/jpeg', 0.92)
+      }
+      img.src = dataUrl
+    }
     reader.readAsDataURL(file)
-  }
-
-  const handleCropDone = (croppedFile: File) => {
-    setImageFile(croppedFile)
-    setImagePreview(URL.createObjectURL(croppedFile))
-    setCropSrc(null)
   }
 
   const uploadImage = async (): Promise<string | null> => {
@@ -124,16 +131,6 @@ export default function AddCardPage() {
       navigate('/home')
     }
     setLoading(false)
-  }
-
-  if (cropSrc) {
-    return (
-      <CardCropper
-        imageSrc={cropSrc}
-        onCropDone={handleCropDone}
-        onCancel={() => setCropSrc(null)}
-      />
-    )
   }
 
   if (step === 'gift-brand') {
