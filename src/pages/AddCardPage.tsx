@@ -19,45 +19,61 @@ function fromNativeDate(native: string): string {
   return `${dd}/${mm}/${yyyy}`
 }
 
-// Compress image to base64 JPEG via canvas, with FileReader fallback for HEIC
-function toBase64(file: File, maxW = 900, quality = 0.78): Promise<string> {
+// Card aspect ratio (width ÷ height, matching the 180px card in the UI)
+const CARD_RATIO = 2.0
+
+// Center-crop source to card ratio, then scale to maxW, output JPEG base64
+function drawToJpeg(source: CanvasImageSource, sw: number, sh: number, maxW: number, quality: number): string {
+  // Center-crop to card aspect ratio
+  let sx = 0, sy = 0, cropW = sw, cropH = sh
+  if (sw / sh > CARD_RATIO) {
+    cropW = Math.round(sh * CARD_RATIO)
+    sx = Math.round((sw - cropW) / 2)
+  } else {
+    cropH = Math.round(sw / CARD_RATIO)
+    sy = Math.round((sh - cropH) / 2)
+  }
+
+  const scale = Math.min(maxW / cropW, 1)
+  const w = Math.max(1, Math.round(cropW * scale))
+  const h = Math.max(1, Math.round(cropH * scale))
+  const canvas = document.createElement('canvas')
+  canvas.width = w
+  canvas.height = h
+  const ctx = canvas.getContext('2d')
+  if (!ctx) throw new Error('no ctx')
+  ctx.drawImage(source, sx, sy, cropW, cropH, 0, 0, w, h)
+  const result = canvas.toDataURL('image/jpeg', quality)
+  if (result.length < 500) throw new Error('empty canvas output')
+  return result
+}
+
+// Compress any image (including HEIC) to base64 JPEG
+async function toBase64(file: File, maxW = 900, quality = 0.78): Promise<string> {
+  // Primary: createImageBitmap — handles HEIC natively on iOS without DOM
+  try {
+    const bitmap = await createImageBitmap(file)
+    const result = drawToJpeg(bitmap, bitmap.width, bitmap.height, maxW, quality)
+    bitmap.close()
+    return result
+  } catch {}
+
+  // Secondary: Image element + canvas (works for JPEG/PNG/WebP)
   return new Promise((resolve, reject) => {
-    const blobUrl = URL.createObjectURL(file)
-
-    const useFileReader = () => {
-      URL.revokeObjectURL(blobUrl)
-      const reader = new FileReader()
-      reader.onload = () => {
-        if (typeof reader.result === 'string' && reader.result.length > 100) {
-          resolve(reader.result)
-        } else {
-          reject(new Error('FileReader returned empty result'))
-        }
-      }
-      reader.onerror = () => reject(new Error('FileReader error'))
-      reader.readAsDataURL(file)
-    }
-
     const img = new Image()
+    const blobUrl = URL.createObjectURL(file)
     img.onload = () => {
+      URL.revokeObjectURL(blobUrl)
       try {
-        URL.revokeObjectURL(blobUrl)
-        const w = Math.max(1, Math.round(img.width * Math.min(maxW / img.width, 1)))
-        const h = Math.max(1, Math.round(img.height * Math.min(maxW / img.width, 1)))
-        const canvas = document.createElement('canvas')
-        canvas.width = w
-        canvas.height = h
-        const ctx = canvas.getContext('2d')
-        if (!ctx) { useFileReader(); return }
-        ctx.drawImage(img, 0, 0, w, h)
-        const result = canvas.toDataURL('image/jpeg', quality)
-        if (result.length < 200) { useFileReader(); return }
-        resolve(result)
-      } catch {
-        useFileReader()
+        resolve(drawToJpeg(img, img.width, img.height, maxW, quality))
+      } catch (e) {
+        reject(e)
       }
     }
-    img.onerror = () => useFileReader()
+    img.onerror = () => {
+      URL.revokeObjectURL(blobUrl)
+      reject(new Error('Image failed to load — unsupported format'))
+    }
     img.src = blobUrl
   })
 }
