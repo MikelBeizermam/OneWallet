@@ -72,34 +72,23 @@ export default function AddCardPage() {
   const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (!file) return
-    const reader = new FileReader()
-    reader.onload = () => {
-      const dataUrl = reader.result as string
-      setImagePreview(dataUrl)
-      // Convert to JPEG via canvas (handles HEIC from iOS camera)
-      const img = new Image()
-      img.onload = () => {
-        const canvas = document.createElement('canvas')
-        canvas.width = img.naturalWidth
-        canvas.height = img.naturalHeight
-        canvas.getContext('2d')!.drawImage(img, 0, 0)
-        canvas.toBlob(blob => {
-          if (blob) setImageFile(new File([blob], 'card.jpg', { type: 'image/jpeg' }))
-        }, 'image/jpeg', 0.92)
-      }
-      img.src = dataUrl
-    }
-    reader.readAsDataURL(file)
+    // Set the file immediately — never rely on async conversion completing
+    setImageFile(file)
+    // Blob URL always works for preview (even HEIC on iOS Safari)
+    setImagePreview(URL.createObjectURL(file))
   }
 
   const uploadImage = async (): Promise<string | null> => {
     if (!imageFile || !user) return null
-    const ext = imageFile.name.split('.').pop()
+    const ext = (imageFile.name.split('.').pop() ?? 'jpg').toLowerCase()
     const path = `${user.id}/${Date.now()}.${ext}`
     const { error } = await supabase.storage
       .from('card-images')
-      .upload(path, imageFile, { upsert: true })
-    if (error) return null
+      .upload(path, imageFile, { upsert: true, contentType: imageFile.type || 'image/jpeg' })
+    if (error) {
+      setError('שגיאה בהעלאת התמונה: ' + error.message)
+      return null
+    }
     const { data } = supabase.storage.from('card-images').getPublicUrl(path)
     return data.publicUrl
   }
@@ -113,6 +102,7 @@ export default function AddCardPage() {
     setLoading(true)
 
     const imageUrl = await uploadImage()
+    if (imageFile && imageUrl === null) { setLoading(false); return }
 
     const { error } = await supabase.from('cards').insert({
       user_id: user.id,
