@@ -74,7 +74,9 @@ export default function AddCardPage() {
   const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (!file) return
-    setCropSrc(URL.createObjectURL(file))
+    const reader = new FileReader()
+    reader.onload = () => setCropSrc(reader.result as string)
+    reader.readAsDataURL(file)
   }
 
   const handleCropDone = (croppedFile: File) => {
