@@ -81,6 +81,7 @@ export default function AddCardPage() {
   const [licenseExpiry, setLicenseExpiry] = useState('')
   const [holderName, setHolderName] = useState('')
   const [validYear, setValidYear] = useState('')
+  const [phone, setPhone] = useState('')
   const [giftBalance, setGiftBalance] = useState('')
   const [imageFile, setImageFile] = useState<File | null>(null)
   const [imagePreview, setImagePreview] = useState<string | null>(null)
@@ -184,6 +185,7 @@ export default function AddCardPage() {
         ...(selectedCategory === 'loyalty' && holderName.trim() ? { holder_name: holderName.trim() } : {}),
         ...(selectedCategory === 'student' && validYear ? { valid_year: validYear } : {}),
         ...(selectedCategory === 'license' && licenseExpiry.trim() ? { license_expiry: licenseExpiry.trim() } : {}),
+        ...(selectedCategory === 'visit' && phone.trim() ? { phone: phone.trim() } : {}),
       },
     })
 
@@ -336,6 +338,20 @@ export default function AddCardPage() {
           />
         </div>
 
+        {selectedCategory === 'visit' && (
+          <div className="input-group">
+            <label className="input-label" htmlFor="phone">מספר פלאפון</label>
+            <input
+              id="phone"
+              className="input-field"
+              placeholder="050-0000000"
+              value={phone}
+              onChange={e => setPhone(e.target.value)}
+              inputMode="tel"
+            />
+          </div>
+        )}
+
         {selectedCategory === 'loyalty' && (
           <div className="input-group">
             <label className="input-label" htmlFor="holder-name">שם הבעלים</label>
@@ -349,18 +365,21 @@ export default function AddCardPage() {
           </div>
         )}
 
-        <div className="input-group">
-          <label className="input-label" htmlFor="card-number">{fieldLabels.numberLabel}</label>
-          <input
-            id="card-number"
-            className="input-field"
-            placeholder={fieldLabels.numberPlaceholder}
-            value={cardNumber}
-            onChange={e => setCardNumber(e.target.value)}
-            inputMode="numeric"
-          />
-        </div>
+        {selectedCategory !== 'visit' && (
+          <div className="input-group">
+            <label className="input-label" htmlFor="card-number">{fieldLabels.numberLabel}</label>
+            <input
+              id="card-number"
+              className="input-field"
+              placeholder={fieldLabels.numberPlaceholder}
+              value={cardNumber}
+              onChange={e => setCardNumber(e.target.value)}
+              inputMode="numeric"
+            />
+          </div>
+        )}
 
+        {selectedCategory !== 'visit' && (
         <div className="input-group">
           <label className="input-label" htmlFor="card-date">{fieldLabels.dateLabel}</label>
           <div className={styles.dateRow}>
@@ -391,6 +410,7 @@ export default function AddCardPage() {
             />
           </div>
         </div>
+        )}
 
         {selectedCategory === 'license' && (
           <div className="input-group">

@@ -201,6 +201,9 @@ export default function CardViewPage() {
         <DetailRow label="קטגוריה" value={CATEGORY_LABELS[card.category]} />
         {card.card_number && <DetailRow label="מספר" value={card.card_number} />}
         {card.expiry_date && <DetailRow label="תאריך" value={card.expiry_date} />}
+        {card.category === 'visit' && (card.metadata as Record<string, string>)?.phone && (
+          <DetailRow label="מספר פלאפון" value={(card.metadata as Record<string, string>).phone} />
+        )}
         {card.category === 'license' && (card.metadata as Record<string, string>)?.license_expiry && (
           <DetailRow label="תאריך תוקף" value={(card.metadata as Record<string, string>).license_expiry} />
         )}

@@ -37,6 +37,7 @@ export default function EditCardPage() {
   const [holderName, setHolderName] = useState('')
   const [validYear, setValidYear] = useState('')
   const [licenseExpiry, setLicenseExpiry] = useState('')
+  const [phone, setPhone] = useState('')
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
@@ -54,6 +55,7 @@ export default function EditCardPage() {
         setHolderName((data.metadata as Record<string, string>)?.holder_name ?? '')
         setValidYear((data.metadata as Record<string, string>)?.valid_year ?? '')
         setLicenseExpiry((data.metadata as Record<string, string>)?.license_expiry ?? '')
+        setPhone((data.metadata as Record<string, string>)?.phone ?? '')
       }
       setLoading(false)
     })
@@ -102,6 +104,7 @@ export default function EditCardPage() {
       ...(category === 'loyalty' ? { metadata: { ...(holderName.trim() ? { holder_name: holderName.trim() } : {}) } } : {}),
       ...(category === 'student' ? { metadata: { ...(validYear ? { valid_year: validYear } : {}) } } : {}),
       ...(category === 'license' ? { metadata: { ...(licenseExpiry.trim() ? { license_expiry: licenseExpiry.trim() } : {}) } } : {}),
+      ...(category === 'visit' ? { metadata: { ...(phone.trim() ? { phone: phone.trim() } : {}) } } : {}),
     }).eq('id', id)
 
     if (error) {
@@ -202,6 +205,20 @@ export default function EditCardPage() {
             inputMode="numeric"
           />
         </div>
+
+        {category === 'visit' && (
+          <div className="input-group">
+            <label className="input-label" htmlFor="edit-phone">מספר פלאפון</label>
+            <input
+              id="edit-phone"
+              className="input-field"
+              placeholder="050-0000000"
+              value={phone}
+              onChange={e => setPhone(e.target.value)}
+              inputMode="tel"
+            />
+          </div>
+        )}
 
         {category === 'loyalty' && (
           <div className="input-group">
