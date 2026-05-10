@@ -4,7 +4,6 @@ import { useAuth } from '@/contexts/AuthContext'
 import { useCards } from '@/hooks/useCards'
 import { WalletCard } from '@/components/WalletCard'
 import { WalletStack } from '@/components/WalletStack'
-import { BottomNav } from '@/components/BottomNav'
 import type { Card } from '@/types/database'
 import {
   DndContext,
@@ -130,7 +129,6 @@ export default function HomePage() {
         </button>
       )}
 
-      <BottomNav />
     </div>
   )
 }

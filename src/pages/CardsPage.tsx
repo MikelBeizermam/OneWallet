@@ -2,7 +2,6 @@ import { useState, useMemo, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useCards } from '@/hooks/useCards'
 import { WalletCard } from '@/components/WalletCard'
-import { BottomNav } from '@/components/BottomNav'
 import type { CardCategory, Card } from '@/types/database'
 import styles from './CardsPage.module.css'
 
@@ -124,7 +123,6 @@ export default function CardsPage() {
         )}
       </div>
 
-      <BottomNav />
     </div>
   )
 }

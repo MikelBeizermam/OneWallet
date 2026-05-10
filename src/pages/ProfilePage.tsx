@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '@/contexts/AuthContext'
 import { supabase } from '@/lib/supabase'
-import { BottomNav } from '@/components/BottomNav'
 import type { Profile } from '@/types/database'
 import styles from './ProfilePage.module.css'
 
@@ -126,7 +125,6 @@ export default function ProfilePage() {
         <p className={styles.version}>oneWallet v0.2.0</p>
       </div>
 
-      <BottomNav />
     </div>
   )
 }
