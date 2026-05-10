@@ -16,15 +16,11 @@
   padding-top: var(--space-8);
 }
 
-.logoIcon {
-  width: 72px;
-  height: 72px;
-  background: var(--color-primary);
+.logoImg {
+  width: 120px;
+  height: 120px;
   border-radius: var(--radius-lg);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--color-white);
+  object-fit: cover;
   margin-bottom: var(--space-2);
   box-shadow: var(--shadow-md);
 }

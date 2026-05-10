@@ -1,6 +1,6 @@
 {
-  "name": "oneWallet",
-  "short_name": "oneWallet",
+  "name": "OneWallet",
+  "short_name": "OneWallet",
   "description": "הארנק הדיגיטלי שלך",
   "start_url": "/",
   "scope": "/",
