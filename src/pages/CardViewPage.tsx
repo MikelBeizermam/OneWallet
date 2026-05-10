@@ -107,77 +107,98 @@ export default function CardViewPage() {
         </button>
       </header>
 
-      {/* Card visual */}
-      <div
-        className={styles.cardVisual}
-        style={{
-          '--card-bg': template.bgImageUrl && !card.image_url
-            ? `url(${template.bgImageUrl})`
-            : template.bgColor,
-          '--card-color': template.textColor,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-        } as React.CSSProperties}
-      >
-        {card.image_url && (
-          <img src={card.image_url} alt="" className={styles.cardBgImage} aria-hidden="true" />
-        )}
-        {template.bgImageUrl && !card.image_url && (
-          <div className={styles.cardBrandOverlay} />
-        )}
-        <div className={styles.cardInner}>
-          <div className={styles.cardTop}>
-            <span className={styles.cardIcon}>{template.icon}</span>
-            <span className={styles.cardCategoryLabel}>{CATEGORY_LABELS[card.category]}</span>
-          </div>
-          <div className={styles.cardBottom}>
-            <h2 className={styles.cardName}>{card.name}</h2>
-            {card.card_number && <p className={styles.cardNumber}>•••• {card.card_number.slice(-4)}</p>}
-            {card.expiry_date && <p className={styles.cardExpiry}>{card.expiry_date}</p>}
-          </div>
-        </div>
-      </div>
-
-      {/* Actions */}
-      <div className={styles.actions}>
-        {card.image_url && (
-          <button
-            type="button"
-            className={styles.actionBtn}
-            onClick={() => setShowImage(true)}
+      <div className={styles.body}>
+        {/* Left column on desktop */}
+        <div className={styles.leftCol}>
+          {/* Card visual */}
+          <div
+            className={styles.cardVisual}
+            style={{
+              '--card-bg': template.bgImageUrl && !card.image_url
+                ? `url(${template.bgImageUrl})`
+                : template.bgColor,
+              '--card-color': template.textColor,
+              backgroundSize: 'cover',
+              backgroundPosition: 'center',
+            } as React.CSSProperties}
           >
-            <ZoomIcon />
-            <span>הגדל תמונה</span>
-          </button>
-        )}
-        <button
-          type="button"
-          className={styles.actionBtn}
-          onClick={() => navigate(`/cards/${id}/edit`)}
-        >
-          <EditIcon />
-          <span>עריכה</span>
-        </button>
-      </div>
-
-      {/* Gift card balance widget */}
-      {card.category === 'gift' && (
-        <>
-          <div className={styles.giftBalanceBox}>
-            <div className={styles.giftBalanceTop}>
-              <span className={styles.giftBalanceLabel}>יתרה בכרטיס</span>
-              <span className={styles.giftBalanceAmount}>₪{currentBalance.toFixed(0)}</span>
+            {card.image_url && (
+              <img src={card.image_url} alt="" className={styles.cardBgImage} aria-hidden="true" />
+            )}
+            {template.bgImageUrl && !card.image_url && (
+              <div className={styles.cardBrandOverlay} />
+            )}
+            <div className={styles.cardInner}>
+              <div className={styles.cardTop}>
+                <span className={styles.cardIcon}>{template.icon}</span>
+                <span className={styles.cardCategoryLabel}>{CATEGORY_LABELS[card.category]}</span>
+              </div>
+              <div className={styles.cardBottom}>
+                <h2 className={styles.cardName}>{card.name}</h2>
+                {card.card_number && <p className={styles.cardNumber}>•••• {card.card_number.slice(-4)}</p>}
+                {card.expiry_date && <p className={styles.cardExpiry}>{card.expiry_date}</p>}
+              </div>
             </div>
-            <button
-              type="button"
-              className={styles.giftBalanceBtn}
-              onClick={() => { setSpentAmount(''); setSpentPlace(''); setShowBalanceModal(true) }}
-            >
-              השתמשת? עדכן את היתרה 💸
+          </div>
+
+          {/* Actions */}
+          <div className={styles.actions}>
+            {card.image_url && (
+              <button type="button" className={styles.actionBtn} onClick={() => setShowImage(true)}>
+                <ZoomIcon />
+                <span>הגדל תמונה</span>
+              </button>
+            )}
+            <button type="button" className={styles.actionBtn} onClick={() => navigate(`/cards/${id}/edit`)}>
+              <EditIcon />
+              <span>עריכה</span>
             </button>
           </div>
 
-          {history.length > 0 && (
+          {/* Gift balance */}
+          {card.category === 'gift' && (
+            <div className={styles.giftBalanceBox}>
+              <div className={styles.giftBalanceTop}>
+                <span className={styles.giftBalanceLabel}>יתרה בכרטיס</span>
+                <span className={styles.giftBalanceAmount}>₪{currentBalance.toFixed(0)}</span>
+              </div>
+              <button type="button" className={styles.giftBalanceBtn}
+                onClick={() => { setSpentAmount(''); setSpentPlace(''); setShowBalanceModal(true) }}>
+                השתמשת? עדכן את היתרה 💸
+              </button>
+            </div>
+          )}
+        </div>
+
+        {/* Right column on desktop */}
+        <div className={styles.rightCol}>
+          {/* Details */}
+          <div className={styles.details}>
+            <h3 className={styles.detailsTitle}>פרטי הכרטיס</h3>
+            <DetailRow label="שם" value={card.name} />
+            <DetailRow label="קטגוריה" value={CATEGORY_LABELS[card.category]} />
+            {card.card_number && <DetailRow label="מספר" value={card.card_number} />}
+            {card.expiry_date && <DetailRow label="תאריך" value={card.expiry_date} />}
+            {card.category === 'visit' && (card.metadata as Record<string, string>)?.phone && (
+              <DetailRow label="מספר פלאפון" value={(card.metadata as Record<string, string>).phone} />
+            )}
+            {card.category === 'license' && (card.metadata as Record<string, string>)?.license_expiry && (
+              <DetailRow label="תאריך תוקף" value={(card.metadata as Record<string, string>).license_expiry} />
+            )}
+            {card.category === 'loyalty' && (card.metadata as Record<string, string>)?.holder_name && (
+              <DetailRow label="שם הבעלים" value={(card.metadata as Record<string, string>).holder_name} />
+            )}
+            {card.category === 'student' && (card.metadata as Record<string, string>)?.valid_year && (
+              <DetailRow label="תוקף" value={(card.metadata as Record<string, string>).valid_year} />
+            )}
+            {card.category === 'gift' && (card.metadata as Record<string, string>)?.balance && (
+              <DetailRow label="יתרה בכרטיס" value={`₪${(card.metadata as Record<string, string>).balance}`} />
+            )}
+            <DetailRow label="נוסף בתאריך" value={new Date(card.created_at).toLocaleDateString('he-IL')} />
+          </div>
+
+          {/* Gift history */}
+          {card.category === 'gift' && history.length > 0 && (
             <div className={styles.historyBox}>
               <h3 className={styles.historyTitle}>היסטוריית שימוש</h3>
               {history.map((item, i) => (
@@ -191,32 +212,7 @@ export default function CardViewPage() {
               ))}
             </div>
           )}
-        </>
-      )}
-
-      {/* Details */}
-      <div className={styles.details}>
-        <h3 className={styles.detailsTitle}>פרטי הכרטיס</h3>
-        <DetailRow label="שם" value={card.name} />
-        <DetailRow label="קטגוריה" value={CATEGORY_LABELS[card.category]} />
-        {card.card_number && <DetailRow label="מספר" value={card.card_number} />}
-        {card.expiry_date && <DetailRow label="תאריך" value={card.expiry_date} />}
-        {card.category === 'visit' && (card.metadata as Record<string, string>)?.phone && (
-          <DetailRow label="מספר פלאפון" value={(card.metadata as Record<string, string>).phone} />
-        )}
-        {card.category === 'license' && (card.metadata as Record<string, string>)?.license_expiry && (
-          <DetailRow label="תאריך תוקף" value={(card.metadata as Record<string, string>).license_expiry} />
-        )}
-        {card.category === 'loyalty' && (card.metadata as Record<string, string>)?.holder_name && (
-          <DetailRow label="שם הבעלים" value={(card.metadata as Record<string, string>).holder_name} />
-        )}
-        {card.category === 'student' && (card.metadata as Record<string, string>)?.valid_year && (
-          <DetailRow label="תוקף" value={(card.metadata as Record<string, string>).valid_year} />
-        )}
-        {card.category === 'gift' && (card.metadata as Record<string, string>)?.balance && (
-          <DetailRow label="יתרה בכרטיס" value={`₪${(card.metadata as Record<string, string>).balance}`} />
-        )}
-        <DetailRow label="נוסף בתאריך" value={new Date(card.created_at).toLocaleDateString('he-IL')} />
+        </div>
       </div>
 
       {/* Image zoom modal */}

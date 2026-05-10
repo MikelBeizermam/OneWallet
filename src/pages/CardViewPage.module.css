@@ -76,6 +76,24 @@
   color: var(--color-error);
 }
 
+/* Desktop two-column layout */
+.body {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.leftCol {
+  display: flex;
+  flex-direction: column;
+}
+
+.rightCol {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
 /* Card visual */
 .cardVisual {
   background: var(--card-bg, var(--color-accent));
@@ -472,3 +490,48 @@
 }
 
 .balanceEmpty { color: var(--color-error); font-weight: 600; }
+
+/* ── Desktop two-column layout ── */
+@media (min-width: 600px) {
+  .body {
+    flex-direction: row;
+    gap: var(--space-6);
+    padding: 0 var(--space-6) var(--space-6);
+    align-items: flex-start;
+    max-width: 1200px;
+    margin-inline: auto;
+    width: 100%;
+  }
+
+  .leftCol {
+    flex: 1;
+    gap: var(--space-4);
+    min-width: 0;
+  }
+
+  .rightCol {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .cardVisual {
+    margin: 0;
+    height: 274px;
+  }
+
+  .actions {
+    padding: 0;
+  }
+
+  .details {
+    margin: 0;
+  }
+
+  .giftBalanceBox {
+    margin: 0;
+  }
+
+  .historyBox {
+    margin: 0;
+  }
+}

@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import type { Card } from '@/types/database'
 import { WalletCard } from './WalletCard'
+import styles from './WalletStack.module.css'
 
 const PEEK = 76      // px visible per card in normal stack
 const CARD_H = 180   // card height
@@ -57,6 +58,7 @@ export function WalletStack({ cards }: Props) {
   return (
     <div
       ref={containerRef}
+      className={styles.stack}
       style={{ position: 'relative', flex: 1, minHeight: normalHeight }}
       onClick={() => setActiveId(null)}
     >

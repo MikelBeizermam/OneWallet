@@ -5,6 +5,14 @@
   padding-bottom: 24px;
 }
 
+@media (min-width: 600px) {
+  .stack {
+    max-width: 480px;
+    margin-inline: auto;
+    width: 100%;
+  }
+}
+
 .item {
   position: relative;
   margin-bottom: -108px;

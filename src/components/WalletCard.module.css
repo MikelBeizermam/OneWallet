@@ -266,3 +266,9 @@
   color: rgba(255,255,255,0.6);
   font-family: var(--font-family);
 }
+
+@media (min-width: 600px) {
+  .card {
+    height: 300px;
+  }
+}

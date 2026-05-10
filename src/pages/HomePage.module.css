@@ -154,6 +154,14 @@
   gap: var(--space-3);
 }
 
+@media (min-width: 600px) {
+  .cardsList {
+    max-width: 480px;
+    margin-inline: auto;
+    width: 100%;
+  }
+}
+
 /* Loading skeletons */
 .loadingState {
   display: flex;

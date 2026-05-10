@@ -2,6 +2,8 @@ import { BrowserRouter, Routes, Route, Navigate, Outlet } from 'react-router-dom
 import { AuthProvider } from '@/contexts/AuthContext'
 import { ProtectedRoute } from '@/components/ProtectedRoute'
 import { BottomNav } from '@/components/BottomNav'
+import { Sidebar } from '@/components/Sidebar'
+import styles from './App.module.css'
 
 import LoginPage from '@/pages/auth/LoginPage'
 import RegisterPage from '@/pages/auth/RegisterPage'
@@ -19,10 +21,13 @@ import EditCardPage from '@/pages/EditCardPage'
 
 function AppLayout() {
   return (
-    <>
-      <Outlet />
+    <div className={styles.layout}>
+      <Sidebar />
+      <main className={styles.main}>
+        <Outlet />
+      </main>
       <BottomNav />
-    </>
+    </div>
   )
 }
 
