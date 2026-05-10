@@ -29,6 +29,8 @@ export function WalletStack({ cards }: Props) {
   const handlePress = (cardId: string) => {
     if (activeId === cardId) {
       navigate(`/cards/${cardId}`)
+    } else if (activeId) {
+      setActiveId(null)
     } else {
       setActiveId(cardId)
     }
