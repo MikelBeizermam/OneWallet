@@ -26,6 +26,7 @@ export default function EditCardPage() {
   const fileRef = useRef<HTMLInputElement>(null)
   const calendarRef = useRef<HTMLInputElement>(null)
   const expiryCalendarRef = useRef<HTMLInputElement>(null)
+  const idExpiryCalendarRef = useRef<HTMLInputElement>(null)
 
   const [card, setCard] = useState<Card | null>(null)
   const [name, setName] = useState('')
@@ -38,6 +39,7 @@ export default function EditCardPage() {
   const [validYear, setValidYear] = useState('')
   const [licenseExpiry, setLicenseExpiry] = useState('')
   const [phone, setPhone] = useState('')
+  const [idExpiry, setIdExpiry] = useState('')
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
@@ -56,6 +58,7 @@ export default function EditCardPage() {
         setValidYear((data.metadata as Record<string, string>)?.valid_year ?? '')
         setLicenseExpiry((data.metadata as Record<string, string>)?.license_expiry ?? '')
         setPhone((data.metadata as Record<string, string>)?.phone ?? '')
+        setIdExpiry((data.metadata as Record<string, string>)?.id_expiry ?? '')
       }
       setLoading(false)
     })
@@ -105,6 +108,7 @@ export default function EditCardPage() {
       ...(category === 'student' ? { metadata: { ...(validYear ? { valid_year: validYear } : {}) } } : {}),
       ...(category === 'license' ? { metadata: { ...(licenseExpiry.trim() ? { license_expiry: licenseExpiry.trim() } : {}) } } : {}),
       ...(category === 'visit' ? { metadata: { ...(phone.trim() ? { phone: phone.trim() } : {}) } } : {}),
+      ...(category === 'id' ? { metadata: { ...(idExpiry.trim() ? { id_expiry: idExpiry.trim() } : {}) } } : {}),
     }).eq('id', id)
 
     if (error) {
@@ -263,6 +267,39 @@ export default function EditCardPage() {
             />
           </div>
         </div>
+
+        {category === 'id' && (
+          <div className="input-group">
+            <label className="input-label" htmlFor="edit-id-expiry">תוקף הכרטיס</label>
+            <div className={styles.dateRow}>
+              <input
+                id="edit-id-expiry"
+                className="input-field"
+                placeholder="DD/MM/YYYY"
+                value={idExpiry}
+                onChange={e => setIdExpiry(formatDateInput(e.target.value))}
+                inputMode="numeric"
+                maxLength={10}
+              />
+              <button
+                type="button"
+                className={styles.calendarBtn}
+                aria-label="בחר תאריך תוקף מלוח שנה"
+                onClick={() => idExpiryCalendarRef.current?.showPicker?.()}
+              >
+                <CalendarIcon />
+              </button>
+              <input
+                ref={idExpiryCalendarRef}
+                type="date"
+                title="בחר תאריך תוקף"
+                aria-label="בחר תאריך תוקף"
+                className={styles.hiddenInput}
+                onChange={e => setIdExpiry(fromNativeDate(e.target.value))}
+              />
+            </div>
+          </div>
+        )}
 
         {category === 'license' && (
           <div className="input-group">

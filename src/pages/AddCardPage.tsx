@@ -71,6 +71,7 @@ export default function AddCardPage() {
   const { user } = useAuth()
   const calendarRef = useRef<HTMLInputElement>(null)
   const expiryCalendarRef = useRef<HTMLInputElement>(null)
+  const idExpiryCalendarRef = useRef<HTMLInputElement>(null)
 
   const [step, setStep] = useState<'template' | 'gift-brand' | 'form'>('template')
   const [selectedTemplate, setSelectedTemplate] = useState<string | null>(null)
@@ -82,6 +83,7 @@ export default function AddCardPage() {
   const [holderName, setHolderName] = useState('')
   const [validYear, setValidYear] = useState('')
   const [phone, setPhone] = useState('')
+  const [idExpiry, setIdExpiry] = useState('')
   const [giftBalance, setGiftBalance] = useState('')
   const [imageFile, setImageFile] = useState<File | null>(null)
   const [imagePreview, setImagePreview] = useState<string | null>(null)
@@ -186,6 +188,7 @@ export default function AddCardPage() {
         ...(selectedCategory === 'student' && validYear ? { valid_year: validYear } : {}),
         ...(selectedCategory === 'license' && licenseExpiry.trim() ? { license_expiry: licenseExpiry.trim() } : {}),
         ...(selectedCategory === 'visit' && phone.trim() ? { phone: phone.trim() } : {}),
+        ...(selectedCategory === 'id' && idExpiry.trim() ? { id_expiry: idExpiry.trim() } : {}),
       },
     })
 
@@ -410,6 +413,39 @@ export default function AddCardPage() {
             />
           </div>
         </div>
+        )}
+
+        {selectedCategory === 'id' && (
+          <div className="input-group">
+            <label className="input-label" htmlFor="id-expiry">תוקף הכרטיס</label>
+            <div className={styles.dateRow}>
+              <input
+                id="id-expiry"
+                className="input-field"
+                placeholder="DD/MM/YYYY"
+                value={idExpiry}
+                onChange={e => setIdExpiry(formatDateInput(e.target.value))}
+                inputMode="numeric"
+                maxLength={10}
+              />
+              <button
+                type="button"
+                className={styles.calendarBtn}
+                aria-label="בחר תאריך תוקף מלוח שנה"
+                onClick={() => idExpiryCalendarRef.current?.showPicker?.()}
+              >
+                <CalendarIcon />
+              </button>
+              <input
+                ref={idExpiryCalendarRef}
+                type="date"
+                title="בחר תאריך תוקף"
+                aria-label="בחר תאריך תוקף"
+                className={styles.hiddenInput}
+                onChange={e => setIdExpiry(fromNativeDate(e.target.value))}
+              />
+            </div>
+          </div>
         )}
 
         {selectedCategory === 'license' && (

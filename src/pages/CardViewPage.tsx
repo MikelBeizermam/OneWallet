@@ -187,6 +187,9 @@ export default function CardViewPage() {
             {card.category === 'loyalty' && (card.metadata as Record<string, string>)?.holder_name && (
               <DetailRow label="שם הבעלים" value={(card.metadata as Record<string, string>).holder_name} />
             )}
+            {card.category === 'id' && (card.metadata as Record<string, string>)?.id_expiry && (
+              <DetailRow label="תוקף הכרטיס" value={(card.metadata as Record<string, string>).id_expiry} />
+            )}
             {card.category === 'student' && (card.metadata as Record<string, string>)?.valid_year && (
               <DetailRow label="תוקף" value={(card.metadata as Record<string, string>).valid_year} />
             )}
