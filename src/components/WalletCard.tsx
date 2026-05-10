@@ -54,9 +54,9 @@ export function WalletCard({ card, compact = false, disableLongPress = false, on
           backgroundSize: 'cover',
           backgroundPosition: 'center',
         } as React.CSSProperties}
-        onPointerDown={startPress}
-        onPointerUp={endPress}
-        onPointerLeave={endPress}
+        onPointerDown={disableLongPress ? undefined : startPress}
+        onPointerUp={disableLongPress ? undefined : endPress}
+        onPointerLeave={disableLongPress ? undefined : endPress}
         onClick={handleClick}
         aria-label={`פתח כרטיס ${card.name}`}
       >
