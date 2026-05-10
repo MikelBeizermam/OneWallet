@@ -40,7 +40,7 @@ export default function LoginPage() {
             <input
               className="input-field"
               type="email"
-              placeholder="אימייל..."
+              placeholder="אימייל"
               value={email}
               onChange={e => setEmail(e.target.value)}
               required
@@ -56,7 +56,7 @@ export default function LoginPage() {
             <input
               className="input-field"
               type="password"
-              placeholder="קוד PIN / סיסמה"
+              placeholder="סיסמה"
               value={password}
               onChange={e => setPassword(e.target.value)}
               required
@@ -68,7 +68,7 @@ export default function LoginPage() {
         <Link to="/forgot-password" className={styles.forgotLink}>שכחת את הסיסמה?</Link>
 
         <button className="btn btn-primary" type="submit" disabled={loading}>
-          {loading ? <span className="spinner" /> : <>כניסה &lsaquo;</>}
+          {loading ? <span className="spinner" /> : <>כניסה 👋</>}
         </button>
       </form>
 
