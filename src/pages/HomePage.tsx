@@ -65,35 +65,32 @@ export default function HomePage() {
           <MenuIcon />
         </button>
         <span className={styles.appTitle}>oneWallet</span>
-        <button type="button" className={styles.avatarBtn} aria-label="פרופיל" onClick={() => navigate('/profile')}>
-          <div className={styles.avatar}>{firstName[0]?.toUpperCase()}</div>
-        </button>
-      </header>
-
-      <section className={styles.hero}>
-        <h1 className={styles.greeting}>הארנק של {firstName}</h1>
-        <p className={styles.subtitle}>{cards.length} כרטיסים שמורים</p>
-      </section>
-
-
-      <div className={styles.cardsArea}>
-        {/* Reorder toolbar */}
-        {!loading && cards.length > 1 && (
-          <div className={styles.reorderBar}>
-            {isReordering ? (
-              <>
-                <span className={styles.reorderHint}>גרור כרטיסים לשינוי סדר</span>
-                <button type="button" className={styles.doneBtn} onClick={exitReorder}>
-                  סיימתי ✓
-                </button>
-              </>
+        <div className={styles.headerRight}>
+          {!loading && cards.length > 1 && (
+            isReordering ? (
+              <button type="button" className={styles.doneBtn} onClick={exitReorder}>
+                סיימתי ✓
+              </button>
             ) : (
               <button type="button" className={styles.reorderBtn} onClick={enterReorder} aria-label="סדר כרטיסים">
                 <SortIcon />
               </button>
-            )}
-          </div>
-        )}
+            )
+          )}
+          <button type="button" className={styles.avatarBtn} aria-label="פרופיל" onClick={() => navigate('/profile')}>
+            <div className={styles.avatar}>{firstName[0]?.toUpperCase()}</div>
+          </button>
+        </div>
+      </header>
+
+      <section className={styles.hero}>
+        <h1 className={styles.greeting}>הארנק של {firstName}</h1>
+        {isReordering && <p className={styles.reorderHint}>גרור כרטיסים לשינוי סדר</p>}
+        <p className={styles.subtitle}>{cards.length} כרטיסים שמורים</p>
+      </section>
+
+      <div className={styles.cardsArea}>
+        {/* no reorderBar here anymore */}
 
         {loading ? (
           <div className={styles.loadingState}>

@@ -29,6 +29,12 @@
   font-family: var(--font-family);
 }
 
+.headerRight {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
 .avatarBtn {
   width: 38px;
   height: 38px;
