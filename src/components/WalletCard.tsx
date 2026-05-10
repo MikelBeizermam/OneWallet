@@ -74,10 +74,8 @@ export function WalletCard({ card, compact = false, disableLongPress = false, on
             >
               <span>{template.icon}</span>
             </div>
-            <span className={styles.category}>{CATEGORY_LABELS[card.category]}</span>
           </div>
           <div className={styles.bottom}>
-            <h3 className={styles.name}>{card.name}</h3>
             {card.card_number && (
               <p className={styles.number}>
                 <span className={styles.numberDots}>••••</span>

@@ -131,8 +131,7 @@ export default function CardViewPage() {
             <div className={styles.cardInner}>
               <div className={styles.cardTop}>
                 <span className={styles.cardIcon}>{template.icon}</span>
-                <span className={styles.cardCategoryLabel}>{CATEGORY_LABELS[card.category]}</span>
-              </div>
+                  </div>
               <div className={styles.cardBottom}>
                 <h2 className={styles.cardName}>{card.name}</h2>
                 {card.card_number && <p className={styles.cardNumber}>•••• {card.card_number.slice(-4)}</p>}
