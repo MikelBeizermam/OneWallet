@@ -1,8 +1,8 @@
-import { useState, useMemo, useRef } from 'react'
+import { useState, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useCards } from '@/hooks/useCards'
 import { WalletCard } from '@/components/WalletCard'
-import type { CardCategory, Card } from '@/types/database'
+import type { CardCategory } from '@/types/database'
 import styles from './CardsPage.module.css'
 
 const CATEGORIES: Array<{ key: 'all' | CardCategory; label: string; emoji: string }> = [
@@ -18,7 +18,7 @@ const CATEGORIES: Array<{ key: 'all' | CardCategory; label: string; emoji: strin
 
 export default function CardsPage() {
   const navigate = useNavigate()
-  const { cards, loading, deleteCard } = useCards()
+  const { cards, loading } = useCards()
   const [activeCategory, setActiveCategory] = useState<'all' | CardCategory>('all')
   const [search, setSearch] = useState('')
 
@@ -113,90 +113,12 @@ export default function CardsPage() {
         ) : (
           <div className={styles.list}>
             {filtered.map(card => (
-              <SwipeableCardRow
-                key={card.id}
-                card={card}
-                onDelete={() => deleteCard(card.id)}
-              />
+              <WalletCard key={card.id} card={card} disableLongPress />
             ))}
           </div>
         )}
       </div>
 
-    </div>
-  )
-}
-
-const DELETE_W = 80
-
-function SwipeableCardRow({ card, onDelete }: { card: Card; onDelete: () => void }) {
-  const [offset, setOffset] = useState(0)
-  const [isOpen, setIsOpen] = useState(false)
-  const [animate, setAnimate] = useState(false)
-  const startX = useRef(0)
-  const dragging = useRef(false)
-  const swiped = useRef(false)
-
-  const snapTo = (open: boolean) => {
-    setAnimate(true)
-    setOffset(open ? DELETE_W : 0)
-    setIsOpen(open)
-  }
-
-  const onPointerDown = (e: React.PointerEvent) => {
-    startX.current = e.clientX
-    dragging.current = true
-    swiped.current = false
-    setAnimate(false)
-  }
-
-  const onPointerMove = (e: React.PointerEvent) => {
-    if (!dragging.current) return
-    const dx = e.clientX - startX.current
-    const base = isOpen ? DELETE_W : 0
-    const next = Math.max(0, Math.min(base + dx, DELETE_W))
-    if (Math.abs(dx) > 6) {
-      swiped.current = true
-      setOffset(next)
-    }
-  }
-
-  const onPointerUp = () => {
-    if (!dragging.current) return
-    dragging.current = false
-    if (swiped.current) snapTo(offset > DELETE_W * 0.4)
-  }
-
-  return (
-    <div
-      className={styles.swipeRow}
-      onPointerDown={onPointerDown}
-      onPointerMove={onPointerMove}
-      onPointerUp={onPointerUp}
-      onPointerCancel={() => snapTo(false)}
-    >
-      <div className={styles.deleteReveal}>
-        <button
-          type="button"
-          className={styles.deleteBtn}
-          onClick={() => {
-            snapTo(false)
-            if (confirm(`למחוק את "${card.name}"?`)) onDelete()
-          }}
-        >
-          <TrashIcon />
-          <span className={styles.deleteBtnLabel}>מחק</span>
-        </button>
-      </div>
-      <div
-        className={styles.swipeCard}
-        style={{
-          transform: `translateX(${offset}px)`,
-          transition: animate ? 'transform 0.28s cubic-bezier(0.25, 1, 0.5, 1)' : 'none',
-        }}
-      >
-        <WalletCard card={card} disableLongPress onPress={isOpen ? () => snapTo(false) : undefined} />
-      </div>
     </div>
   )
 }
@@ -209,7 +131,4 @@ function SearchIcon() {
 }
 function CloseIcon() {
   return <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
-}
-function TrashIcon() {
-  return <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 011-1h4a1 1 0 011 1v2"/></svg>
 }
