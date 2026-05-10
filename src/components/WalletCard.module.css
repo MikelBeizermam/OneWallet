@@ -15,6 +15,10 @@
   touch-action: none;
 }
 
+.scrollable {
+  touch-action: pan-y;
+}
+
 .card:active {
   transform: scale(0.97);
   box-shadow: var(--shadow-md);

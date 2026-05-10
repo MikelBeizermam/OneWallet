@@ -45,7 +45,7 @@ export function WalletCard({ card, compact = false, disableLongPress = false, on
     <>
       <button
         type="button"
-        className={`${styles.card} ${compact ? styles.compact : ''}`}
+        className={`${styles.card} ${compact ? styles.compact : ''} ${disableLongPress ? styles.scrollable : ''}`}
         style={{
           '--card-bg': template.bgImageUrl && !card.image_url
             ? `url(${template.bgImageUrl})`
