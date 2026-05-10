@@ -5,7 +5,7 @@ import { WalletCard } from './WalletCard'
 import styles from './WalletStack.module.css'
 
 const PEEK = 76      // px visible per card in normal stack
-const CARD_H = 180   // card height
+const CARD_H = 216   // card height
 const BOTTOM_PEEK = 28  // px visible per card when slid to bottom
 
 interface Props {
