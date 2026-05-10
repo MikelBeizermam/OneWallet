@@ -8,10 +8,11 @@ import styles from './WalletCard.module.css'
 interface Props {
   card: Card
   compact?: boolean
+  disableLongPress?: boolean
   onPress?: () => void
 }
 
-export function WalletCard({ card, compact = false, onPress }: Props) {
+export function WalletCard({ card, compact = false, disableLongPress = false, onPress }: Props) {
   const navigate = useNavigate()
   const template = getTemplate(card.template_id, card.category)
   const longPressTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
@@ -19,6 +20,7 @@ export function WalletCard({ card, compact = false, onPress }: Props) {
   const [enlarged, setEnlarged] = useState(false)
 
   const startPress = () => {
+    if (disableLongPress) return
     didLongPress.current = false
     longPressTimer.current = setTimeout(() => {
       didLongPress.current = true

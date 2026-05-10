@@ -195,7 +195,7 @@ function SwipeableCardRow({ card, onDelete }: { card: Card; onDelete: () => void
           transition: animate ? 'transform 0.28s cubic-bezier(0.25, 1, 0.5, 1)' : 'none',
         }}
       >
-        <WalletCard card={card} onPress={isOpen ? () => snapTo(false) : undefined} />
+        <WalletCard card={card} disableLongPress onPress={isOpen ? () => snapTo(false) : undefined} />
       </div>
     </div>
   )
