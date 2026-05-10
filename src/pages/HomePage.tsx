@@ -77,9 +77,6 @@ export default function HomePage() {
               </button>
             )
           )}
-          <button type="button" className={styles.avatarBtn} aria-label="פרופיל" onClick={() => navigate('/profile')}>
-            <div className={styles.avatar}>{firstName[0]?.toUpperCase()}</div>
-          </button>
         </div>
       </header>
 
