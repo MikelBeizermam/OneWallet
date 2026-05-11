@@ -251,7 +251,7 @@ export default function LandingPage() {
             <div>
               <h4>צור קשר</h4>
               <ul>
-                <li><a href="mailto:miki199838@gmail.com">miki199838@gmail.com</a></li>
+                <li><a href="mailto:onewallet2026@gmail.com">onewallet2026@gmail.com</a></li>
               </ul>
             </div>
           </div>
