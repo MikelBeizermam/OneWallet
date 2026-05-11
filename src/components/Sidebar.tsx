@@ -1,4 +1,4 @@
-import { NavLink } from 'react-router-dom'
+import { NavLink, useNavigate } from 'react-router-dom'
 import styles from './Sidebar.module.css'
 
 const navItems = [
@@ -9,12 +9,13 @@ const navItems = [
 ]
 
 export function Sidebar() {
+  const navigate = useNavigate()
   return (
     <aside className={styles.sidebar}>
-      <div className={styles.logo}>
+      <button type="button" className={styles.logo} onClick={() => navigate('/home')}>
         <img src="/app-icon.png" alt="OneWallet" className={styles.logoImg} />
         <span className={styles.logoText}>OneWallet</span>
-      </div>
+      </button>
       <nav className={styles.nav}>
         {navItems.map(({ to, label, icon: Icon }) => (
           <NavLink
