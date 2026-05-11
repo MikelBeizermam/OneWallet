@@ -34,17 +34,14 @@ export default function LandingPage() {
             <h1 className={styles.heroTitle}>
               <button type="button" className={styles.heroTitleBtn} onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
                 <span className={styles.heroTitleGrad}>הארנק הדיגיטלי</span>
-              </button><br />הבא
+              </button><br />הבא שלך
             </h1>
             <p className={styles.heroDesc}>
-              ניהול תעודות זהות, רישיונות וכרטיסים במקום אחד — בצורה חכמה, מאובטחת ויפה.
+              ניהול תעודות זהות, רישיונות וכרטיסים במקום אחד, בצורה חכמה, מאובטחת ויפה.
             </p>
             <div className={styles.heroBtns}>
               <button type="button" className={styles.heroBtnPrimary} onClick={() => navigate('/login')}>
                 התחל עכשיו
-              </button>
-              <button type="button" className={styles.heroBtnSecondary} onClick={() => document.getElementById('features')?.scrollIntoView({ behavior: 'smooth' })}>
-                למד עוד
               </button>
             </div>
           </div>
