@@ -19,6 +19,7 @@ import ProSuccessPage from '@/pages/ProSuccessPage'
 import AdminDashboard from '@/pages/AdminDashboard'
 import SettingsPage from '@/pages/SettingsPage'
 import EditCardPage from '@/pages/EditCardPage'
+import LandingPage from '@/pages/LandingPage'
 
 function AppLayout() {
   return (
@@ -61,8 +62,9 @@ export default function App() {
             <Route path="/settings" element={<Protected><SettingsPage /></Protected>} />
           </Route>
 
-          {/* Default */}
-          <Route path="/" element={<Navigate to="/login" replace />} />
+          {/* Landing */}
+          <Route path="/" element={<LandingPage />} />
+          <Route path="/landing" element={<LandingPage />} />
           <Route path="*" element={<Navigate to="/home" replace />} />
         </Routes>
       </BrowserRouter>
