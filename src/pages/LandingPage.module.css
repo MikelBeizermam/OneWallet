@@ -716,19 +716,24 @@
 
 /* ── CTA Section ── */
 .ctaSection {
-  padding: 88px 24px;
+  padding: 48px 16px;
   background: #f4ece8;
 }
 
 .ctaBox {
   background: #e8e1dd;
-  border-radius: 40px;
-  padding: 56px 48px;
+  border-radius: 28px;
+  padding: 32px 24px;
   display: grid;
   grid-template-columns: 1fr;
-  gap: 48px;
+  gap: 32px;
   align-items: center;
   overflow: hidden;
+}
+
+@media (min-width: 600px) {
+  .ctaSection { padding: 88px 24px; }
+  .ctaBox { border-radius: 40px; padding: 56px 48px; gap: 48px; }
 }
 
 @media (min-width: 1024px) {
