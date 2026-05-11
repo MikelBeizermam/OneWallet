@@ -11,10 +11,10 @@ export default function LandingPage() {
       {/* Navbar */}
       <header className={styles.navbar}>
         <div className={styles.navContent}>
-          <div className={styles.navLogo}>
+          <button type="button" className={styles.navLogo} onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
             <img src="/app-icon.png" alt="OneWallet" className={styles.navIcon} />
             <span className={styles.navBrand}>OneWallet</span>
-          </div>
+          </button>
           <nav className={styles.navLinks}>
             <a href="#features">פיצ'רים</a>
             <a href="#benefits">יתרונות</a>
@@ -32,7 +32,9 @@ export default function LandingPage() {
           <div className={styles.heroText}>
             <div className={styles.heroBadge}>העתיד של הארנק הדיגיטלי כבר כאן</div>
             <h1 className={styles.heroTitle}>
-              <span className={styles.heroTitleGrad}>הארנק הדיגיטלי</span><br />הבא
+              <button type="button" className={styles.heroTitleBtn} onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
+                <span className={styles.heroTitleGrad}>הארנק הדיגיטלי</span>
+              </button><br />הבא
             </h1>
             <p className={styles.heroDesc}>
               ניהול תעודות זהות, רישיונות וכרטיסים במקום אחד — בצורה חכמה, מאובטחת ויפה.

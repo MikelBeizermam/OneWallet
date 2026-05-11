@@ -36,7 +36,15 @@
   display: flex;
   align-items: center;
   gap: 10px;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  font-family: inherit;
+  transition: opacity 0.15s;
 }
+
+.navLogo:hover { opacity: 0.75; }
 
 .navIcon {
   width: 34px;
@@ -172,6 +180,18 @@
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+}
+
+.heroTitleBtn {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  font: inherit;
+  font-size: inherit;
+  font-weight: inherit;
+  letter-spacing: inherit;
+  display: inline;
 }
 
 .heroDesc {
