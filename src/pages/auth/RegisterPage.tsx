@@ -10,7 +10,6 @@ export default function RegisterPage() {
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
-  const [success, setSuccess] = useState(false)
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
@@ -25,10 +24,7 @@ export default function RegisterPage() {
     const { error } = await supabase.auth.signUp({
       email,
       password,
-      options: {
-        data: { full_name: fullName },
-        emailRedirectTo: 'https://one-wallet-six.vercel.app/login',
-      },
+      options: { data: { full_name: fullName } },
     })
 
     if (error) {
@@ -38,28 +34,9 @@ export default function RegisterPage() {
         setError(error.message)
       }
     } else {
-      setSuccess(true)
+      navigate('/home')
     }
     setLoading(false)
-  }
-
-  if (success) {
-    return (
-      <div className={styles.page}>
-        <div className={styles.confirmBox}>
-          <span className={styles.confirmEmoji}>📧</span>
-          <h2 className={styles.confirmTitle}>בדוק את האימייל שלך!</h2>
-          <p className={styles.confirmText}>
-            שלחנו לך אימייל אישור לכתובת<br />
-            <span className={styles.confirmEmail}>{email}</span><br /><br />
-            לחץ על הקישור באימייל כדי לאשר את החשבון ואז תוכל להיכנס.
-          </p>
-          <button type="button" className="btn btn-primary" onClick={() => navigate('/login')}>
-            אל מסך הכניסה
-          </button>
-        </div>
-      </div>
-    )
   }
 
   return (
