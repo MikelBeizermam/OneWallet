@@ -70,7 +70,7 @@ async function toBase64(file: File, maxW = 900, quality = 0.78): Promise<string>
 export default function AddCardPage() {
   const navigate = useNavigate()
   const { user } = useAuth()
-  const { refetch, cards, plan } = useCards()
+  const { refetch, cards, plan, loading: cardsLoading } = useCards()
   const calendarRef = useRef<HTMLInputElement>(null)
   const expiryCalendarRef = useRef<HTMLInputElement>(null)
   const idExpiryCalendarRef = useRef<HTMLInputElement>(null)
@@ -274,6 +274,16 @@ export default function AddCardPage() {
 
   if (cropSrc) {
     return <CardCropper imageSrc={cropSrc} onCropDone={handleCropDone} onCancel={handleCropCancel} />
+  }
+
+  if (cardsLoading) {
+    return (
+      <div className={styles.page}>
+        <div className={styles.loadingWrap}>
+          <div className="spinner" />
+        </div>
+      </div>
+    )
   }
 
   if (plan === 'free' && cards.length >= 3) {

@@ -216,6 +216,14 @@
   background: var(--color-accent);
 }
 
+.loadingWrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  min-height: 100dvh;
+}
+
 /* Free plan limit gate */
 .limitGate {
   flex: 1;
