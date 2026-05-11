@@ -70,15 +70,12 @@ export default function LoginPage() {
         <button className="btn btn-primary" type="submit" disabled={loading}>
           {loading ? <span className="spinner" /> : 'כניסה'}
         </button>
-      </form>
 
-      <div className={styles.footer}>
         <p className={styles.switchText}>
           אין לך חשבון?{' '}
           <Link to="/register" className={styles.switchLink}>הצטרף עכשיו</Link>
         </p>
-
-      </div>
+      </form>
     </div>
   )
 }
