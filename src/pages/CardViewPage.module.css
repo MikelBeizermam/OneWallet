@@ -330,6 +330,18 @@
   gap: var(--space-4);
 }
 
+@media (min-width: 600px) {
+  .modalOverlay {
+    align-items: center;
+    padding-bottom: 0;
+  }
+
+  .modal {
+    border-radius: var(--radius-lg);
+    max-width: 420px;
+  }
+}
+
 .modalTitle {
   font-size: 18px;
   font-weight: 700;
