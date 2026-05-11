@@ -130,7 +130,7 @@ export default function CardViewPage() {
             )}
             <div className={styles.cardInner}>
               <div className={styles.cardTop}>
-                <span className={styles.cardIcon}>{template.icon}</span>
+                <template.icon size={28} strokeWidth={1.8} className={styles.cardIcon} />
                   </div>
               <div className={styles.cardBottom}>
                 <h2 className={styles.cardName}>{card.name}</h2>

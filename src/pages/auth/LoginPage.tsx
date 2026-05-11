@@ -68,7 +68,7 @@ export default function LoginPage() {
         <Link to="/forgot-password" className={styles.forgotLink}>שכחת את הסיסמה?</Link>
 
         <button className="btn btn-primary" type="submit" disabled={loading}>
-          {loading ? <span className="spinner" /> : <>כניסה 👋</>}
+          {loading ? <span className="spinner" /> : 'כניסה'}
         </button>
       </form>
 

@@ -72,7 +72,7 @@ export function WalletCard({ card, compact = false, disableLongPress = false, on
               className={styles.iconBadge}
               style={{ background: template.accentColor + '33' } as React.CSSProperties}
             >
-              <span>{template.icon}</span>
+              <template.icon size={22} color={template.textColor} strokeWidth={1.8} />
             </div>
           </div>
           <div className={styles.bottom}>
@@ -156,7 +156,7 @@ function EnlargedCard({ card, template, onClose }: {
         )}
         <div className={styles.enlargedInner}>
           <div className={styles.enlargedTop}>
-            <span className={styles.enlargedIcon}>{template.icon}</span>
+            <span className={styles.enlargedIcon}><template.icon size={32} color={template.textColor} strokeWidth={1.8} /></span>
             <span className={styles.enlargedCategory}>{CATEGORY_LABELS[card.category]}</span>
           </div>
           <div className={styles.enlargedBottom}>

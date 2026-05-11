@@ -1,5 +1,15 @@
 import type { CardCategory } from '@/types/database'
 import buymeLogoUrl from '@/assets/gift-buyme.png'
+import type { LucideIcon } from 'lucide-react'
+import {
+  CreditCard,
+  Car,
+  Target,
+  Gift,
+  GraduationCap,
+  Contact,
+  Layers,
+} from 'lucide-react'
 
 export interface CardTemplate {
   id: string
@@ -8,7 +18,7 @@ export interface CardTemplate {
   bgColor: string
   textColor: string
   accentColor: string
-  icon: string
+  icon: LucideIcon
   bgImageUrl?: string
   hidden?: boolean
 }
@@ -21,7 +31,7 @@ export const CARD_TEMPLATES: CardTemplate[] = [
     bgColor: '#4A96B8',
     textColor: '#FFFFFF',
     accentColor: '#A8D8EF',
-    icon: '🪪',
+    icon: CreditCard,
   },
   {
     id: 'license_il',
@@ -30,7 +40,7 @@ export const CARD_TEMPLATES: CardTemplate[] = [
     bgColor: '#8C7355',
     textColor: '#FAF8F5',
     accentColor: '#D4B896',
-    icon: '🚗',
+    icon: Car,
   },
   {
     id: 'loyalty',
@@ -39,7 +49,7 @@ export const CARD_TEMPLATES: CardTemplate[] = [
     bgColor: '#1C2526',
     textColor: '#FAF8F5',
     accentColor: '#6B7280',
-    icon: '🔫',
+    icon: Target,
   },
   {
     id: 'gift',
@@ -48,7 +58,7 @@ export const CARD_TEMPLATES: CardTemplate[] = [
     bgColor: '#7C3AED',
     textColor: '#FFFFFF',
     accentColor: '#DDD6FE',
-    icon: '🎁',
+    icon: Gift,
   },
   {
     id: 'gift-general',
@@ -57,7 +67,7 @@ export const CARD_TEMPLATES: CardTemplate[] = [
     bgColor: '#080010',
     textColor: '#FFFFFF',
     accentColor: '#9333EA',
-    icon: '🎁',
+    icon: Gift,
     bgImageUrl: '/images/gift-general.svg',
     hidden: true,
   },
@@ -68,7 +78,7 @@ export const CARD_TEMPLATES: CardTemplate[] = [
     bgColor: '#F5A623',
     textColor: '#FFFFFF',
     accentColor: '#FDE68A',
-    icon: '🎁',
+    icon: Gift,
     bgImageUrl: buymeLogoUrl,
     hidden: true,
   },
@@ -79,7 +89,7 @@ export const CARD_TEMPLATES: CardTemplate[] = [
     bgColor: '#1E3A8A',
     textColor: '#FFFFFF',
     accentColor: '#93C5FD',
-    icon: '🎓',
+    icon: GraduationCap,
   },
   {
     id: 'visit',
@@ -88,7 +98,7 @@ export const CARD_TEMPLATES: CardTemplate[] = [
     bgColor: '#FAF8F5',
     textColor: '#1A1208',
     accentColor: '#8C7355',
-    icon: '📇',
+    icon: Contact,
   },
   {
     id: 'other',
@@ -97,7 +107,7 @@ export const CARD_TEMPLATES: CardTemplate[] = [
     bgColor: '#F0EBE3',
     textColor: '#1A1208',
     accentColor: '#8C7355',
-    icon: '🗂️',
+    icon: Layers,
   },
 ]
 

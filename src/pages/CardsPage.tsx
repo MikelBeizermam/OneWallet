@@ -3,17 +3,19 @@ import { useNavigate } from 'react-router-dom'
 import { useCards } from '@/hooks/useCards'
 import { WalletCard } from '@/components/WalletCard'
 import type { CardCategory } from '@/types/database'
+import type { LucideIcon } from 'lucide-react'
+import { Layers, CreditCard, Car, Target, Gift, GraduationCap, Contact, ClipboardList } from 'lucide-react'
 import styles from './CardsPage.module.css'
 
-const CATEGORIES: Array<{ key: 'all' | CardCategory; label: string; emoji: string }> = [
-  { key: 'all',     label: 'הכל',        emoji: '🗂️' },
-  { key: 'id',      label: 'תעודות',     emoji: '🪪' },
-  { key: 'license', label: 'רישיונות',   emoji: '🚗' },
-  { key: 'loyalty', label: 'רישיון נשק', emoji: '🔫' },
-  { key: 'gift',    label: 'גיפט קארד',  emoji: '🎁' },
-  { key: 'student', label: 'סטודנט',     emoji: '🎓' },
-  { key: 'visit',   label: 'ביקור',      emoji: '📇' },
-  { key: 'other',   label: 'אחר',        emoji: '📋' },
+const CATEGORIES: Array<{ key: 'all' | CardCategory; label: string; icon: LucideIcon }> = [
+  { key: 'all',     label: 'הכל',        icon: Layers },
+  { key: 'id',      label: 'תעודות',     icon: CreditCard },
+  { key: 'license', label: 'רישיונות',   icon: Car },
+  { key: 'loyalty', label: 'רישיון נשק', icon: Target },
+  { key: 'gift',    label: 'גיפט קארד',  icon: Gift },
+  { key: 'student', label: 'סטודנט',     icon: GraduationCap },
+  { key: 'visit',   label: 'ביקור',      icon: Contact },
+  { key: 'other',   label: 'אחר',        icon: ClipboardList },
 ]
 
 export default function CardsPage() {
@@ -83,7 +85,7 @@ export default function CardsPage() {
             className={`${styles.catPill} ${activeCategory === cat.key ? styles.catPillActive : ''}`}
             onClick={() => setActiveCategory(cat.key)}
           >
-            <span>{cat.emoji}</span>
+            <cat.icon size={14} strokeWidth={1.8} />
             <span>{cat.label}</span>
             {countByCategory[cat.key] ? (
               <span className={styles.catCount}>{countByCategory[cat.key]}</span>
@@ -100,7 +102,7 @@ export default function CardsPage() {
           </div>
         ) : filtered.length === 0 ? (
           <div className={styles.empty}>
-            <span className={styles.emptyEmoji}>🗂️</span>
+            <Layers size={48} strokeWidth={1.3} className={styles.emptyEmoji} />
             <p className={styles.emptyText}>
               {search ? `לא נמצאו כרטיסים עבור "${search}"` : 'אין כרטיסים בקטגוריה זו'}
             </p>

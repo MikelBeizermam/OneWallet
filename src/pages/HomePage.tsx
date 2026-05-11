@@ -21,6 +21,7 @@ import {
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
+import { Lock } from 'lucide-react'
 import styles from './HomePage.module.css'
 
 
@@ -30,6 +31,9 @@ export default function HomePage() {
   const { cards, loading, reorderCards } = useCards()
   const [isReordering, setIsReordering] = useState(false)
   const [localOrder, setLocalOrder] = useState<Card[]>([])
+  const [showUpgradeModal, setShowUpgradeModal] = useState(false)
+
+  const FREE_CARD_LIMIT = 3
 
   const sensors = useSensors(
     useSensor(MouseSensor, { activationConstraint: { distance: 5 } }),
@@ -117,6 +121,40 @@ export default function HomePage() {
         )}
       </div>
 
+      {!loading && !isReordering && (
+        <button
+          type="button"
+          className={styles.fab}
+          aria-label="הוסף כרטיס"
+          onClick={() => cards.length >= FREE_CARD_LIMIT ? setShowUpgradeModal(true) : navigate('/add')}
+        >
+          <PlusIcon />
+        </button>
+      )}
+
+      {showUpgradeModal && (
+        <div className={styles.modalOverlay} role="dialog" aria-modal="true">
+          <div className={styles.modal}>
+            <div className={styles.modalIcon}><Lock size={40} strokeWidth={1.5} /></div>
+            <h3 className={styles.modalTitle}>הגעת למגבלת הכרטיסים</h3>
+            <p className={styles.modalText}>
+              בגרסה החינמית ניתן לשמור עד {FREE_CARD_LIMIT} כרטיסים.{'\n'}
+              שדרג ל-Pro ותוסיף עד 10 כרטיסים!
+            </p>
+            <button
+              type="button"
+              className={styles.upgradeBtn}
+              onClick={() => { setShowUpgradeModal(false); navigate('/pro') }}
+            >
+              שדרג ל-Pro — ₪10 בלבד
+            </button>
+            <button type="button" className={styles.cancelModalBtn} onClick={() => setShowUpgradeModal(false)}>
+              אולי מאוחר יותר
+            </button>
+          </div>
+        </div>
+      )}
+
     </div>
   )
 }
@@ -144,6 +182,9 @@ function MenuIcon() {
 }
 function SortIcon() {
   return <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M3 6h18M7 12h10M11 18h2"/></svg>
+}
+function PlusIcon() {
+  return <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><path d="M12 5v14M5 12h14"/></svg>
 }
 function DragHandleIcon() {
   return <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><circle cx="9" cy="6" r="1" fill="currentColor"/><circle cx="15" cy="6" r="1" fill="currentColor"/><circle cx="9" cy="12" r="1" fill="currentColor"/><circle cx="15" cy="12" r="1" fill="currentColor"/><circle cx="9" cy="18" r="1" fill="currentColor"/><circle cx="15" cy="18" r="1" fill="currentColor"/></svg>

@@ -257,7 +257,7 @@ export default function AddCardPage() {
               style={{ '--card-bg': t.bgColor, '--card-color': t.textColor, '--card-muted': t.textColor + 'aa' } as React.CSSProperties}
               onClick={() => handleTemplateSelect(t.id, t.category, t.name)}
             >
-              <span className={styles.templateIcon}>{t.icon}</span>
+              <t.icon size={28} strokeWidth={1.8} className={styles.templateIcon} />
               <span className={styles.templateName}>{t.name}</span>
               <span className={styles.templateCategory}>{CATEGORY_LABELS[t.category]}</span>
             </button>
@@ -298,7 +298,7 @@ export default function AddCardPage() {
           )}
           <div className={styles.previewOverlay} />
           <div className={styles.previewInner}>
-            <span className={styles.previewIcon}>{template.icon}</span>
+            <template.icon size={28} strokeWidth={1.8} className={styles.previewIcon} />
             <div>
               <p className={styles.previewName}>{name || template.name}</p>
               {cardNumber && <p className={styles.previewNumber}>•••• {cardNumber.slice(-4)}</p>}

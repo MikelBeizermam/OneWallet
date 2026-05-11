@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom'
 import { useAuth } from '@/contexts/AuthContext'
 import { supabase } from '@/lib/supabase'
 import type { Profile } from '@/types/database'
+import type { LucideIcon } from 'lucide-react'
+import { Star, CreditCard, Bell, Lock, HelpCircle, Settings, Pencil } from 'lucide-react'
 import styles from './ProfilePage.module.css'
 
 export default function ProfilePage() {
@@ -88,11 +90,11 @@ export default function ProfilePage() {
 
         <div className={styles.planRow}>
           <span className={`${styles.planBadge} ${isPro ? styles.planBadgePro : ''}`}>
-            {isPro ? '⭐ Pro' : 'תוכנית חינמית'}
+            {isPro ? <><Star size={13} fill="currentColor" /> Pro</> : 'תוכנית חינמית'}
           </span>
           {!editing && (
             <button type="button" className={styles.editNameBtn} onClick={() => setEditing(true)}>
-              ✏️ ערוך שם
+              <Pencil size={14} /> ערוך שם
             </button>
           )}
         </div>
@@ -102,19 +104,19 @@ export default function ProfilePage() {
       <div className={styles.menu}>
         {!isPro && (
           <MenuItem
-            icon="⭐"
+            icon={Star}
             label="שדרג ל-Pro"
-            sub="₪10 לחודש · ביטול בכל עת"
+            sub="₪10 חד פעמי · עד 10 כרטיסים"
             accent
             onClick={() => navigate('/pro')}
           />
         )}
-        <MenuItem icon="🪪" label="הכרטיסים שלי" onClick={() => navigate('/cards')} />
-        <MenuItem icon="🔔" label="התראות" onClick={() => {}} />
-        <MenuItem icon="🔒" label="אבטחה" onClick={() => navigate('/settings')} />
-        <MenuItem icon="❓" label="עזרה ותמיכה" onClick={() => {}} />
+        <MenuItem icon={CreditCard} label="הכרטיסים שלי" onClick={() => navigate('/cards')} />
+        <MenuItem icon={Bell} label="התראות" onClick={() => {}} />
+        <MenuItem icon={Lock} label="אבטחה" onClick={() => navigate('/settings')} />
+        <MenuItem icon={HelpCircle} label="עזרה ותמיכה" onClick={() => {}} />
         {user?.email === 'miki199838@gmail.com' && (
-          <MenuItem icon="⚙️" label="ניהול מנהל" accent onClick={() => navigate('/admin')} />
+          <MenuItem icon={Settings} label="ניהול מנהל" accent onClick={() => navigate('/admin')} />
         )}
       </div>
 
@@ -129,12 +131,12 @@ export default function ProfilePage() {
   )
 }
 
-function MenuItem({ icon, label, sub, accent, onClick }: {
-  icon: string; label: string; sub?: string; accent?: boolean; onClick: () => void
+function MenuItem({ icon: Icon, label, sub, accent, onClick }: {
+  icon: LucideIcon; label: string; sub?: string; accent?: boolean; onClick: () => void
 }) {
   return (
     <button type="button" className={`${styles.menuItem} ${accent ? styles.menuItemAccent : ''}`} onClick={onClick}>
-      <span className={styles.menuIcon}>{icon}</span>
+      <span className={styles.menuIcon}><Icon size={20} strokeWidth={1.8} /></span>
       <span className={styles.menuContent}>
         <span className={styles.menuLabel}>{label}</span>
         {sub && <span className={styles.menuSub}>{sub}</span>}

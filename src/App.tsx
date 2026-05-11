@@ -14,6 +14,7 @@ import CardViewPage from '@/pages/CardViewPage'
 import ProfilePage from '@/pages/ProfilePage'
 import CardsPage from '@/pages/CardsPage'
 import ProUpgradePage from '@/pages/ProUpgradePage'
+import ProUpgradePageAlt from '@/pages/ProUpgradePageAlt'
 import ProSuccessPage from '@/pages/ProSuccessPage'
 import AdminDashboard from '@/pages/AdminDashboard'
 import SettingsPage from '@/pages/SettingsPage'
@@ -54,6 +55,7 @@ export default function App() {
             <Route path="/add" element={<Protected><AddCardPage /></Protected>} />
             <Route path="/profile" element={<Protected><ProfilePage /></Protected>} />
             <Route path="/pro" element={<Protected><ProUpgradePage /></Protected>} />
+            <Route path="/pro-alt" element={<Protected><ProUpgradePageAlt /></Protected>} />
             <Route path="/pro/success" element={<Protected><ProSuccessPage /></Protected>} />
             <Route path="/admin" element={<Protected><AdminDashboard /></Protected>} />
             <Route path="/settings" element={<Protected><SettingsPage /></Protected>} />

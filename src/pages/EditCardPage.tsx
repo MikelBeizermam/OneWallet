@@ -156,7 +156,7 @@ export default function EditCardPage() {
       >
         {imagePreview && <img src={imagePreview} alt="" className={styles.previewBg} aria-hidden="true" />}
         <div className={styles.previewInner}>
-          <span className={styles.previewIcon}>{template.icon}</span>
+          <template.icon size={28} strokeWidth={1.8} className={styles.previewIcon} />
           <div>
             <p className={styles.previewName}>{name || card.name}</p>
             {cardNumber && <p className={styles.previewNumber}>•••• {cardNumber.slice(-4)}</p>}
