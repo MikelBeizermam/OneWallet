@@ -52,6 +52,7 @@ export default function ProfilePage() {
     navigate('/login')
   }
 
+  const isAdmin = user?.email === 'miki199838@gmail.com'
   const isPro = profile?.plan === 'pro'
   const initial = (profile?.full_name ?? user?.email ?? '?')[0].toUpperCase()
 
@@ -89,8 +90,8 @@ export default function ProfilePage() {
         {saveMsg && <p className={styles.saveMsg}>{saveMsg}</p>}
 
         <div className={styles.planRow}>
-          <span className={`${styles.planBadge} ${isPro ? styles.planBadgePro : ''}`}>
-            {isPro ? <><Star size={13} fill="currentColor" /> Pro</> : 'תוכנית חינמית'}
+          <span className={`${styles.planBadge} ${isAdmin ? styles.planBadgeAdmin : isPro ? styles.planBadgePro : ''}`}>
+            {isAdmin ? '⚙ מנהל' : isPro ? <><Star size={13} fill="currentColor" /> Pro</> : 'תוכנית חינמית'}
           </span>
           {!editing && (
             <button type="button" className={styles.editNameBtn} onClick={() => setEditing(true)}>
@@ -102,7 +103,7 @@ export default function ProfilePage() {
 
       {/* Menu */}
       <div className={styles.menu}>
-        {!isPro && (
+        {!isPro && !isAdmin && (
           <MenuItem
             icon={Star}
             label="שדרג ל-Pro"

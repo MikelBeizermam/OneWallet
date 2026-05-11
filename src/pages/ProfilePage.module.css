@@ -107,6 +107,12 @@
   border-color: var(--color-primary);
 }
 
+.planBadgeAdmin {
+  background: #1a1a2e;
+  color: var(--color-white);
+  border-color: #1a1a2e;
+}
+
 .editNameBtn {
   font-size: 12px;
   color: var(--color-primary);

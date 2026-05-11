@@ -75,6 +75,10 @@
   border-color: var(--color-primary);
 }
 
+.statCard:last-child {
+  grid-column: span 2;
+}
+
 .statCardHighlight .statValue,
 .statCardHighlight .statLabel { color: var(--color-white); }
 
@@ -160,6 +164,11 @@
 .planPro {
   background: var(--color-primary);
   color: var(--color-white);
+}
+
+.planAdmin {
+  background: #d1fae5;
+  color: #065f46;
 }
 
 .date { font-size: 12px; color: var(--color-text-muted); font-family: var(--font-family); white-space: nowrap; }
@@ -294,7 +303,11 @@
   .hideOnMobile { display: block; }
 
   .statsGrid {
-    grid-template-columns: 1fr 1fr 1fr 1fr;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+  }
+
+  .statCard:last-child {
+    grid-column: span 1;
   }
 
   .tableHeader,

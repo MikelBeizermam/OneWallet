@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { supabase } from '@/lib/supabase'
 import { useAuth } from '@/contexts/AuthContext'
-import { Users, Star, CreditCard, UserPlus, ChevronLeft, X, Calendar, Mail } from 'lucide-react'
+import { Users, Star, CreditCard, UserPlus, ChevronLeft, X, Calendar, Mail, TrendingUp } from 'lucide-react'
 import styles from './AdminDashboard.module.css'
 
 const ADMIN_EMAIL = 'miki199838@gmail.com'
@@ -40,7 +40,9 @@ export default function AdminDashboard() {
   const fetchData = async () => {
     const { data } = await supabase.rpc('get_admin_users')
     const rows = (data ?? []) as Array<{ id: string; full_name: string | null; plan: string; created_at: string; email: string; card_count: number }>
-    setUsers(rows.map(r => ({ id: r.id, full_name: r.full_name, plan: r.plan, created_at: r.created_at, email: r.email, cardCount: r.card_count })))
+    const mapped = rows.map(r => ({ id: r.id, full_name: r.full_name, plan: r.plan, created_at: r.created_at, email: r.email, cardCount: r.card_count }))
+    mapped.sort((a, b) => (a.email === ADMIN_EMAIL ? -1 : b.email === ADMIN_EMAIL ? 1 : 0))
+    setUsers(mapped)
     setLoading(false)
   }
 
@@ -56,11 +58,15 @@ export default function AdminDashboard() {
     setLoadingCards(false)
   }
 
-  const totalUsers = users.length
-  const proUsers = users.filter(u => u.plan === 'pro').length
-  const totalCards = users.reduce((sum, u) => sum + u.cardCount, 0)
+  const realUsers = users.filter(u => u.email !== ADMIN_EMAIL)
+  const totalUsers = realUsers.length
+  const proUsers = realUsers.filter(u => u.plan === 'pro').length
+  const totalCards = realUsers.reduce((sum, u) => sum + u.cardCount, 0)
   const today = new Date().toISOString().slice(0, 10)
-  const newToday = users.filter(u => u.created_at.startsWith(today)).length
+  const newToday = realUsers.filter(u => u.created_at.startsWith(today)).length
+  const thisMonth = new Date().toISOString().slice(0, 7)
+  const proThisMonth = realUsers.filter(u => u.plan === 'pro' && u.created_at.startsWith(thisMonth)).length
+  const revenueThisMonth = proThisMonth * 10
 
   if (loading) {
     return (
@@ -85,6 +91,7 @@ export default function AdminDashboard() {
         <StatCard label="Pro" value={proUsers} icon={Star} highlight />
         <StatCard label="כרטיסים" value={totalCards} icon={CreditCard} />
         <StatCard label="הצטרפו היום" value={newToday} icon={UserPlus} />
+        <StatCard label="הכנסות החודש" value={`₪${revenueThisMonth}`} icon={TrendingUp} highlight />
       </div>
 
       <div className={styles.section}>
@@ -108,8 +115,8 @@ export default function AdminDashboard() {
                 <span className={styles.userEmail}>{u.email}</span>
               </span>
               <span className={styles.cardCount}>{u.cardCount}</span>
-              <span className={`${styles.plan} ${u.plan === 'pro' ? styles.planPro : ''}`}>
-                {u.plan === 'pro' ? 'Pro' : 'חינמי'}
+              <span className={`${styles.plan} ${u.email === ADMIN_EMAIL ? styles.planAdmin : u.plan === 'pro' ? styles.planPro : ''}`}>
+                {u.email === ADMIN_EMAIL ? 'מנהל' : u.plan === 'pro' ? 'Pro' : 'חינמי'}
               </span>
               <span className={`${styles.date} ${styles.hideOnMobile}`}>
                 {new Date(u.created_at).toLocaleDateString('he-IL')}
@@ -130,8 +137,8 @@ export default function AdminDashboard() {
             </div>
 
             <div className={styles.modalMeta}>
-              <span className={`${styles.plan} ${selectedUser.plan === 'pro' ? styles.planPro : ''}`}>
-                {selectedUser.plan === 'pro' ? 'Pro' : 'חינמי'}
+              <span className={`${styles.plan} ${selectedUser.email === ADMIN_EMAIL ? styles.planAdmin : selectedUser.plan === 'pro' ? styles.planPro : ''}`}>
+                {selectedUser.email === ADMIN_EMAIL ? 'מנהל' : selectedUser.plan === 'pro' ? 'Pro' : 'חינמי'}
               </span>
               <span className={styles.modalMetaItem}>
                 <Mail size={13} />
@@ -171,7 +178,7 @@ export default function AdminDashboard() {
 }
 
 function StatCard({ label, value, icon: Icon, highlight }: {
-  label: string; value: number; icon: typeof Users; highlight?: boolean
+  label: string; value: number | string; icon: typeof Users; highlight?: boolean
 }) {
   return (
     <div className={`${styles.statCard} ${highlight ? styles.statCardHighlight : ''}`}>
