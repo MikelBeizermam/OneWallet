@@ -1,5 +1,5 @@
 import { BrowserRouter, Routes, Route, Navigate, Outlet } from 'react-router-dom'
-import { AuthProvider } from '@/contexts/AuthContext'
+import { AuthProvider, useAuth } from '@/contexts/AuthContext'
 import { CardsProvider } from '@/contexts/CardsContext'
 import { ProtectedRoute } from '@/components/ProtectedRoute'
 import { BottomNav } from '@/components/BottomNav'
@@ -38,6 +38,16 @@ function Protected({ children }: { children: React.ReactNode }) {
   return <ProtectedRoute>{children}</ProtectedRoute>
 }
 
+function RootRedirect() {
+  const { session, loading } = useAuth()
+  if (loading) return (
+    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100dvh' }}>
+      <div className="spinner" style={{ borderTopColor: 'var(--color-primary)', borderColor: 'var(--color-border)' }} />
+    </div>
+  )
+  return <Navigate to={session ? '/home' : '/login'} replace />
+}
+
 export default function App() {
   return (
     <AuthProvider>
@@ -64,8 +74,9 @@ export default function App() {
             <Route path="/settings" element={<Protected><SettingsPage /></Protected>} />
           </Route>
 
-          {/* Landing */}
-          <Route path="/" element={<LandingPage />} />
+          {/* Root: logged in → app, guest → login */}
+          <Route path="/" element={<RootRedirect />} />
+          {/* Landing — marketing page */}
           <Route path="/landing" element={<LandingPage />} />
           <Route path="*" element={<Navigate to="/home" replace />} />
         </Routes>
