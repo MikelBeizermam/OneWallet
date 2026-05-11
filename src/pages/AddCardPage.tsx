@@ -2,6 +2,7 @@ import { useState, useRef, type FormEvent, type ChangeEvent } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { supabase } from '@/lib/supabase'
 import { useAuth } from '@/contexts/AuthContext'
+import { useCards } from '@/contexts/CardsContext'
 import { CARD_TEMPLATES, CATEGORY_LABELS, FIELD_LABELS } from '@/lib/cardTemplates'
 import { CardCropper } from '@/components/CardCropper'
 import type { CardCategory } from '@/types/database'
@@ -69,6 +70,7 @@ async function toBase64(file: File, maxW = 900, quality = 0.78): Promise<string>
 export default function AddCardPage() {
   const navigate = useNavigate()
   const { user } = useAuth()
+  const { refetch } = useCards()
   const calendarRef = useRef<HTMLInputElement>(null)
   const expiryCalendarRef = useRef<HTMLInputElement>(null)
   const idExpiryCalendarRef = useRef<HTMLInputElement>(null)
@@ -196,6 +198,7 @@ export default function AddCardPage() {
       setError('שגיאה בשמירת הכרטיס: ' + insertError.message)
     } else {
       navigate('/home')
+      refetch()
     }
     setLoading(false)
   }

@@ -2,6 +2,7 @@ import { useState, useEffect, useRef, type FormEvent, type ChangeEvent } from 'r
 import { useNavigate, useParams } from 'react-router-dom'
 import { supabase } from '@/lib/supabase'
 import { useAuth } from '@/contexts/AuthContext'
+import { useCards } from '@/contexts/CardsContext'
 import { getTemplate, CATEGORY_LABELS, FIELD_LABELS } from '@/lib/cardTemplates'
 import type { Card, CardCategory } from '@/types/database'
 import styles from './AddCardPage.module.css'
@@ -23,6 +24,7 @@ export default function EditCardPage() {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
   const { user } = useAuth()
+  const { refetch } = useCards()
   const fileRef = useRef<HTMLInputElement>(null)
   const calendarRef = useRef<HTMLInputElement>(null)
   const expiryCalendarRef = useRef<HTMLInputElement>(null)
@@ -115,6 +117,7 @@ export default function EditCardPage() {
       setError('שגיאה בשמירת הכרטיס: ' + error.message)
     } else {
       navigate(`/cards/${id}`)
+      refetch()
     }
     setSaving(false)
   }
