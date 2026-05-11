@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { useCards } from '@/hooks/useCards'
+import { useCards } from '@/contexts/CardsContext'
 import { WalletCard } from '@/components/WalletCard'
 import type { CardCategory } from '@/types/database'
 import type { LucideIcon } from 'lucide-react'

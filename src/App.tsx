@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route, Navigate, Outlet } from 'react-router-dom'
 import { AuthProvider } from '@/contexts/AuthContext'
+import { CardsProvider } from '@/contexts/CardsContext'
 import { ProtectedRoute } from '@/components/ProtectedRoute'
 import { BottomNav } from '@/components/BottomNav'
 import { Sidebar } from '@/components/Sidebar'
@@ -40,6 +41,7 @@ function Protected({ children }: { children: React.ReactNode }) {
 export default function App() {
   return (
     <AuthProvider>
+      <CardsProvider>
       <BrowserRouter>
         <Routes>
           {/* Public — no bottom nav */}
@@ -68,6 +70,7 @@ export default function App() {
           <Route path="*" element={<Navigate to="/home" replace />} />
         </Routes>
       </BrowserRouter>
+      </CardsProvider>
     </AuthProvider>
   )
 }

@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { supabase } from '@/lib/supabase'
 import { getTemplate, CATEGORY_LABELS } from '@/lib/cardTemplates'
-import { useCards } from '@/hooks/useCards'
+import { useCards } from '@/contexts/CardsContext'
 import type { Card } from '@/types/database'
 import styles from './CardViewPage.module.css'
 

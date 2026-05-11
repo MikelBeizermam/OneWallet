@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '@/contexts/AuthContext'
-import { useCards } from '@/hooks/useCards'
+import { useCards } from '@/contexts/CardsContext'
 import { WalletCard } from '@/components/WalletCard'
 import { WalletStack } from '@/components/WalletStack'
 import type { Card } from '@/types/database'
