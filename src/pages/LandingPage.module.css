@@ -208,6 +208,12 @@
   flex-wrap: wrap;
 }
 
+@media (max-width: 767px) {
+  .heroBtns {
+    justify-content: center;
+  }
+}
+
 .heroBtnPrimary {
   background: linear-gradient(135deg, #7a6040 0%, #9c6f3a 60%, #b8854a 100%);
   color: white;
