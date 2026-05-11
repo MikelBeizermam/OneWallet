@@ -392,3 +392,7 @@
   font-family: var(--font-family);
   padding: var(--space-1);
 }
+
+@media (max-width: 599px) {
+  .hero { display: none; }
+}
