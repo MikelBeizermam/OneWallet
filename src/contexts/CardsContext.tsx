@@ -7,6 +7,7 @@ interface CardsContextValue {
   cards: Card[]
   loading: boolean
   error: string | null
+  plan: 'free' | 'pro'
   refetch: () => Promise<void>
   deleteCard: (id: string) => Promise<unknown>
   reorderCards: (orderedIds: string[]) => Promise<void>
@@ -21,6 +22,7 @@ export function CardsProvider({ children }: { children: React.ReactNode }) {
   const [cards, setCards] = useState<Card[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [plan, setPlan] = useState<'free' | 'pro'>('free')
   const fetchedForUser = useRef<string | null>(null)
 
   const fetchCards = useCallback(async () => {
@@ -43,12 +45,14 @@ export function CardsProvider({ children }: { children: React.ReactNode }) {
     if (!user) {
       setCards([])
       setLoading(false)
+      setPlan('free')
       fetchedForUser.current = null
       return
     }
-    // Only fetch if we haven't fetched for this user yet
     if (fetchedForUser.current !== user.id) {
       fetchCards()
+      supabase.from('profiles').select('plan').eq('id', user.id).single()
+        .then(({ data }) => { if (data) setPlan(data.plan ?? 'free') })
     }
   }, [user, fetchCards])
 
@@ -79,7 +83,7 @@ export function CardsProvider({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <CardsContext.Provider value={{ cards, loading, error, refetch: fetchCards, deleteCard, reorderCards, addCard, updateCard }}>
+    <CardsContext.Provider value={{ cards, loading, error, plan, refetch: fetchCards, deleteCard, reorderCards, addCard, updateCard }}>
       {children}
     </CardsContext.Provider>
   )

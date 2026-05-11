@@ -70,7 +70,7 @@ async function toBase64(file: File, maxW = 900, quality = 0.78): Promise<string>
 export default function AddCardPage() {
   const navigate = useNavigate()
   const { user } = useAuth()
-  const { refetch } = useCards()
+  const { refetch, cards, plan } = useCards()
   const calendarRef = useRef<HTMLInputElement>(null)
   const expiryCalendarRef = useRef<HTMLInputElement>(null)
   const idExpiryCalendarRef = useRef<HTMLInputElement>(null)
@@ -274,6 +274,33 @@ export default function AddCardPage() {
 
   if (cropSrc) {
     return <CardCropper imageSrc={cropSrc} onCropDone={handleCropDone} onCancel={handleCropCancel} />
+  }
+
+  if (plan === 'free' && cards.length >= 3) {
+    return (
+      <div className={styles.page}>
+        <header className={styles.header}>
+          <button type="button" className={styles.backBtn} aria-label="חזרה" onClick={() => navigate(-1)}>
+            <ChevronIcon />
+          </button>
+          <h1 className={styles.title}>הוספת כרטיס</h1>
+          <div className={styles.headerSpacer} />
+        </header>
+        <div className={styles.limitGate}>
+          <div className={styles.limitGateEmoji}>🔒</div>
+          <h2 className={styles.limitGateTitle}>הגעת למגבלת הכרטיסים</h2>
+          <p className={styles.limitGateText}>
+            במסלול החינמי ניתן לשמור עד 3 כרטיסים.<br />שדרג ל-Pro לכרטיסים ללא הגבלה.
+          </p>
+          <button type="button" className={`btn btn-primary ${styles.limitGateUpgradeBtn}`} onClick={() => navigate('/pro')}>
+            ✨ שדרג ל-Pro
+          </button>
+          <button type="button" className={styles.limitGateBackBtn} onClick={() => navigate(-1)}>
+            חזרה
+          </button>
+        </div>
+      </div>
+    )
   }
 
   return (
