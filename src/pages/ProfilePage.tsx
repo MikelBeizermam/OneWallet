@@ -115,7 +115,7 @@ export default function ProfilePage() {
         <MenuItem icon={CreditCard} label="הכרטיסים שלי" onClick={() => navigate('/cards')} />
         <MenuItem icon={Bell} label="התראות" onClick={() => navigate('/notifications')} />
         <MenuItem icon={Lock} label="אבטחה" onClick={() => navigate('/settings')} />
-        <MenuItem icon={HelpCircle} label="עזרה ותמיכה" onClick={() => {}} />
+        <MenuItem icon={HelpCircle} label="עזרה ותמיכה" onClick={() => window.location.href = 'mailto:onewallet2026@gmail.com?subject=פנייה לתמיכה - OneWallet'} />
         {user?.email === 'miki199838@gmail.com' && (
           <MenuItem icon={Settings} label="ניהול מנהל" accent onClick={() => navigate('/admin')} />
         )}
