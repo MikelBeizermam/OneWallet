@@ -20,6 +20,7 @@ import ProSuccessPage from '@/pages/ProSuccessPage'
 import AdminDashboard from '@/pages/AdminDashboard'
 import SettingsPage from '@/pages/SettingsPage'
 import EditCardPage from '@/pages/EditCardPage'
+import NotificationsPage from '@/pages/NotificationsPage'
 import LandingPage from '@/pages/LandingPage'
 
 function AppLayout() {
@@ -41,8 +42,8 @@ function Protected({ children }: { children: React.ReactNode }) {
 function RootRedirect() {
   const { session, loading } = useAuth()
   if (loading) return (
-    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100dvh' }}>
-      <div className="spinner" style={{ borderTopColor: 'var(--color-primary)', borderColor: 'var(--color-border)' }} />
+    <div className="root-loading">
+      <div className="spinner" />
     </div>
   )
   return <Navigate to={session ? '/home' : '/login'} replace />
@@ -72,6 +73,7 @@ export default function App() {
             <Route path="/pro/success" element={<Protected><ProSuccessPage /></Protected>} />
             <Route path="/admin" element={<Protected><AdminDashboard /></Protected>} />
             <Route path="/settings" element={<Protected><SettingsPage /></Protected>} />
+            <Route path="/notifications" element={<Protected><NotificationsPage /></Protected>} />
           </Route>
 
           {/* Root: logged in → app, guest → login */}

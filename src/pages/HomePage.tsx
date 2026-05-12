@@ -21,6 +21,7 @@ import {
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
+import { NotificationBanners } from '@/components/NotificationBanners'
 import styles from './HomePage.module.css'
 
 
@@ -79,6 +80,8 @@ export default function HomePage() {
           )}
         </div>
       </header>
+
+      <NotificationBanners />
 
       <section className={styles.hero}>
         <h1 className={styles.greeting}>הארנק של {firstName}</h1>

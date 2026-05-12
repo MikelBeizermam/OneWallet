@@ -113,7 +113,7 @@ export default function ProfilePage() {
           />
         )}
         <MenuItem icon={CreditCard} label="הכרטיסים שלי" onClick={() => navigate('/cards')} />
-        <MenuItem icon={Bell} label="התראות" onClick={() => {}} />
+        <MenuItem icon={Bell} label="התראות" onClick={() => navigate('/notifications')} />
         <MenuItem icon={Lock} label="אבטחה" onClick={() => navigate('/settings')} />
         <MenuItem icon={HelpCircle} label="עזרה ותמיכה" onClick={() => {}} />
         {user?.email === 'miki199838@gmail.com' && (

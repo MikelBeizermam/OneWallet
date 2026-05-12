@@ -1,0 +1,102 @@
+.wrap {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: 0 var(--space-4) var(--space-2);
+}
+
+.bannerExpiry,
+.bannerGift {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  border-radius: var(--radius);
+  padding: var(--space-3) var(--space-4);
+  animation: slideDown 0.25s ease;
+}
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.bannerExpiry {
+  background: #FEF3C7;
+  border: 1px solid #FCD34D;
+}
+
+.bannerGift {
+  background: #F0FDF4;
+  border: 1px solid #86EFAC;
+}
+
+.bannerContent {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  flex: 1;
+  min-width: 0;
+}
+
+.bannerIcon {
+  font-size: 20px;
+  flex-shrink: 0;
+}
+
+.bannerText {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.bannerTitle {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--color-text);
+  font-family: var(--font-family);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.bannerSub {
+  font-size: 12px;
+  color: var(--color-text-muted);
+  font-family: var(--font-family);
+}
+
+.bannerActions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex-shrink: 0;
+}
+
+.viewBtn {
+  font-size: 13px;
+  font-weight: 600;
+  font-family: var(--font-family);
+  color: var(--color-primary);
+  padding: 4px 10px;
+  border-radius: var(--radius);
+  background: rgba(140, 115, 85, 0.1);
+  transition: background 0.15s;
+}
+
+.viewBtn:hover {
+  background: rgba(140, 115, 85, 0.2);
+}
+
+.dismissBtn {
+  font-size: 14px;
+  color: var(--color-text-muted);
+  padding: 4px 6px;
+  border-radius: var(--radius);
+  transition: background 0.15s;
+}
+
+.dismissBtn:hover {
+  background: rgba(0, 0, 0, 0.06);
+}

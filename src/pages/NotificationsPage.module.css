@@ -1,0 +1,236 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  min-height: 100dvh;
+  background: var(--color-background);
+  padding-bottom: calc(var(--nav-height) + var(--space-6));
+  gap: var(--space-4);
+}
+
+@media (min-width: 600px) {
+  .page {
+    max-width: 768px;
+    margin-inline: auto;
+    width: 100%;
+  }
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-4);
+}
+
+@media (min-width: 600px) {
+  .header {
+    padding: var(--space-6) var(--space-6) var(--space-2);
+  }
+}
+
+.backBtn {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-white);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  color: var(--color-text);
+}
+
+.title {
+  font-size: 17px;
+  font-weight: 700;
+  font-family: var(--font-family);
+}
+
+@media (min-width: 600px) {
+  .title { font-size: 20px; }
+}
+
+.headerSpacer {
+  width: 40px;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  padding: 0 var(--space-4);
+}
+
+@media (min-width: 600px) {
+  .content {
+    padding: 0 var(--space-6);
+    gap: var(--space-5);
+  }
+}
+
+.intro {
+  font-size: 14px;
+  color: var(--color-text-muted);
+  font-family: var(--font-family);
+  line-height: 1.6;
+}
+
+@media (min-width: 600px) {
+  .intro { font-size: 16px; }
+}
+
+.section {
+  background: var(--color-white);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+}
+
+.sectionTitle {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--color-text-muted);
+  padding: var(--space-3) var(--space-4);
+  border-bottom: 1px solid var(--color-border);
+  font-family: var(--font-family);
+}
+
+@media (min-width: 600px) {
+  .sectionTitle {
+    font-size: 13px;
+    padding: var(--space-3) var(--space-5);
+  }
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  border-bottom: 1px solid var(--color-border);
+  transition: background 0.1s;
+}
+
+.item:last-child {
+  border-bottom: none;
+}
+
+.item:hover {
+  background: var(--color-accent);
+}
+
+@media (min-width: 600px) {
+  .item {
+    padding: var(--space-5);
+    gap: var(--space-4);
+  }
+}
+
+.itemIcon {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+@media (min-width: 600px) {
+  .itemIcon {
+    width: 52px;
+    height: 52px;
+    border-radius: var(--radius-lg);
+  }
+}
+
+.itemIconWarning {
+  background: #FEF3C7;
+  color: #D97706;
+}
+
+.itemIconGift {
+  background: #F0FDF4;
+  color: #16A34A;
+}
+
+.itemText {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.itemTitle {
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--color-text);
+  font-family: var(--font-family);
+}
+
+@media (min-width: 600px) {
+  .itemTitle { font-size: 17px; }
+}
+
+.itemDesc {
+  font-size: 12px;
+  color: var(--color-text-muted);
+  font-family: var(--font-family);
+  line-height: 1.5;
+}
+
+@media (min-width: 600px) {
+  .itemDesc { font-size: 14px; }
+}
+
+/* Toggle switch */
+.toggle {
+  width: 48px;
+  height: 28px;
+  border-radius: 14px;
+  background: var(--color-border);
+  position: relative;
+  flex-shrink: 0;
+  transition: background 0.2s;
+}
+
+@media (min-width: 600px) {
+  .toggle {
+    width: 56px;
+    height: 32px;
+    border-radius: 16px;
+  }
+}
+
+.toggleOn {
+  background: var(--color-primary);
+}
+
+.toggleThumb {
+  position: absolute;
+  top: 3px;
+  right: 3px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: white;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+  transition: transform 0.2s;
+}
+
+@media (min-width: 600px) {
+  .toggleThumb {
+    width: 26px;
+    height: 26px;
+  }
+
+  .toggleOn .toggleThumb {
+    transform: translateX(-24px);
+  }
+}
+
+.toggleOn .toggleThumb {
+  transform: translateX(-20px);
+}
