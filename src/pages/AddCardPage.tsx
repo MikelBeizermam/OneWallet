@@ -100,6 +100,16 @@ export default function AddCardPage() {
     setSelectedTemplate(templateId)
     setSelectedCategory(category)
     setName(templateName)
+    setCardNumber('')
+    setDateDisplay('')
+    setPhone('')
+    setHolderName('')
+    setValidYear('')
+    setLicenseExpiry('')
+    setIdExpiry('')
+    setGiftBalance('')
+    setImageFile(null)
+    setImagePreview(null)
     if (category === 'gift') {
       setStep('gift-brand')
     } else {
