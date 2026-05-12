@@ -418,11 +418,12 @@ export default function AddCardPage() {
               value={cardNumber}
               onChange={e => setCardNumber(e.target.value)}
               inputMode="numeric"
+              maxLength={['id', 'license', 'student'].includes(selectedCategory) ? 9 : undefined}
             />
           </div>
         )}
 
-        {selectedCategory !== 'visit' && (
+        {selectedCategory !== 'visit' && selectedCategory !== 'license' && (
         <div className="input-group">
           <label className="input-label" htmlFor="card-date">{fieldLabels.dateLabel}</label>
           <div className={styles.dateRow}>

@@ -210,6 +210,7 @@ export default function EditCardPage() {
             value={cardNumber}
             onChange={e => setCardNumber(e.target.value)}
             inputMode="numeric"
+            maxLength={['id', 'license', 'student'].includes(category) ? 9 : undefined}
           />
         </div>
 
@@ -240,6 +241,7 @@ export default function EditCardPage() {
           </div>
         )}
 
+        {category !== 'license' && (
         <div className="input-group">
           <label className="input-label" htmlFor="edit-date">{fieldLabels.dateLabel}</label>
           <div className={styles.dateRow}>
@@ -270,6 +272,7 @@ export default function EditCardPage() {
             />
           </div>
         </div>
+        )}
 
         {category === 'id' && (
           <div className="input-group">
