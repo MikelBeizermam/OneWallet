@@ -391,6 +391,7 @@ export default function AddCardPage() {
               value={phone}
               onChange={e => setPhone(e.target.value)}
               inputMode="tel"
+              maxLength={10}
             />
           </div>
         )}
