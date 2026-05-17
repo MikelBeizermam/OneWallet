@@ -4,6 +4,7 @@ import { supabase } from '@/lib/supabase'
 import { useAuth } from '@/contexts/AuthContext'
 import { useCards } from '@/contexts/CardsContext'
 import { CARD_TEMPLATES, CATEGORY_LABELS, FIELD_LABELS } from '@/lib/cardTemplates'
+import { CardCropper } from '@/components/CardCropper'
 import type { CardCategory } from '@/types/database'
 import styles from './AddCardPage.module.css'
 
@@ -88,6 +89,7 @@ export default function AddCardPage() {
   const [giftBalance, setGiftBalance] = useState('')
   const [imageFile, setImageFile] = useState<File | null>(null)
   const [imagePreview, setImagePreview] = useState<string | null>(null)
+  const [cropSrc, setCropSrc] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
   const [converting, setConverting] = useState(false)
   const [error, setError] = useState('')
@@ -137,8 +139,25 @@ export default function AddCardPage() {
     const file = e.target.files?.[0]
     if (!file) return
     setConverting(true)
+    let finalFile: File = file
     try {
       const bitmap = await createImageBitmap(file)
+      const canvas = document.createElement('canvas')
+      canvas.width = bitmap.width
+      canvas.height = bitmap.height
+      canvas.getContext('2d')!.drawImage(bitmap, 0, 0)
+      bitmap.close()
+      const blob = await new Promise<Blob | null>(res => canvas.toBlob(res, 'image/jpeg', 0.95))
+      if (blob) finalFile = new File([blob], 'image.jpg', { type: 'image/jpeg' })
+    } catch {}
+    setConverting(false)
+    setCropSrc(URL.createObjectURL(finalFile))
+  }
+
+  const handleCropDone = async (croppedFile: File) => {
+    setCropSrc(null)
+    try {
+      const bitmap = await createImageBitmap(croppedFile)
       const canvas = document.createElement('canvas')
       canvas.width = Math.round(bitmap.width * 1.6)
       canvas.height = bitmap.height
@@ -146,15 +165,20 @@ export default function AddCardPage() {
       bitmap.close()
       const blob = await new Promise<Blob | null>(res => canvas.toBlob(res, 'image/jpeg', 0.92))
       if (blob) {
-        const stretched = new File([blob], 'image.jpg', { type: 'image/jpeg' })
+        const stretched = new File([blob], 'card-stretched.jpg', { type: 'image/jpeg' })
         setImageFile(stretched)
         setImagePreview(URL.createObjectURL(stretched))
+        return
       }
-    } catch {
-      setImageFile(file)
-      setImagePreview(URL.createObjectURL(file))
-    }
-    setConverting(false)
+    } catch {}
+    setImageFile(croppedFile)
+    setImagePreview(URL.createObjectURL(croppedFile))
+  }
+
+  const handleCropCancel = () => {
+    setCropSrc(null)
+    setImageFile(null)
+    setImagePreview(null)
   }
 
   const handleSubmit = async (e: FormEvent) => {
@@ -271,6 +295,10 @@ export default function AddCardPage() {
   }
 
   const template = CARD_TEMPLATES.find(t => t.id === selectedTemplate)
+
+  if (cropSrc) {
+    return <CardCropper imageSrc={cropSrc} onCropDone={handleCropDone} onCancel={handleCropCancel} />
+  }
 
   if (cardsLoading) {
     return (

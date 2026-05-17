@@ -3,7 +3,7 @@ import ReactCrop, { type Crop, type PixelCrop, centerCrop, makeAspectCrop } from
 import 'react-image-crop/dist/ReactCrop.css'
 import styles from './CardCropper.module.css'
 
-const CARD_ASPECT = 1125 / 369  // Apple Wallet strip ratio ≈ 3:1
+const CARD_ASPECT = 85.6 / 53.98  // standard card ratio
 
 interface Props {
   imageSrc: string
@@ -187,7 +187,7 @@ export function CardCropper({ imageSrc, onCropDone, onCancel }: Props) {
     <div className={styles.overlay}>
       <div className={styles.box}>
         <div className={styles.topBar}>
-          <p className={styles.hint}>בחר את אזור הכרטיס (פורמט רצועה)</p>
+          <p className={styles.hint}>חתוך את הכרטיס ללא רקע</p>
           <button
             type="button"
             className={styles.rotateBtn}
