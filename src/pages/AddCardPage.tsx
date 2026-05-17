@@ -394,7 +394,7 @@ export default function AddCardPage() {
         </label>
 
         <div className="input-group">
-          <label className="input-label" htmlFor="card-name">שם הכרטיס *</label>
+          <label className="input-label" htmlFor="card-name">{selectedCategory === 'id' ? 'שם בעל הכרטיס *' : 'שם הכרטיס *'}</label>
           <input
             id="card-name"
             className="input-field"
