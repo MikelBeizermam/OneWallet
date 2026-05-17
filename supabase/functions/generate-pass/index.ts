@@ -2,6 +2,9 @@ import { serve } from 'https://deno.land/std@0.168.0/http/server.ts'
 import { createClient } from 'npm:@supabase/supabase-js@2'
 import forge from 'npm:node-forge@1.3.1'
 import JSZip from 'npm:jszip@3.10.1'
+import jpeg from 'npm:jpeg-js@0.4.4'
+import { PNG } from 'npm:pngjs@7.0.0'
+import { Buffer } from 'node:buffer'
 
 const TEAM_ID = '45JRPW5TD5'
 const CORS = {
@@ -69,6 +72,12 @@ serve(async (req: Request) => {
     const signerKey = p12.getBags({ bagType: forge.pki.oids.pkcs8ShroudedKeyBag })[forge.pki.oids.pkcs8ShroudedKeyBag]![0].key!
     const wwdrCert = await getWwdr()
 
+    const meta = (card.metadata as Record<string, string>) ?? {}
+    const categoryLabels: Record<string, string> = {
+      id: 'תעודות', license: 'רישיונות', loyalty: 'רישיון נשק',
+      gift: 'גיפט קארד', student: 'סטודנט', visit: 'ביקור', other: 'אחר',
+    }
+
     // pass.json
     const passJson: Record<string, unknown> = {
       formatVersion: 1,
@@ -80,16 +89,15 @@ serve(async (req: Request) => {
       backgroundColor: categoryColor(card.category),
       foregroundColor: 'rgb(255, 255, 255)',
       labelColor: 'rgb(210, 195, 175)',
-      generic: {
-        primaryFields: [
-          { key: 'name', value: card.name, label: '', textAlignment: 'PKTextAlignmentRight' },
+      storeCard: {
+        headerFields: [],
+        primaryFields: [],
+        secondaryFields: [],
+        auxiliaryFields: [
+          ...(card.expiry_date ? [{ key: 'exp', value: card.expiry_date, label: 'תוקף', textAlignment: 'PKTextAlignmentRight' }] : []),
+          ...(card.card_number ? [{ key: 'num', value: card.card_number, label: "מס' רישיון", textAlignment: 'PKTextAlignmentRight' }] : []),
+          { key: 'name', value: card.name, label: 'שם', textAlignment: 'PKTextAlignmentRight' },
         ],
-        secondaryFields: card.card_number
-          ? [{ key: 'num', value: card.card_number, label: 'מספר', textAlignment: 'PKTextAlignmentRight' }]
-          : [],
-        auxiliaryFields: card.expiry_date
-          ? [{ key: 'exp', value: card.expiry_date, label: 'תוקף', textAlignment: 'PKTextAlignmentRight' }]
-          : [],
         backFields: [],
       },
     }
@@ -98,17 +106,70 @@ serve(async (req: Request) => {
     const files: Record<string, Uint8Array> = {}
     files['pass.json'] = new TextEncoder().encode(JSON.stringify(passJson))
 
-    // Background image (card scan)
+    // Strip image — fill mode: scale to fill strip, center-crop, no letterbox
     if (card.image_url) {
       try {
         const imgRes = await fetch(card.image_url)
         if (imgRes.ok) {
-          const img = new Uint8Array(await imgRes.arrayBuffer())
-          files['background.png'] = img
-          files['background@2x.png'] = img
-          files['background@3x.png'] = img
+          const rawBytes = new Uint8Array(await imgRes.arrayBuffer())
+          const contentType = imgRes.headers.get('content-type') ?? ''
+
+          let srcData: Uint8Array | null = null
+          let srcW = 0, srcH = 0
+
+          if (contentType.includes('jpeg') || contentType.includes('jpg') ||
+              (rawBytes[0] === 0xFF && rawBytes[1] === 0xD8)) {
+            const dec = jpeg.decode(rawBytes, { useTArray: true, maxMemoryUsageInMB: 512 })
+            srcData = dec.data as Uint8Array
+            srcW = dec.width
+            srcH = dec.height
+          }
+
+          if (srcData && srcW > 0 && srcH > 0) {
+            const STRIP_W = 1125, STRIP_H = 369
+            // Zoom-fit: show full card height, zoom in 1.5x horizontally for readability
+            const scale = Math.min(STRIP_W / srcW, STRIP_H / srcH) * 1.1
+            const scaledW = Math.round(srcW * scale)
+            const scaledH = Math.round(srcH * scale)
+            const offX = Math.round((STRIP_W - scaledW) / 2)
+            const offY = Math.round((STRIP_H - scaledH) / 2)
+
+            // Letterbox color = card category color (seamless with pass body)
+            const bgMatch = categoryColor(card.category).match(/rgb\((\d+),\s*(\d+),\s*(\d+)\)/)
+            const [bgR, bgG, bgB] = bgMatch ? [+bgMatch[1], +bgMatch[2], +bgMatch[3]] : [0, 0, 0]
+
+            const buf = Buffer.alloc(STRIP_W * STRIP_H * 4)
+            // Fill letterbox
+            for (let i = 0; i < STRIP_W * STRIP_H; i++) {
+              buf[i * 4] = bgR; buf[i * 4 + 1] = bgG; buf[i * 4 + 2] = bgB; buf[i * 4 + 3] = 255
+            }
+            // Copy scaled card image centered
+            for (let y = 0; y < scaledH; y++) {
+              for (let x = 0; x < scaledW; x++) {
+                const sx = Math.min(Math.floor(x / scale), srcW - 1)
+                const sy = Math.min(Math.floor(y / scale), srcH - 1)
+                const si = (sy * srcW + sx) * 4
+                const di = ((y + offY) * STRIP_W + (x + offX)) * 4
+                buf[di] = srcData[si]; buf[di + 1] = srcData[si + 1]
+                buf[di + 2] = srcData[si + 2]; buf[di + 3] = srcData[si + 3]
+              }
+            }
+
+            const stripPng = new PNG({ width: STRIP_W, height: STRIP_H })
+            stripPng.data = buf
+            const stripBytes = new Uint8Array(PNG.sync.write(stripPng))
+
+            console.log('Strip OK src:', srcW, 'x', srcH, '→ scale:', scale.toFixed(3), 'off:', offX, offY)
+            files['strip.png'] = stripBytes
+            files['strip@2x.png'] = stripBytes
+            files['strip@3x.png'] = stripBytes
+          } else {
+            console.log('IMAGE_SKIP: decode returned no data, src:', srcW, srcH)
+          }
         }
-      } catch { /* skip */ }
+      } catch (e) {
+        console.log('IMAGE_ERROR:', String(e))
+      }
     }
 
     // Minimal icon PNG (1×1 px)
