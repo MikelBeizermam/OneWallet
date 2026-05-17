@@ -395,7 +395,7 @@ export default function AddCardPage() {
           <input
             id="card-name"
             className="input-field"
-            placeholder={template?.name ?? 'שם הכרטיס'}
+            placeholder={selectedCategory === 'id' ? 'הכנס שם מלא' : 'הכנס שם כרטיס'}
             value={name}
             onChange={e => setName(e.target.value)}
             required
