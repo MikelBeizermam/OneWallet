@@ -127,20 +127,25 @@ serve(async (req: Request) => {
 
           if (srcData && srcW > 0 && srcH > 0) {
             const STRIP_W = 1125, STRIP_H = 369
-            // Images are pre-cropped to 3:1 strip ratio by the app — scale to fill exactly
-            const scale = Math.max(STRIP_W / srcW, STRIP_H / srcH)
+            const scale = Math.min(STRIP_W / srcW, STRIP_H / srcH) * 1.1
             const scaledW = Math.round(srcW * scale)
             const scaledH = Math.round(srcH * scale)
             const offX = Math.round((STRIP_W - scaledW) / 2)
             const offY = Math.round((STRIP_H - scaledH) / 2)
 
+            const bgMatch = categoryColor(card.category).match(/rgb\((\d+),\s*(\d+),\s*(\d+)\)/)
+            const [bgR, bgG, bgB] = bgMatch ? [+bgMatch[1], +bgMatch[2], +bgMatch[3]] : [0, 0, 0]
+
             const buf = Buffer.alloc(STRIP_W * STRIP_H * 4)
-            for (let y = 0; y < STRIP_H; y++) {
-              for (let x = 0; x < STRIP_W; x++) {
-                const sx = Math.min(Math.max(Math.floor((x - offX) / scale), 0), srcW - 1)
-                const sy = Math.min(Math.max(Math.floor((y - offY) / scale), 0), srcH - 1)
+            for (let i = 0; i < STRIP_W * STRIP_H; i++) {
+              buf[i * 4] = bgR; buf[i * 4 + 1] = bgG; buf[i * 4 + 2] = bgB; buf[i * 4 + 3] = 255
+            }
+            for (let y = 0; y < scaledH; y++) {
+              for (let x = 0; x < scaledW; x++) {
+                const sx = Math.min(Math.floor(x / scale), srcW - 1)
+                const sy = Math.min(Math.floor(y / scale), srcH - 1)
                 const si = (sy * srcW + sx) * 4
-                const di = (y * STRIP_W + x) * 4
+                const di = ((y + offY) * STRIP_W + (x + offX)) * 4
                 buf[di] = srcData[si]; buf[di + 1] = srcData[si + 1]
                 buf[di + 2] = srcData[si + 2]; buf[di + 3] = srcData[si + 3]
               }
