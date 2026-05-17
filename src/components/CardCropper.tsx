@@ -204,7 +204,6 @@ export function CardCropper({ imageSrc, onCropDone, onCancel }: Props) {
             crop={crop}
             onChange={c => setCrop(c)}
             onComplete={c => setCompletedCrop(c)}
-            aspect={CARD_ASPECT}
             keepSelection
           >
             <img
