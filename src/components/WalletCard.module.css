@@ -277,8 +277,6 @@
 
 @media (min-width: 600px) {
   .card {
-    height: 216px;
-    max-width: 420px;
-    margin-inline: auto;
+    height: 300px;
   }
 }
