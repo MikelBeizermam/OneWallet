@@ -86,7 +86,7 @@ serve(async (req: Request) => {
       teamIdentifier: TEAM_ID,
       organizationName: 'OneWallet',
       description: card.name,
-      backgroundColor: 'rgb(140, 115, 85)',
+      backgroundColor: 'rgb(26, 18, 8)',
       foregroundColor: 'rgb(255, 255, 255)',
       labelColor: 'rgb(210, 195, 175)',
       storeCard: {
