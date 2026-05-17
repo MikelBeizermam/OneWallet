@@ -96,7 +96,7 @@ serve(async (req: Request) => {
         auxiliaryFields: [
           ...(card.expiry_date ? [{ key: 'exp', value: card.expiry_date, label: 'תוקף', textAlignment: 'PKTextAlignmentRight' }] : []),
           ...(card.card_number ? [{ key: 'num', value: card.card_number, label: "מס' רישיון", textAlignment: 'PKTextAlignmentRight' }] : []),
-          { key: 'name', value: card.name, label: 'שם', textAlignment: 'PKTextAlignmentRight' },
+          { key: 'name', value: meta.holder_name || card.name, label: 'שם', textAlignment: 'PKTextAlignmentRight' },
         ],
         backFields: [],
       },
