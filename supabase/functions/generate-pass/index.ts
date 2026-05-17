@@ -154,14 +154,27 @@ serve(async (req: Request) => {
     const files: Record<string, Uint8Array> = {}
     files['pass.json'] = new TextEncoder().encode(JSON.stringify(passJson))
 
-    // Strip image — fill mode: scale to fill strip, center-crop, no letterbox
+    // Strip image
     if (card.image_url) {
       try {
-        const imgRes = await fetch(card.image_url)
-        if (imgRes.ok) {
-          const rawBytes = new Uint8Array(await imgRes.arrayBuffer())
-          const contentType = imgRes.headers.get('content-type') ?? ''
+        let rawBytes: Uint8Array
+        let contentType = ''
 
+        if (String(card.image_url).startsWith('data:')) {
+          // data URL — decode base64 directly, no fetch needed
+          const [header, b64] = String(card.image_url).split(',')
+          contentType = header.split(':')[1]?.split(';')[0] ?? ''
+          const bin = atob(b64)
+          rawBytes = new Uint8Array(bin.length)
+          for (let i = 0; i < bin.length; i++) rawBytes[i] = bin.charCodeAt(i)
+        } else {
+          const imgRes = await fetch(card.image_url)
+          if (!imgRes.ok) throw new Error('fetch failed')
+          rawBytes = new Uint8Array(await imgRes.arrayBuffer())
+          contentType = imgRes.headers.get('content-type') ?? ''
+        }
+
+        {
           let srcData: Uint8Array | null = null
           let srcW = 0, srcH = 0
 
