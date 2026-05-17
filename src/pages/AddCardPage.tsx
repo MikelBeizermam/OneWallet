@@ -96,7 +96,7 @@ export default function AddCardPage() {
 
   const fieldLabels = FIELD_LABELS[selectedCategory]
 
-  const handleTemplateSelect = (templateId: string, category: CardCategory, templateName: string) => {
+  const handleTemplateSelect = (templateId: string, category: CardCategory, _templateName: string) => {
     setSelectedTemplate(templateId)
     setSelectedCategory(category)
     setName('')
