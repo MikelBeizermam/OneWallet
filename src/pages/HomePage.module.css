@@ -396,3 +396,15 @@
 @media (max-width: 599px) {
   .hero { display: none; }
 }
+
+@media (min-width: 600px) {
+  .page {
+    max-width: 480px;
+    margin-inline: auto;
+    width: 100%;
+  }
+
+  .stack {
+    max-width: 100%;
+  }
+}
