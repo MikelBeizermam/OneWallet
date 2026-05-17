@@ -171,6 +171,12 @@ serve(async (req: Request) => {
             srcData = dec.data as Uint8Array
             srcW = dec.width
             srcH = dec.height
+          } else if (contentType.includes('png') ||
+              (rawBytes[0] === 0x89 && rawBytes[1] === 0x50 && rawBytes[2] === 0x4E && rawBytes[3] === 0x47)) {
+            const png = PNG.sync.read(Buffer.from(rawBytes))
+            srcData = new Uint8Array(png.data.buffer)
+            srcW = png.width
+            srcH = png.height
           }
 
           if (srcData && srcW > 0 && srcH > 0) {

@@ -117,10 +117,29 @@ export default function AddCardPage() {
     }
   }
 
-  const handleGiftBrandSelect = (brand: 'general' | 'buyme') => {
+  const handleGiftBrandSelect = async (brand: 'general' | 'buyme') => {
     if (brand === 'buyme') {
       setSelectedTemplate('gift-buyme')
       setName('BuyMe')
+      const bgUrl = CARD_TEMPLATES.find(t => t.id === 'gift-buyme')?.bgImageUrl
+      if (bgUrl) {
+        try {
+          const res = await fetch(bgUrl)
+          const blob = await res.blob()
+          const bitmap = await createImageBitmap(blob)
+          const canvas = document.createElement('canvas')
+          canvas.width = Math.round(bitmap.width * 1.6)
+          canvas.height = bitmap.height
+          canvas.getContext('2d')!.drawImage(bitmap, 0, 0, canvas.width, canvas.height)
+          bitmap.close()
+          const stretched = await new Promise<Blob | null>(r => canvas.toBlob(r, 'image/jpeg', 0.92))
+          if (stretched) {
+            const file = new File([stretched], 'brand.jpg', { type: 'image/jpeg' })
+            setImageFile(file)
+            setImagePreview(URL.createObjectURL(file))
+          }
+        } catch {}
+      }
     } else {
       setSelectedTemplate('gift-general')
     }
