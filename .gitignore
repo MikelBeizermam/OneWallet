@@ -32,3 +32,14 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
+
+# Apple certificates (sensitive)
+*.p12
+*.cer
+*.certSigningRequest
+supabase-email-template.html
+stitch_onewallet_miki/
+stitch_onewallet_miki.zip
+*.png
+!src/**/*.png
+!public/**/*.png
