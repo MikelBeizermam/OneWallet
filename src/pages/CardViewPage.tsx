@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { supabase } from '@/lib/supabase'
 import { getTemplate, CATEGORY_LABELS } from '@/lib/cardTemplates'
@@ -16,6 +16,32 @@ export default function CardViewPage() {
   const [deleting, setDeleting] = useState(false)
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
   const [showBalanceModal, setShowBalanceModal] = useState(false)
+  const [addingToWallet, setAddingToWallet] = useState(false)
+
+  const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent)
+
+  const handleAddToWallet = useCallback(async () => {
+    if (!id) return
+    setAddingToWallet(true)
+    try {
+      const res = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/generate-pass`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ cardId: id }),
+      })
+      if (!res.ok) throw new Error('שגיאה ביצירת הכרטיס')
+      const blob = await res.blob()
+      const url = URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      a.href = url
+      a.download = `${card?.name ?? 'card'}.pkpass`
+      a.click()
+      URL.revokeObjectURL(url)
+    } catch (e) {
+      alert('שגיאה בהוספה ל-Apple Wallet')
+    }
+    setAddingToWallet(false)
+  }, [id, card])
   const [spentAmount, setSpentAmount] = useState('')
   const [spentPlace, setSpentPlace] = useState('')
   const [savingBalance, setSavingBalance] = useState(false)
@@ -153,6 +179,25 @@ export default function CardViewPage() {
               <span>עריכה</span>
             </button>
           </div>
+
+          {isIOS && (
+            <button
+              type="button"
+              className={styles.walletBtn}
+              onClick={handleAddToWallet}
+              disabled={addingToWallet}
+              aria-label="הוסף ל-Apple Wallet"
+            >
+              {addingToWallet ? (
+                <span className={styles.walletBtnSpinner} />
+              ) : (
+                <>
+                  <WalletIcon />
+                  <span>הוסף ל-Apple Wallet</span>
+                </>
+              )}
+            </button>
+          )}
 
           {/* Gift balance */}
           {card.category === 'gift' && (
@@ -336,4 +381,7 @@ function EditIcon() {
 }
 function CloseIcon() {
   return <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+}
+function WalletIcon() {
+  return <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M16 12h.01"/><path d="M2 10h20"/></svg>
 }
