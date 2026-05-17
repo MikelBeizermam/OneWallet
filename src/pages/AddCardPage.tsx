@@ -364,9 +364,6 @@ export default function AddCardPage() {
           <div className={styles.previewInner}>
             <template.icon size={28} strokeWidth={1.8} className={styles.previewIcon} />
             <div>
-              {name && <p className={styles.previewName}>{name}</p>}
-              {cardNumber && <p className={styles.previewNumber}>•••• {cardNumber.slice(-4)}</p>}
-              {dateDisplay && <p className={styles.previewDate}>{dateDisplay}</p>}
             </div>
           </div>
         </div>
