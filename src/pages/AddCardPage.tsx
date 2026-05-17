@@ -74,7 +74,6 @@ export default function AddCardPage() {
   const calendarRef = useRef<HTMLInputElement>(null)
   const expiryCalendarRef = useRef<HTMLInputElement>(null)
   const idExpiryCalendarRef = useRef<HTMLInputElement>(null)
-  const fileInputRef = useRef<HTMLInputElement>(null)
 
   const [step, setStep] = useState<'template' | 'gift-brand' | 'form'>('template')
   const [selectedTemplate, setSelectedTemplate] = useState<string | null>(null)
@@ -91,7 +90,6 @@ export default function AddCardPage() {
   const [imageFile, setImageFile] = useState<File | null>(null)
   const [imagePreview, setImagePreview] = useState<string | null>(null)
   const [cropSrc, setCropSrc] = useState<string | null>(null)
-  const [showCameraGuide, setShowCameraGuide] = useState(false)
   const [loading, setLoading] = useState(false)
   const [converting, setConverting] = useState(false)
   const [error, setError] = useState('')
@@ -298,37 +296,6 @@ export default function AddCardPage() {
 
   const template = CARD_TEMPLATES.find(t => t.id === selectedTemplate)
 
-  if (showCameraGuide) {
-    return (
-      <div className={styles.guideOverlay}>
-        <div className={styles.guideBox}>
-          <p className={styles.guideTitle}>מקם את הכרטיס בתוך המסגרת</p>
-          <div className={styles.guideCardFrame}>
-            <div className={styles.cornerTR} />
-            <div className={styles.cornerTL} />
-            <div className={styles.cornerBR} />
-            <div className={styles.cornerBL} />
-            <p className={styles.guideFrameLabel}>כרטיס</p>
-          </div>
-          <p className={styles.guideHint}>צלם את הכרטיס על רקע אחיד ובתאורה טובה</p>
-          <div className={styles.guideActions}>
-            <button
-              type="button"
-              className={styles.guideOpenBtn}
-              onClick={() => { setShowCameraGuide(false); fileInputRef.current?.click() }}
-            >
-              <CameraIcon />
-              <span>פתח גלריה / מצלמה</span>
-            </button>
-            <button type="button" className={styles.guideCancelBtn} onClick={() => setShowCameraGuide(false)}>
-              ביטול
-            </button>
-          </div>
-        </div>
-      </div>
-    )
-  }
-
   if (cropSrc) {
     return <CardCropper imageSrc={cropSrc} onCropDone={handleCropDone} onCancel={handleCropCancel} />
   }
@@ -408,27 +375,23 @@ export default function AddCardPage() {
       <form className={styles.form} onSubmit={handleSubmit} noValidate>
         {error && <div className="alert alert-error">{error}</div>}
 
-        <button
-          type="button"
+        <label
           className={`${styles.uploadBtn} ${imagePreview ? styles.uploadBtnDone : ''}`}
           aria-label={imagePreview ? 'החלף תמונת כרטיס' : 'הוסף תמונת כרטיס'}
-          disabled={converting}
-          onClick={() => imagePreview ? fileInputRef.current?.click() : setShowCameraGuide(true)}
         >
           {converting ? <span className="spinner" /> : <CameraIcon />}
           <span>
             {converting ? 'מעבד תמונה...' : imagePreview ? '✓ תמונה נבחרה — לחץ להחלפה' : 'הוסף תמונה (אופציונלי)'}
           </span>
-        </button>
-        <input
-          ref={fileInputRef}
-          type="file"
-          accept="image/*"
-          aria-label="בחר תמונה לכרטיס"
-          className={styles.hiddenInput}
-          onChange={handleImageChange}
-          disabled={converting}
-        />
+          <input
+            type="file"
+            accept="image/*"
+            aria-label="בחר תמונה לכרטיס"
+            className={styles.hiddenInput}
+            onChange={handleImageChange}
+            disabled={converting}
+          />
+        </label>
 
         <div className="input-group">
           <label className="input-label" htmlFor="card-name">שם הכרטיס *</label>
