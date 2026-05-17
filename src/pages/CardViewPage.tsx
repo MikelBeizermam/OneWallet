@@ -144,9 +144,11 @@ export default function CardViewPage() {
           <div
             className={styles.cardVisual}
             style={{
-              '--card-bg': template.bgImageUrl && !card.image_url
-                ? `url(${template.bgImageUrl})`
-                : template.bgColor,
+              '--card-bg': card.image_url
+                ? '#111'
+                : template.bgImageUrl
+                  ? `url(${template.bgImageUrl})`
+                  : template.bgColor,
               '--card-color': template.textColor,
               backgroundSize: 'cover',
               backgroundPosition: 'center',
@@ -155,7 +157,7 @@ export default function CardViewPage() {
             {card.image_url && (
               <img src={card.image_url} alt="" className={styles.cardBgImage} aria-hidden="true" />
             )}
-            {template.bgImageUrl && !card.image_url && (
+            {(card.image_url || (template.bgImageUrl && !card.image_url)) && (
               <div className={styles.cardBrandOverlay} />
             )}
             <div className={styles.cardInner}>
