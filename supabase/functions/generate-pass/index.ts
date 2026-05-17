@@ -7,6 +7,11 @@ import { PNG } from 'npm:pngjs@7.0.0'
 import { Buffer } from 'node:buffer'
 
 const TEAM_ID = '45JRPW5TD5'
+const APP_URL = Deno.env.get('APP_URL') ?? 'https://onewallet.vercel.app'
+
+const BRAND_IMAGE_URL: Record<string, string> = {
+  'gift-buyme': `${APP_URL}/images/gift-buyme.png`,
+}
 const CORS = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, content-type',
@@ -155,20 +160,21 @@ serve(async (req: Request) => {
     files['pass.json'] = new TextEncoder().encode(JSON.stringify(passJson))
 
     // Strip image
-    if (card.image_url) {
+    const imageSource: string | null = card.image_url || BRAND_IMAGE_URL[card.template_id] || null
+    if (imageSource) {
       try {
         let rawBytes: Uint8Array
         let contentType = ''
 
-        if (String(card.image_url).startsWith('data:')) {
+        if (String(imageSource).startsWith('data:')) {
           // data URL — decode base64 directly, no fetch needed
-          const [header, b64] = String(card.image_url).split(',')
+          const [header, b64] = String(imageSource).split(',')
           contentType = header.split(':')[1]?.split(';')[0] ?? ''
           const bin = atob(b64)
           rawBytes = new Uint8Array(bin.length)
           for (let i = 0; i < bin.length; i++) rawBytes[i] = bin.charCodeAt(i)
         } else {
-          const imgRes = await fetch(card.image_url)
+          const imgRes = await fetch(imageSource)
           if (!imgRes.ok) throw new Error('fetch failed')
           rawBytes = new Uint8Array(await imgRes.arrayBuffer())
           contentType = imgRes.headers.get('content-type') ?? ''
