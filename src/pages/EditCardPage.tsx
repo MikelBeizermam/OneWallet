@@ -74,9 +74,24 @@ export default function EditCardPage() {
     setDateDisplay(fromNativeDate(e.target.value))
   }
 
-  const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
+  const handleImageChange = async (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (!file) return
+    try {
+      const bitmap = await createImageBitmap(file)
+      const canvas = document.createElement('canvas')
+      canvas.width = Math.round(bitmap.width * 1.6)
+      canvas.height = bitmap.height
+      canvas.getContext('2d')!.drawImage(bitmap, 0, 0, canvas.width, canvas.height)
+      bitmap.close()
+      const blob = await new Promise<Blob | null>(res => canvas.toBlob(res, 'image/jpeg', 0.92))
+      if (blob) {
+        const stretched = new File([blob], 'image.jpg', { type: 'image/jpeg' })
+        setImageFile(stretched)
+        setImagePreview(URL.createObjectURL(stretched))
+        return
+      }
+    } catch {}
     setImageFile(file)
     setImagePreview(URL.createObjectURL(file))
   }
