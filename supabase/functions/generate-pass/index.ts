@@ -41,6 +41,58 @@ function categoryColor(cat: string): string {
   return map[cat] ?? 'rgb(140, 115, 85)'
 }
 
+type Field = { key: string; value: string; label: string; textAlignment: string }
+const R = 'PKTextAlignmentRight'
+const f = (key: string, value: string, label: string): Field => ({ key, value, label, textAlignment: R })
+
+function buildFields(cat: string, card: Record<string, unknown>, meta: Record<string, string>): Field[] {
+  const name = String(card.name ?? '')
+  const num  = String(card.card_number ?? '')
+  const exp  = String(card.expiry_date ?? '')
+
+  switch (cat) {
+    case 'id':
+      return [
+        ...(num ? [f('num', num, 'מספר ת.ז.')] : []),
+        f('name', name, 'שם בעל הכרטיס'),
+      ]
+    case 'loyalty':
+      return [
+        ...(exp ? [f('exp', exp, 'תוקף')] : []),
+        ...(num ? [f('num', num, "מס' רישיון")] : []),
+        f('name', meta.holder_name || name, 'שם בעלים'),
+      ]
+    case 'student':
+      return [
+        ...(exp ? [f('dob', exp, 'תאריך לידה')] : []),
+        ...(num ? [f('id', num, 'מספר ת.ז.')] : []),
+      ]
+    case 'license':
+      return [
+        ...(num ? [f('id', num, 'תעודת זהות')] : []),
+        f('name', name, 'שם בעל הכרטיס'),
+      ]
+    case 'gift':
+      return [
+        ...(meta.balance ? [f('balance', `₪${meta.balance}`, 'יתרה')] : []),
+        ...(exp ? [f('exp', exp, 'תאריך תפוגה')] : []),
+        ...(num ? [f('code', num, 'קוד הכרטיס')] : []),
+        f('name', name, 'שם הכרטיס'),
+      ]
+    case 'visit':
+      return [
+        ...(meta.phone ? [f('phone', meta.phone, 'מספר פלאפון')] : []),
+        f('name', name, 'שם הכרטיס'),
+      ]
+    default:
+      return [
+        ...(exp ? [f('exp', exp, 'תוקף')] : []),
+        ...(num ? [f('num', num, 'מספר')] : []),
+        f('name', meta.holder_name || name, 'שם'),
+      ]
+  }
+}
+
 serve(async (req: Request) => {
   if (req.method === 'OPTIONS') return new Response('ok', { headers: CORS })
 
@@ -93,11 +145,7 @@ serve(async (req: Request) => {
         headerFields: [],
         primaryFields: [],
         secondaryFields: [],
-        auxiliaryFields: [
-          ...(card.expiry_date ? [{ key: 'exp', value: card.expiry_date, label: 'תוקף', textAlignment: 'PKTextAlignmentRight' }] : []),
-          ...(card.card_number ? [{ key: 'num', value: card.card_number, label: "מס' רישיון", textAlignment: 'PKTextAlignmentRight' }] : []),
-          { key: 'name', value: meta.holder_name || card.name, label: 'שם', textAlignment: 'PKTextAlignmentRight' },
-        ],
+        auxiliaryFields: buildFields(card.category, card, meta),
         backFields: [],
       },
     }
