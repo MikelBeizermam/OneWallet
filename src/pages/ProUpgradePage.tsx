@@ -36,11 +36,9 @@ export default function ProUpgradePage() {
       {paid ? (
         <div className={styles.successBox}>
           <div className={styles.successIcon}>✓</div>
-          <h2 className={styles.successTitle}>תודה על התשלום!</h2>
+          <h2 className={styles.successTitle}>כמעט שם!</h2>
           <p className={styles.successText}>
-            החשבון שלך יוגדר כ-Pro תוך 24 שעות.
-            <br />
-            נשלח לך עדכון ברגע שהחשבון מוכן.
+            לאחר התשלום, החשבון שלך יוגדר כ-PRO תוך 24 שעות.
           </p>
           <button type="button" className={styles.ctaBtn} onClick={() => navigate('/home')}>
             חזרה לארנק
