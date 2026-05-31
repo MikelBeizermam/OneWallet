@@ -1,10 +1,10 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { useAuth } from '@/contexts/AuthContext'
-import { supabase } from '@/lib/supabase'
 import type { LucideIcon } from 'lucide-react'
 import { CreditCard, Unlock, Cloud, Zap, Heart } from 'lucide-react'
 import styles from './ProUpgradePage.module.css'
+
+const BIT_PAYMENT_URL = 'https://www.bitpay.co.il/app/me/8ABC9095-092B-0CFC-3585-B33B1BA1690295A9'
 
 const FEATURES: { icon: LucideIcon; text: string }[] = [
   { icon: CreditCard, text: 'עד 10 כרטיסים במקום 3' },
@@ -16,29 +16,11 @@ const FEATURES: { icon: LucideIcon; text: string }[] = [
 
 export default function ProUpgradePage() {
   const navigate = useNavigate()
-  const { user } = useAuth()
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState('')
+  const [paid, setPaid] = useState(false)
 
-  const handleUpgrade = async () => {
-    if (!user) return
-    setLoading(true)
-    setError('')
-
-    try {
-      const { data, error } = await supabase.functions.invoke('create-checkout-session', {
-        body: { userId: user.id, email: user.email },
-      })
-
-      if (error) throw error
-      if (data?.url) {
-        window.location.href = data.url
-      }
-    } catch {
-      setError('שגיאה ביצירת תהליך התשלום. נסה שוב.')
-    } finally {
-      setLoading(false)
-    }
+  const handleUpgrade = () => {
+    window.open(BIT_PAYMENT_URL, '_blank')
+    setPaid(true)
   }
 
   return (
@@ -51,49 +33,60 @@ export default function ProUpgradePage() {
         <div className={styles.spacer} />
       </header>
 
-      <div className={styles.content}>
-        {/* Right col (RTL): Hero */}
-        <div className={styles.heroCol}>
-          <div className={styles.hero}>
-            <div className={styles.badge}>PRO</div>
-            <h1 className={styles.heroTitle}>OneWallet Pro</h1>
-            <p className={styles.heroSub}>הפוך את הארנק שלך לחכם באמת</p>
-            <div className={styles.priceBlock}>
-              <span className={styles.price}>₪10</span>
-              <span className={styles.pricePer}>תשלום חד פעמי</span>
+      {paid ? (
+        <div className={styles.successBox}>
+          <div className={styles.successIcon}>✓</div>
+          <h2 className={styles.successTitle}>תודה על התשלום!</h2>
+          <p className={styles.successText}>
+            החשבון שלך יוגדר כ-Pro תוך 24 שעות.
+            <br />
+            נשלח לך עדכון ברגע שהחשבון מוכן.
+          </p>
+          <button type="button" className={styles.ctaBtn} onClick={() => navigate('/home')}>
+            חזרה לארנק
+          </button>
+        </div>
+      ) : (
+        <div className={styles.content}>
+          <div className={styles.heroCol}>
+            <div className={styles.hero}>
+              <div className={styles.badge}>PRO</div>
+              <h1 className={styles.heroTitle}>OneWallet Pro</h1>
+              <p className={styles.heroSub}>הפוך את הארנק שלך לחכם באמת</p>
+              <div className={styles.priceBlock}>
+                <span className={styles.price}>₪10</span>
+                <span className={styles.pricePer}>תשלום חד פעמי</span>
+              </div>
+            </div>
+          </div>
+
+          <div className={styles.detailsCol}>
+            <div className={styles.featuresList}>
+              {FEATURES.map((f, i) => (
+                <div key={i} className={styles.featureRow}>
+                  <span className={styles.featureIcon}><f.icon size={24} strokeWidth={1.8} /></span>
+                  <span className={styles.featureText}>{f.text}</span>
+                  <CheckIcon />
+                </div>
+              ))}
+            </div>
+
+            <div className={styles.ctaSection}>
+              <button
+                type="button"
+                className={styles.ctaBtn}
+                onClick={handleUpgrade}
+              >
+                שדרג עכשיו — ₪10 בלבד
+              </button>
+              <p className={styles.ctaNote}>תשלום חד פעמי · לא יחויב שוב</p>
+              <button type="button" className={styles.skipBtn} onClick={() => navigate(-1)}>
+                אולי מאוחר יותר
+              </button>
             </div>
           </div>
         </div>
-
-        {/* Left col (RTL): Features + CTA */}
-        <div className={styles.detailsCol}>
-          <div className={styles.featuresList}>
-            {FEATURES.map((f, i) => (
-              <div key={i} className={styles.featureRow}>
-                <span className={styles.featureIcon}><f.icon size={24} strokeWidth={1.8} /></span>
-                <span className={styles.featureText}>{f.text}</span>
-                <CheckIcon />
-              </div>
-            ))}
-          </div>
-
-          <div className={styles.ctaSection}>
-            {error && <div className="alert alert-error">{error}</div>}
-            <button
-              type="button"
-              className={styles.ctaBtn}
-              onClick={handleUpgrade}
-              disabled={loading}
-            >
-              {loading ? <span className="spinner" /> : 'שדרג עכשיו — ₪10 בלבד'}
-            </button>
-            <p className={styles.ctaNote}>תשלום חד פעמי · לא יחויב שוב</p>
-            <button type="button" className={styles.skipBtn} onClick={() => navigate(-1)}>
-              אולי מאוחר יותר
-            </button>
-          </div>
-        </div>
-      </div>
+      )}
     </div>
   )
 }
