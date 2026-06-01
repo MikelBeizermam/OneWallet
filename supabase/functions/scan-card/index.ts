@@ -1,26 +1,28 @@
 import { corsHeaders } from '../_shared/cors.ts'
 
+const RULE = 'If a value cannot be read clearly, use null. Never write explanatory text as a value.'
+
 const PROMPTS: Record<string, string> = {
-  id: `This is an Israeli ID card. Extract the actual values and return ONLY this JSON (no explanation):
-{"name": "actual full name from card", "card_number": "actual 9-digit ID number", "expiry_date": "actual issue date as DD/MM/YYYY or null", "id_expiry": "actual expiry date as DD/MM/YYYY or null"}`,
+  id: `This is an Israeli ID card. Return ONLY this JSON, no explanation. ${RULE}
+{"name": "full name or null", "card_number": "9-digit ID number or null", "expiry_date": "issue date DD/MM/YYYY or null", "id_expiry": "expiry date DD/MM/YYYY or null"}`,
 
-  license: `This is an Israeli driving license. Extract the actual values and return ONLY this JSON (no explanation):
-{"name": "actual full name from card", "card_number": "actual 9-digit ID number", "expiry_date": "actual issue date as DD/MM/YYYY or null", "license_expiry": "actual expiry date as DD/MM/YYYY or null"}`,
+  license: `This is an Israeli driving license. Return ONLY this JSON, no explanation. ${RULE}
+{"name": "full name or null", "card_number": "9-digit ID number or null", "expiry_date": "issue date DD/MM/YYYY or null", "license_expiry": "expiry date DD/MM/YYYY or null"}`,
 
-  loyalty: `This is an Israeli weapon license. Extract the actual values and return ONLY this JSON (no explanation):
-{"name": "actual full name of license holder", "holder_name": "actual full name of license holder", "card_number": "actual license number", "expiry_date": "actual expiry date as DD/MM/YYYY or null"}`,
+  loyalty: `This is an Israeli weapon license. Return ONLY this JSON, no explanation. ${RULE}
+{"name": "license holder full name or null", "holder_name": "license holder full name or null", "card_number": "license number or null", "expiry_date": "expiry date DD/MM/YYYY or null"}`,
 
-  gift: `This is a gift card. Extract the actual values and return ONLY this JSON (no explanation):
-{"name": "actual brand or store name", "card_number": "actual card code or number", "expiry_date": "actual expiry date as DD/MM/YYYY or null"}`,
+  gift: `This is a gift card. Return ONLY this JSON, no explanation. ${RULE}
+{"name": "brand or store name or null", "card_number": "card code or null", "expiry_date": "expiry date DD/MM/YYYY or null"}`,
 
-  student: `This is a student ID card. Extract the actual values and return ONLY this JSON (no explanation):
-{"name": "actual full name of student", "card_number": "actual ID number", "expiry_date": "actual birth date as DD/MM/YYYY or null", "valid_year": "actual academic year e.g. 2024-2025 or null"}`,
+  student: `This is a student ID card. Return ONLY this JSON, no explanation. ${RULE}
+{"name": "student full name or null", "card_number": "ID number or null", "expiry_date": "birth date DD/MM/YYYY or null", "valid_year": "academic year e.g. 2024-2025 or null"}`,
 
-  visit: `This is a business card. Extract the actual values and return ONLY this JSON (no explanation):
-{"name": "actual person or business name", "phone": "actual phone number or null"}`,
+  visit: `This is a business card. Return ONLY this JSON, no explanation. ${RULE}
+{"name": "person or business name or null", "phone": "phone number or null"}`,
 
-  other: `This is a card. Extract visible information and return ONLY this JSON (no explanation):
-{"name": "actual card name or issuer", "card_number": "actual number on card or null", "expiry_date": "actual expiry date as DD/MM/YYYY or null"}`,
+  other: `This is a card. Return ONLY this JSON, no explanation. ${RULE}
+{"name": "card name or issuer or null", "card_number": "any number on card or null", "expiry_date": "expiry date DD/MM/YYYY or null"}`,
 }
 
 Deno.serve(async (req) => {
@@ -79,6 +81,14 @@ Deno.serve(async (req) => {
       return new Response(JSON.stringify({ error: 'Could not parse response', raw: text }), {
         status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       })
+    }
+
+    // Remove any values that are explanatory text instead of real data
+    const JUNK = /unable|cannot|not visible|not readable|unreadable|unclear|n\/a|unknown/i
+    for (const key of Object.keys(parsed)) {
+      if (typeof parsed[key] === 'string' && JUNK.test(parsed[key] as string)) {
+        parsed[key] = null
+      }
     }
 
     return new Response(JSON.stringify(parsed), {
