@@ -1,149 +1,28 @@
 import { corsHeaders } from '../_shared/cors.ts'
 
-// ── Parse raw OCR text per category ──────────────────────────────
-function parseDates(text: string): string[] {
-  const pattern = /\b(\d{1,2})[./](\d{1,2})[./](\d{2,4})\b/g
-  const results: string[] = []
-  let m
-  while ((m = pattern.exec(text)) !== null) {
-    const [, d, mo, y] = m
-    const year = y.length === 2 ? `20${y}` : y
-    results.push(`${d.padStart(2,'0')}/${mo.padStart(2,'0')}/${year}`)
-  }
-  return results
+const PROMPTS: Record<string, string> = {
+  id: `זהו כרטיס תעודת זהות ישראלי. חלץ את הפרטים הבאים והחזר JSON בלבד:
+{"name":"שם מלא","card_number":"מספר תעודת זהות 9 ספרות","expiry_date":"תאריך הנפקה DD/MM/YYYY","id_expiry":"תאריך תפוגה DD/MM/YYYY"}`,
+
+  license: `זהו רישיון נהיגה ישראלי. חלץ את הפרטים הבאים והחזר JSON בלבד:
+{"name":"שם מלא","card_number":"מספר תעודת זהות 9 ספרות","expiry_date":"תאריך הנפקה DD/MM/YYYY","license_expiry":"תאריך תפוגה DD/MM/YYYY"}`,
+
+  loyalty: `זהו רישיון נשק ישראלי. חלץ את הפרטים הבאים והחזר JSON בלבד:
+{"name":"שם בעל הרישיון","holder_name":"שם בעל הרישיון","card_number":"מספר הרישיון","expiry_date":"תאריך תפוגה DD/MM/YYYY"}`,
+
+  gift: `זהו כרטיס מתנה. חלץ את הפרטים הבאים והחזר JSON בלבד:
+{"name":"שם המותג או החנות","card_number":"קוד הכרטיס","expiry_date":"תאריך תפוגה DD/MM/YYYY"}`,
+
+  student: `זהו כרטיס סטודנט. חלץ את הפרטים הבאים והחזר JSON בלבד:
+{"name":"שם מלא של הסטודנט","card_number":"מספר תעודת זהות","expiry_date":"תאריך לידה DD/MM/YYYY","valid_year":"שנת לימודים למשל 2024-2025"}`,
+
+  visit: `זהו כרטיס ביקור. חלץ את הפרטים הבאים והחזר JSON בלבד:
+{"name":"שם האדם או העסק","phone":"מספר טלפון"}`,
+
+  other: `זהו כרטיס. חלץ את הפרטים הנראים לעין והחזר JSON בלבד:
+{"name":"שם הכרטיס או המנפיק","card_number":"מספר כלשהו על הכרטיס","expiry_date":"תאריך תפוגה DD/MM/YYYY"}`,
 }
 
-function parseNumbers(text: string): string[] {
-  return [...text.matchAll(/\b\d{7,16}\b/g)].map(m => m[0])
-}
-
-function parsePhone(text: string): string | null {
-  const m = text.match(/\b0\d[\d\s\-]{7,10}\b/)
-  return m ? m[0].replace(/\s/g, '-') : null
-}
-
-const SKIP_WORDS = new Set([
-  'Id', 'Of', 'Or', 'In', 'The', 'At', 'Is', 'By', 'To',
-  'Cno', 'Ono', 'Ano',
-  'International', 'Student', 'Union', 'Member', 'Card', 'Date',
-  'Birth', 'Academic', 'College', 'University', 'Institute', 'Valid',
-  'Driving', 'Licence', 'License', 'Passport', 'State', 'Israel',
-  'ID', 'STATE', 'ISRAEL', 'DRIVING', 'LICENCE', 'LICENSE', 'PASSPORT', 'VALID',
-  'INTERNATIONAL', 'STUDENT', 'UNION', 'MEMBER', 'CARD', 'ATIUN', 'DATE',
-  'BIRTH', 'ONO', 'CNO', 'ANO', 'ACADEMIC', 'COLLEGE', 'UNIVERSITY',
-])
-
-// Extract person name — finds best Title Case pair that looks like a real name
-function parsePersonName(text: string): string | null {
-  // Find all Title Case pairs (e.g. "Mikel Beizerman")
-  const titlePattern = /\b([A-Z][a-z]{2,14})\s+([A-Z][a-z]{2,14})\b/g
-  let m
-  while ((m = titlePattern.exec(text)) !== null) {
-    const [, first, last] = m
-    if (!SKIP_WORDS.has(first) && !SKIP_WORDS.has(last)) {
-      return `${first} ${last}`
-    }
-  }
-
-  // Fallback: ALL CAPS words filtered by skip list
-  const capsWords = (text.match(/\b[A-Z]{2,15}\b/g) ?? []).filter(w => !SKIP_WORDS.has(w))
-  if (capsWords.length >= 2) return `${capsWords[0]} ${capsWords[1]}`
-  if (capsWords.length === 1) return capsWords[0]
-
-  return null
-}
-
-// Extract ID number after "ID" keyword (e.g. "4d.ID 206466781")
-function parseIdAfterKeyword(text: string): string | null {
-  const m = text.match(/\bID\s+(\d{7,10})\b/i)
-  return m ? m[1] : null
-}
-
-function parseCardData(text: string, category: string): Record<string, string | null> {
-  const dates   = parseDates(text)
-  const numbers = parseNumbers(text)
-
-  const result: Record<string, string | null> = {
-    name: null, card_number: null, expiry_date: null,
-    holder_name: null, phone: null,
-    id_expiry: null, license_expiry: null, valid_year: null,
-  }
-
-  const personName = parsePersonName(text)
-
-  switch (category) {
-    case 'id':
-      // Israeli ID: number is 9 digits, name is FIRSTNAME LASTNAME in caps
-      result.name        = personName
-      result.card_number = parseIdAfterKeyword(text) ?? numbers.find(n => n.length === 9) ?? numbers[0] ?? null
-      result.expiry_date = dates[0] ?? null
-      result.id_expiry   = dates[1] ?? dates[0] ?? null
-      break
-
-    case 'license':
-      // Driving license: card_number = ID number (after "ID" keyword), name = person name
-      result.name           = personName
-      result.card_number    = parseIdAfterKeyword(text) ?? numbers.find(n => n.length === 9) ?? numbers[0] ?? null
-      result.expiry_date    = dates[0] ?? null
-      result.license_expiry = dates[1] ?? dates[0] ?? null
-      break
-
-    case 'loyalty': {
-      // Israeli weapon license — Hebrew text patterns
-      // Name: after "שם:" or "שם :"
-      const hebrewName = text.match(/שם\s*[:\-]?\s*([^\n\r]+)/)
-      const holderName = hebrewName?.[1]?.trim() ?? personName ?? null
-
-      // License number: after "מס'" or "מספר" or "מס:"
-      const licenseNum = text.match(/מס[''׳]?\s*[:\-]?\s*(\d{5,12})/)
-        ?? text.match(/\b1[0-9]{9}\b/)  // common Israeli weapon license format
-      const cardNum = licenseNum?.[1] ?? numbers[0] ?? null
-
-      // Expiry: after "תוקף" or "בתוקף עד"
-      const expiryMatch = text.match(/תוקף[^\d]*(\d{1,2}[./]\d{1,2}[./]\d{2,4})/)
-      const expiry = expiryMatch
-        ? expiryMatch[1].replace(/\./g, '/')
-        : dates[0] ?? null
-
-      result.name        = holderName
-      result.holder_name = holderName
-      result.card_number = cardNum
-      result.expiry_date = expiry
-      break
-    }
-
-    case 'gift': {
-      const giftCode = text.match(/\b[A-Z0-9]{4}[-\s]?[A-Z0-9]{4}[-\s]?[A-Z0-9]{4,}\b/)
-      result.card_number = giftCode?.[0] ?? numbers[0] ?? null
-      result.expiry_date = dates[0] ?? null
-      result.name        = personName ?? 'כרטיס מתנה'
-      break
-    }
-
-    case 'student': {
-      result.name        = personName
-      result.card_number = numbers.find(n => n.length === 9) ?? numbers[0] ?? null
-      result.expiry_date = dates[0] ?? null
-      const yearMatch    = text.match(/\b(20\d{2})[-–](20\d{2})\b/)
-      result.valid_year  = yearMatch ? yearMatch[0] : null
-      break
-    }
-
-    case 'visit':
-      result.phone = parsePhone(text)
-      result.name  = personName
-      break
-
-    default:
-      result.card_number = numbers[0] ?? null
-      result.expiry_date = dates[0] ?? null
-      result.name        = personName
-  }
-
-  return result
-}
-
-// ── Edge function ─────────────────────────────────────────────────
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response('ok', { headers: corsHeaders })
@@ -158,36 +37,51 @@ Deno.serve(async (req) => {
       })
     }
 
-    const apiKey = Deno.env.get('OCR_SPACE_API_KEY') || 'helloworld'
-    console.log('Using API key prefix:', apiKey.slice(0, 4))
+    const apiKey = Deno.env.get('ANTHROPIC_API_KEY')
+    if (!apiKey) throw new Error('ANTHROPIC_API_KEY not configured')
 
-    const form = new FormData()
-    form.append('base64Image', `data:${mediaType};base64,${imageBase64}`)
-    form.append('language', 'eng')
-    form.append('isOverlayRequired', 'false')
-    form.append('detectOrientation', 'true')
-    form.append('scale', 'true')
-    form.append('isTable', 'false')
-    form.append('OCREngine', '2')
+    const prompt = PROMPTS[category] ?? PROMPTS.other
 
-    const response = await fetch('https://api.ocr.space/parse/image', {
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
-      headers: { apikey: apiKey },
-      body: form,
+      headers: {
+        'x-api-key': apiKey,
+        'anthropic-version': '2023-06-01',
+        'content-type': 'application/json',
+      },
+      body: JSON.stringify({
+        model: 'claude-haiku-4-5',
+        max_tokens: 300,
+        messages: [{
+          role: 'user',
+          content: [
+            {
+              type: 'image',
+              source: { type: 'base64', media_type: mediaType, data: imageBase64 },
+            },
+            { type: 'text', text: prompt },
+          ],
+        }],
+      }),
     })
 
     const data = await response.json()
-    console.log('OCR full response:', JSON.stringify(data).slice(0, 500))
 
-    if (data.IsErroredOnProcessing) {
-      throw new Error(data.ErrorMessage?.[0] ?? 'OCR failed')
+    if (data.error) throw new Error(data.error.message ?? 'Claude API error')
+
+    const text = data?.content?.[0]?.text ?? ''
+
+    let parsed: Record<string, string | null> = {}
+    try {
+      const jsonMatch = text.match(/\{[\s\S]*\}/)
+      if (jsonMatch) parsed = JSON.parse(jsonMatch[0])
+    } catch {
+      return new Response(JSON.stringify({ error: 'Could not parse response', raw: text }), {
+        status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      })
     }
 
-    const rawText = data.ParsedResults?.[0]?.ParsedText ?? ''
-    console.log('OCR raw text:', rawText.slice(0, 300))
-    const parsed  = parseCardData(rawText, category)
-
-    return new Response(JSON.stringify({ ...parsed, _raw: rawText }), {
+    return new Response(JSON.stringify(parsed), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     })
   } catch (err) {
