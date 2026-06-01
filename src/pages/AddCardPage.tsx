@@ -93,8 +93,52 @@ export default function AddCardPage() {
   const [loading, setLoading] = useState(false)
   const [converting, setConverting] = useState(false)
   const [error, setError] = useState('')
+  const [scanning, setScanning] = useState(false)
+  const [scanSuccess, setScanSuccess] = useState(false)
 
   const fieldLabels = FIELD_LABELS[selectedCategory]
+
+  const handleScanCard = async () => {
+    if (!imagePreview) return
+    setScanning(true)
+    setScanSuccess(false)
+    try {
+      const res = await fetch(imagePreview)
+      const blob = await res.blob()
+      const base64 = await new Promise<string>((resolve, reject) => {
+        const reader = new FileReader()
+        reader.onload = () => resolve((reader.result as string).split(',')[1])
+        reader.onerror = reject
+        reader.readAsDataURL(blob)
+      })
+      const { data: { session } } = await supabase.auth.getSession()
+      const response = await fetch(
+        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/scan-card`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${session?.access_token ?? import.meta.env.VITE_SUPABASE_ANON_KEY}`,
+          },
+          body: JSON.stringify({ imageBase64: base64, mediaType: blob.type || 'image/jpeg', category: selectedCategory }),
+        }
+      )
+      const result = await response.json()
+      if (result.error) throw new Error(result.error)
+      if (result.name)          setName(result.name)
+      if (result.card_number)   setCardNumber(result.card_number)
+      if (result.expiry_date)   setDateDisplay(result.expiry_date)
+      if (result.holder_name)   setHolderName(result.holder_name)
+      if (result.phone)         setPhone(result.phone)
+      if (result.id_expiry)     setIdExpiry(result.id_expiry)
+      if (result.license_expiry) setLicenseExpiry(result.license_expiry)
+      if (result.valid_year)    setValidYear(result.valid_year)
+      setScanSuccess(true)
+    } catch {
+      setError('לא הצלחנו לזהות את הפרטים. מלא אותם ידנית.')
+    }
+    setScanning(false)
+  }
 
   const handleTemplateSelect = (templateId: string, category: CardCategory, _templateName: string) => {
     setSelectedTemplate(templateId)
@@ -421,6 +465,23 @@ export default function AddCardPage() {
 
       <form className={styles.form} onSubmit={handleSubmit} noValidate>
         {error && <div className="alert alert-error">{error}</div>}
+
+        {imagePreview && (
+          <button
+            type="button"
+            className={styles.scanBtn}
+            onClick={handleScanCard}
+            disabled={scanning}
+          >
+            {scanning ? (
+              <><span className="spinner" /> מזהה פרטים...</>
+            ) : scanSuccess ? (
+              <>✓ פרטים זוהו — סרוק שוב</>
+            ) : (
+              <>🔍 זהה פרטים אוטומטית</>
+            )}
+          </button>
+        )}
 
         <label
           className={`${styles.uploadBtn} ${imagePreview ? styles.uploadBtnDone : ''}`}

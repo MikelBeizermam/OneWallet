@@ -424,3 +424,23 @@
   font-size: 15px;
   font-family: var(--font-family);
 }
+
+/* OCR scan button */
+.scanBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  width: 100%;
+  padding: 13px;
+  background: #1a1a2e;
+  color: #fff;
+  border-radius: var(--radius);
+  font-size: 15px;
+  font-weight: 700;
+  font-family: var(--font-family);
+  transition: opacity 0.15s;
+  margin-bottom: var(--space-2);
+}
+.scanBtn:hover:not(:disabled) { opacity: 0.85; }
+.scanBtn:disabled { opacity: 0.6; }
