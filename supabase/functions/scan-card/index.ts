@@ -22,24 +22,23 @@ function parsePhone(text: string): string | null {
   return m ? m[0].replace(/\s/g, '-') : null
 }
 
-// Extract person name: English ALL-CAPS or Hebrew words
-function parsePersonName(text: string): string | null {
-  // Try Hebrew name first (2+ Hebrew words on same line)
-  const hebrewLine = text.split(/\r?\n/).find(l => {
-    const hebrewWords = l.match(/[א-ת]{2,}/g) ?? []
-    return hebrewWords.length >= 2
-  })
-  if (hebrewLine) {
-    const hw = hebrewLine.match(/[א-ת]{2,}/g) ?? []
-    if (hw.length >= 2) return hw.slice(0, 2).join(' ')
-  }
+const SKIP_WORDS = new Set([
+  'ID', 'STATE', 'ISRAEL', 'DRIVING', 'LICENCE', 'LICENSE', 'PASSPORT', 'VALID',
+  'INTERNATIONAL', 'STUDENT', 'UNION', 'MEMBER', 'CARD', 'ATIUN', 'DATE',
+  'BIRTH', 'ONO', 'ACADEMIC', 'COLLEGE', 'UNIVERSITY', 'INSTITUTE',
+])
 
-  // Fallback: English ALL-CAPS words
-  const capsWords = text.match(/\b[A-Z]{2,15}\b/g) ?? []
-  const skipWords = new Set(['ID', 'STATE', 'ISRAEL', 'DRIVING', 'LICENCE', 'LICENSE', 'PASSPORT', 'VALID'])
-  const nameWords = capsWords.filter(w => !skipWords.has(w))
-  if (nameWords.length >= 2) return `${nameWords[0]} ${nameWords[1]}`
-  if (nameWords.length === 1) return nameWords[0]
+// Extract person name — prefers "Firstname Lastname" (Title Case) over ALL CAPS
+function parsePersonName(text: string): string | null {
+  // 1. Look for "Firstname Lastname" in Title Case (e.g. "Mikel Beizerman")
+  const titleCaseMatch = text.match(/\b([A-Z][a-z]{1,14})\s+([A-Z][a-z]{1,14})\b/)
+  if (titleCaseMatch) return `${titleCaseMatch[1]} ${titleCaseMatch[2]}`
+
+  // 2. Fallback: ALL CAPS words filtered by skip list
+  const capsWords = (text.match(/\b[A-Z]{2,15}\b/g) ?? []).filter(w => !SKIP_WORDS.has(w))
+  if (capsWords.length >= 2) return `${capsWords[0]} ${capsWords[1]}`
+  if (capsWords.length === 1) return capsWords[0]
+
   return null
 }
 
