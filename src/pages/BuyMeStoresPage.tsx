@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { BUSINESSES, CATEGORIES, AREAS } from '@/data/buyme-businesses'
 import styles from './BuyMeStoresPage.module.css'
 
+
 export default function BuyMeStoresPage() {
   const navigate = useNavigate()
   const [search, setSearch] = useState('')
@@ -10,6 +11,11 @@ export default function BuyMeStoresPage() {
   const [selectedCategory, setSelectedCategory] = useState('all')
   const [selectedArea, setSelectedArea] = useState('כל הארץ')
   const [onlineOnly, setOnlineOnly] = useState(false)
+  const [failedImages, setFailedImages] = useState<Set<string>>(new Set())
+
+  const handleImageError = (id: string) => {
+    setFailedImages(prev => new Set(prev).add(id))
+  }
 
   const filtered = useMemo(() => {
     return BUSINESSES.filter(b => {
@@ -94,7 +100,7 @@ export default function BuyMeStoresPage() {
             className={`${styles.toggle} ${onlineOnly ? styles.toggleOn : ''}`}
             onClick={() => setOnlineOnly(v => !v)}
             role="switch"
-            aria-checked={onlineOnly ? 'true' : 'false'}
+            aria-checked={String(onlineOnly) as 'true' | 'false'}
             aria-label="מימוש אונליין בלבד"
             title="מימוש אונליין"
           >
@@ -107,8 +113,19 @@ export default function BuyMeStoresPage() {
       <div className={styles.grid}>
         {filtered.map(b => (
           <div key={b.id} className={styles.card}>
-            <div className={styles.cardImage}>
-              <img src={b.imageUrl} alt={b.name} className={styles.cardImg} loading="lazy" />
+            <div
+              className={`${styles.cardImage} ${failedImages.has(b.id) ? styles.imageFailed : ''}`}
+              data-category={b.category}
+            >
+              {!failedImages.has(b.id) && (
+                <img
+                  src={b.imageUrl}
+                  alt={b.name}
+                  className={styles.cardImg}
+                  loading="lazy"
+                  onError={() => handleImageError(b.id)}
+                />
+              )}
               <span className={styles.cardLogo}>
                 {b.logoText}
               </span>

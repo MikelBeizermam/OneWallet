@@ -237,6 +237,16 @@
   display: block;
 }
 
+.cardImage[data-category="food"]     { --fallback: linear-gradient(135deg, #e65100, #ff8f00); }
+.cardImage[data-category="hotels"]   { --fallback: linear-gradient(135deg, #0d47a1, #1976d2); }
+.cardImage[data-category="spa"]      { --fallback: linear-gradient(135deg, #880e4f, #c2185b); }
+.cardImage[data-category="exp"]      { --fallback: linear-gradient(135deg, #1b5e20, #388e3c); }
+.cardImage[data-category="shop"]     { --fallback: linear-gradient(135deg, #212121, #424242); }
+.cardImage[data-category="workshop"] { --fallback: linear-gradient(135deg, #4a148c, #7b1fa2); }
+.cardImage[data-category="new"]      { --fallback: linear-gradient(135deg, #F5A623, #f9a825); }
+
+.imageFailed { background: var(--fallback, #888); }
+
 .cardLogo {
   position: absolute;
   bottom: var(--space-2);
