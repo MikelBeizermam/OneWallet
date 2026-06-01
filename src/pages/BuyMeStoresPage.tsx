@@ -34,8 +34,8 @@ export default function BuyMeStoresPage() {
         <button type="button" className={styles.backBtn} onClick={() => navigate(-1)} aria-label="חזרה">
           <ChevronIcon />
         </button>
-        <img src="/buyme-logo.png" alt="BuyMe" className={styles.logo} onError={e => { (e.target as HTMLImageElement).style.display = 'none' }} />
-        <span className={styles.logoFallback}>BuyMe</span>
+        <span className={styles.logoText}>BuyMe</span>
+        <span className={styles.logoSub}>בתי עסק</span>
       </div>
 
       {/* Search bar */}
@@ -48,12 +48,15 @@ export default function BuyMeStoresPage() {
             value={searchInput}
             onChange={e => setSearchInput(e.target.value)}
             onKeyDown={e => e.key === 'Enter' && handleSearch()}
+            aria-label="חיפוש בית עסק"
           />
         </div>
         <select
           className={styles.areaSelect}
           value={selectedArea}
           onChange={e => setSelectedArea(e.target.value)}
+          aria-label="סינון לפי אזור"
+          title="סינון לפי אזור"
         >
           {AREAS.map(a => <option key={a} value={a}>{a}</option>)}
         </select>
@@ -72,7 +75,7 @@ export default function BuyMeStoresPage() {
               className={`${styles.catBtn} ${selectedCategory === cat.id ? styles.catBtnActive : ''}`}
               onClick={() => setSelectedCategory(cat.id)}
             >
-              <span className={styles.catCircle} style={{ background: cat.bg }}>
+              <span className={styles.catCircle} data-bg={cat.id}>
                 {cat.emoji}
               </span>
               <span className={styles.catLabel}>{cat.label}</span>
@@ -86,14 +89,17 @@ export default function BuyMeStoresPage() {
         <span className={styles.resultsCount}>{filtered.length} בתי עסק</span>
         <label className={styles.onlineToggle}>
           <span>מימוש אונליין</span>
-          <div
+          <button
+            type="button"
             className={`${styles.toggle} ${onlineOnly ? styles.toggleOn : ''}`}
             onClick={() => setOnlineOnly(v => !v)}
             role="switch"
-            aria-checked={onlineOnly}
+            aria-checked={onlineOnly ? 'true' : 'false'}
+            aria-label="מימוש אונליין בלבד"
+            title="מימוש אונליין"
           >
-            <div className={styles.toggleKnob} />
-          </div>
+            <span className={styles.toggleKnob} />
+          </button>
         </label>
       </div>
 
@@ -101,13 +107,14 @@ export default function BuyMeStoresPage() {
       <div className={styles.grid}>
         {filtered.map(b => (
           <div key={b.id} className={styles.card}>
-            <div className={styles.cardImage} style={{ background: b.bgColor }}>
-              <div className={styles.cardLogo} style={{ background: b.logoBg }}>
-                <span className={styles.cardLogoText}>{b.logoText}</span>
-              </div>
+            <div className={styles.cardImage}>
+              <img src={b.imageUrl} alt={b.name} className={styles.cardImg} loading="lazy" />
+              <span className={styles.cardLogo}>
+                {b.logoText}
+              </span>
               {b.isNew && <span className={styles.badgeNew}>חדש</span>}
               {b.canBook && <span className={styles.badgeBook}>הזמנת מקום</span>}
-              {b.online && <span className={styles.badgeOnline}>אונליין</span>}
+              {b.online && !b.canBook && !b.isNew && <span className={styles.badgeOnline}>אונליין</span>}
             </div>
             <div className={styles.cardBody}>
               <p className={styles.cardName}>{b.name}</p>
@@ -119,7 +126,16 @@ export default function BuyMeStoresPage() {
         {filtered.length === 0 && (
           <div className={styles.empty}>
             <p>לא נמצאו בתי עסק</p>
-            <button type="button" onClick={() => { setSearch(''); setSearchInput(''); setSelectedCategory('all'); setSelectedArea('כל הארץ'); setOnlineOnly(false) }}>
+            <button
+              type="button"
+              onClick={() => {
+                setSearch('')
+                setSearchInput('')
+                setSelectedCategory('all')
+                setSelectedArea('כל הארץ')
+                setOnlineOnly(false)
+              }}
+            >
               נקה סינון
             </button>
           </div>
