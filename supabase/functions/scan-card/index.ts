@@ -4,7 +4,8 @@ const RULE = 'If a value cannot be read clearly, use null. Never write explanato
 
 const PROMPTS: Record<string, string> = {
   id: `This is an Israeli ID card. Return ONLY this JSON, no explanation. ${RULE}
-{"name": "full name or null", "card_number": "9-digit ID number or null", "expiry_date": "issue date DD/MM/YYYY or null", "id_expiry": "expiry date DD/MM/YYYY or null"}`,
+Important: the card has 3 dates — birth date (תאריך לידה), issue date (תאריך הנפקה), expiry date (תאריך תפוגה). The issue date comes AFTER the birth date on the card.
+{"name": "full name or null", "card_number": "9-digit ID number or null", "expiry_date": "ISSUE date (הנפקה) DD/MM/YYYY — NOT the birth date", "id_expiry": "EXPIRY date (תפוגה) DD/MM/YYYY or null"}`,
 
   license: `This is an Israeli driving license. Return ONLY this JSON, no explanation. ${RULE}
 {"name": "full name or null", "card_number": "9-digit ID number or null", "expiry_date": "issue date DD/MM/YYYY or null", "license_expiry": "expiry date DD/MM/YYYY or null"}`,
