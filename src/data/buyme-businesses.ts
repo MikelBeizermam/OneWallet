@@ -142,7 +142,7 @@ export const BUSINESSES: Business[] = [
   {
     id: '21', name: 'ישרוטל', tagline: 'שרשרת מלונות פרמיום בישראל',
     category: 'hotels', areas: ['תל אביב והמרכז', 'ירושלים והסביבה', 'חיפה והצפון', 'באר שבע והדרום'], online: false,
-    imageUrl: IMG('1566073129761-4b4e47bab68d'), logoBg: '#0d47a1', logoText: 'ישרוטל', canBook: true,
+    imageUrl: IMG('1520250497591-112f2f40a3f4'), logoBg: '#0d47a1', logoText: 'ישרוטל', canBook: true,
   },
   {
     id: '22', name: 'מלון דן תל אביב', tagline: 'מלון יוקרה על שפת הים',
