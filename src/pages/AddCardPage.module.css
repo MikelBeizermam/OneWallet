@@ -425,22 +425,31 @@
   font-family: var(--font-family);
 }
 
-/* OCR scan button */
-.scanBtn {
+/* OCR scan banners */
+.scanBanner {
   display: flex;
   align-items: center;
-  justify-content: center;
   gap: var(--space-2);
-  width: 100%;
-  padding: 13px;
-  background: #1a1a2e;
-  color: #fff;
+  padding: 10px 14px;
+  background: #f0f4ff;
+  border: 1px solid #c7d2fe;
   border-radius: var(--radius);
-  font-size: 15px;
-  font-weight: 700;
+  font-size: 14px;
   font-family: var(--font-family);
-  transition: opacity 0.15s;
+  color: #3730a3;
   margin-bottom: var(--space-2);
 }
-.scanBtn:hover:not(:disabled) { opacity: 0.85; }
-.scanBtn:disabled { opacity: 0.6; }
+
+.scanBannerSuccess {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: 10px 14px;
+  background: #f0fdf4;
+  border: 1px solid #86efac;
+  border-radius: var(--radius);
+  font-size: 14px;
+  font-family: var(--font-family);
+  color: #166534;
+  margin-bottom: var(--space-2);
+}

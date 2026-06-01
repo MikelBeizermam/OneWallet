@@ -98,12 +98,12 @@ export default function AddCardPage() {
 
   const fieldLabels = FIELD_LABELS[selectedCategory]
 
-  const handleScanCard = async () => {
-    if (!imagePreview) return
+  const handleScanCard = async (url = imagePreview) => {
+    if (!url) return
     setScanning(true)
     setScanSuccess(false)
     try {
-      const res = await fetch(imagePreview)
+      const res = await fetch(url)
       const blob = await res.blob()
       const base64 = await new Promise<string>((resolve, reject) => {
         const reader = new FileReader()
@@ -230,12 +230,16 @@ export default function AddCardPage() {
       if (blob) {
         const stretched = new File([blob], 'card-stretched.jpg', { type: 'image/jpeg' })
         setImageFile(stretched)
-        setImagePreview(URL.createObjectURL(stretched))
+        const stretchedUrl = URL.createObjectURL(stretched)
+        setImagePreview(stretchedUrl)
+        handleScanCard(stretchedUrl)
         return
       }
     } catch {}
+    const previewUrl = URL.createObjectURL(croppedFile)
     setImageFile(croppedFile)
-    setImagePreview(URL.createObjectURL(croppedFile))
+    setImagePreview(previewUrl)
+    handleScanCard(previewUrl)
   }
 
   const handleCropCancel = () => {
@@ -466,21 +470,15 @@ export default function AddCardPage() {
       <form className={styles.form} onSubmit={handleSubmit} noValidate>
         {error && <div className="alert alert-error">{error}</div>}
 
-        {imagePreview && (
-          <button
-            type="button"
-            className={styles.scanBtn}
-            onClick={handleScanCard}
-            disabled={scanning}
-          >
-            {scanning ? (
-              <><span className="spinner" /> מזהה פרטים...</>
-            ) : scanSuccess ? (
-              <>✓ פרטים זוהו — סרוק שוב</>
-            ) : (
-              <>🔍 זהה פרטים אוטומטית</>
-            )}
-          </button>
+        {scanning && (
+          <div className={styles.scanBanner}>
+            <span className="spinner" /> מזהה פרטים אוטומטית...
+          </div>
+        )}
+        {scanSuccess && !scanning && (
+          <div className={styles.scanBannerSuccess}>
+            ✓ פרטים זוהו אוטומטית — ניתן לערוך
+          </div>
         )}
 
         <label
