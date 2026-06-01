@@ -16,7 +16,6 @@ export default function CardViewPage() {
   const [deleting, setDeleting] = useState(false)
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
   const [showBalanceModal, setShowBalanceModal] = useState(false)
-  const [showStores, setShowStores] = useState(false)
   const [addingToWallet, setAddingToWallet] = useState(false)
 
   const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent)
@@ -208,7 +207,7 @@ export default function CardViewPage() {
 
           {/* BuyMe stores button */}
           {card.template_id === 'gift-buyme' && (
-            <button type="button" className={styles.storesBtn} onClick={() => setShowStores(true)}>
+            <button type="button" className={styles.storesBtn} onClick={() => navigate('/buyme-stores')}>
               <StoreIcon />
               <span>בתי עסק שמקבלים BuyMe</span>
             </button>
@@ -348,26 +347,6 @@ export default function CardViewPage() {
                 {savingBalance ? <span className="spinner" /> : 'עדכן'}
               </button>
             </div>
-          </div>
-        </div>
-      )}
-
-      {/* BuyMe stores modal */}
-      {showStores && (
-        <div className={styles.storesOverlay} role="dialog" aria-modal="true" aria-label="בתי עסק ביימי">
-          <div className={styles.storesModal}>
-            <div className={styles.storesHeader}>
-              <span className={styles.storesTitle}>בתי עסק שמקבלים BuyMe</span>
-              <button type="button" className={styles.storesCloseBtn} aria-label="סגור" onClick={() => setShowStores(false)}>
-                <CloseIcon />
-              </button>
-            </div>
-            <iframe
-              src="https://www.buyme.co.il/businesses"
-              className={styles.storesIframe}
-              title="בתי עסק ביימי"
-              allow="geolocation"
-            />
           </div>
         </div>
       )}

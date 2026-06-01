@@ -22,6 +22,7 @@ import SettingsPage from '@/pages/SettingsPage'
 import EditCardPage from '@/pages/EditCardPage'
 import NotificationsPage from '@/pages/NotificationsPage'
 import LandingPage from '@/pages/LandingPage'
+import BuyMeStoresPage from '@/pages/BuyMeStoresPage'
 
 function AppLayout() {
   return (
@@ -74,6 +75,7 @@ export default function App() {
             <Route path="/admin" element={<Protected><AdminDashboard /></Protected>} />
             <Route path="/settings" element={<Protected><SettingsPage /></Protected>} />
             <Route path="/notifications" element={<Protected><NotificationsPage /></Protected>} />
+            <Route path="/buyme-stores" element={<Protected><BuyMeStoresPage /></Protected>} />
           </Route>
 
           {/* Root: logged in → app, guest → login */}
