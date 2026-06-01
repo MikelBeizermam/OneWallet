@@ -69,12 +69,29 @@ function parseCardData(text: string, category: string): Record<string, string | 
       result.license_expiry = dates[1] ?? dates[0] ?? null
       break
 
-    case 'loyalty':
-      result.name        = personName ?? null
-      result.card_number = numbers[0] ?? null
-      result.expiry_date = dates[0] ?? null
-      result.holder_name = personName
+    case 'loyalty': {
+      // Israeli weapon license — Hebrew text patterns
+      // Name: after "שם:" or "שם :"
+      const hebrewName = text.match(/שם\s*[:\-]?\s*([^\n\r]+)/)
+      const holderName = hebrewName?.[1]?.trim() ?? personName ?? null
+
+      // License number: after "מס'" or "מספר" or "מס:"
+      const licenseNum = text.match(/מס[''׳]?\s*[:\-]?\s*(\d{5,12})/)
+        ?? text.match(/\b1[0-9]{9}\b/)  // common Israeli weapon license format
+      const cardNum = licenseNum?.[1] ?? numbers[0] ?? null
+
+      // Expiry: after "תוקף" or "בתוקף עד"
+      const expiryMatch = text.match(/תוקף[^\d]*(\d{1,2}[./]\d{1,2}[./]\d{2,4})/)
+      const expiry = expiryMatch
+        ? expiryMatch[1].replace(/\./g, '/')
+        : dates[0] ?? null
+
+      result.name        = holderName
+      result.holder_name = holderName
+      result.card_number = cardNum
+      result.expiry_date = expiry
       break
+    }
 
     case 'gift': {
       const giftCode = text.match(/\b[A-Z0-9]{4}[-\s]?[A-Z0-9]{4}[-\s]?[A-Z0-9]{4,}\b/)
