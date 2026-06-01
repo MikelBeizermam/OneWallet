@@ -4,6 +4,16 @@ import { BUSINESSES, CATEGORIES, AREAS } from '@/data/buyme-businesses'
 import styles from './BuyMeStoresPage.module.css'
 
 
+const CATEGORY_FALLBACKS: Record<string, string> = {
+  food:     'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=400&h=225&fit=crop&auto=format',
+  hotels:   'https://images.unsplash.com/photo-1566073129761-4b4e47bab68d?w=400&h=225&fit=crop&auto=format',
+  spa:      'https://images.unsplash.com/photo-1544161515-4ab6ce6db874?w=400&h=225&fit=crop&auto=format',
+  exp:      'https://images.unsplash.com/photo-1501908734255-16579c18c25f?w=400&h=225&fit=crop&auto=format',
+  shop:     'https://images.unsplash.com/photo-1483985988355-763728e1935b?w=400&h=225&fit=crop&auto=format',
+  workshop: 'https://images.unsplash.com/photo-1452860606245-08befc0ff44b?w=400&h=225&fit=crop&auto=format',
+  new:      'https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=400&h=225&fit=crop&auto=format',
+}
+
 export default function BuyMeStoresPage() {
   const navigate = useNavigate()
   const [search, setSearch] = useState('')
@@ -11,10 +21,16 @@ export default function BuyMeStoresPage() {
   const [selectedCategory, setSelectedCategory] = useState('all')
   const [selectedArea, setSelectedArea] = useState('כל הארץ')
   const [onlineOnly, setOnlineOnly] = useState(false)
-  const [failedImages, setFailedImages] = useState<Set<string>>(new Set())
 
-  const handleImageError = (id: string) => {
-    setFailedImages(prev => new Set(prev).add(id))
+  const handleImageError = (e: React.SyntheticEvent<HTMLImageElement>, category: string) => {
+    const img = e.currentTarget
+    const fallback = CATEGORY_FALLBACKS[category]
+    if (fallback && img.src !== fallback) {
+      img.src = fallback
+    } else {
+      img.style.display = 'none'
+      img.parentElement?.classList.add(styles.imageFailed)
+    }
   }
 
   const filtered = useMemo(() => {
@@ -100,7 +116,7 @@ export default function BuyMeStoresPage() {
             className={`${styles.toggle} ${onlineOnly ? styles.toggleOn : ''}`}
             onClick={() => setOnlineOnly(v => !v)}
             role="switch"
-            aria-checked={String(onlineOnly) as 'true' | 'false'}
+            aria-checked={onlineOnly}
             aria-label="מימוש אונליין בלבד"
             title="מימוש אונליין"
           >
@@ -113,19 +129,14 @@ export default function BuyMeStoresPage() {
       <div className={styles.grid}>
         {filtered.map(b => (
           <div key={b.id} className={styles.card}>
-            <div
-              className={`${styles.cardImage} ${failedImages.has(b.id) ? styles.imageFailed : ''}`}
-              data-category={b.category}
-            >
-              {!failedImages.has(b.id) && (
-                <img
-                  src={b.imageUrl}
-                  alt={b.name}
-                  className={styles.cardImg}
-                  loading="lazy"
-                  onError={() => handleImageError(b.id)}
-                />
-              )}
+            <div className={styles.cardImage} data-category={b.category}>
+              <img
+                src={b.imageUrl}
+                alt={b.name}
+                className={styles.cardImg}
+                loading="lazy"
+                onError={e => handleImageError(e, b.category)}
+              />
               <span className={styles.cardLogo}>
                 {b.logoText}
               </span>
