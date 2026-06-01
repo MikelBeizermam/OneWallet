@@ -16,6 +16,7 @@ export default function CardViewPage() {
   const [deleting, setDeleting] = useState(false)
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
   const [showBalanceModal, setShowBalanceModal] = useState(false)
+  const [showStores, setShowStores] = useState(false)
   const [addingToWallet, setAddingToWallet] = useState(false)
 
   const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent)
@@ -205,6 +206,14 @@ export default function CardViewPage() {
             </button>
           )}
 
+          {/* BuyMe stores button */}
+          {card.template_id === 'gift-buyme' && (
+            <button type="button" className={styles.storesBtn} onClick={() => setShowStores(true)}>
+              <StoreIcon />
+              <span>בתי עסק שמקבלים BuyMe</span>
+            </button>
+          )}
+
           {/* Gift balance */}
           {card.category === 'gift' && (
             <div className={styles.giftBalanceBox}>
@@ -343,6 +352,26 @@ export default function CardViewPage() {
         </div>
       )}
 
+      {/* BuyMe stores modal */}
+      {showStores && (
+        <div className={styles.storesOverlay} role="dialog" aria-modal="true" aria-label="בתי עסק ביימי">
+          <div className={styles.storesModal}>
+            <div className={styles.storesHeader}>
+              <span className={styles.storesTitle}>בתי עסק שמקבלים BuyMe</span>
+              <button type="button" className={styles.storesCloseBtn} aria-label="סגור" onClick={() => setShowStores(false)}>
+                <CloseIcon />
+              </button>
+            </div>
+            <iframe
+              src="https://www.buyme.co.il/businesses"
+              className={styles.storesIframe}
+              title="בתי עסק ביימי"
+              allow="geolocation"
+            />
+          </div>
+        </div>
+      )}
+
       {/* Delete confirm modal */}
       {showDeleteConfirm && (
         <div className={styles.modalOverlay} role="dialog" aria-modal="true" aria-label="אישור מחיקה">
@@ -390,4 +419,7 @@ function CloseIcon() {
 }
 function WalletIcon() {
   return <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M16 12h.01"/><path d="M2 10h20"/></svg>
+}
+function StoreIcon() {
+  return <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M3 9l1-5h16l1 5"/><path d="M3 9a2 2 0 004 0 2 2 0 004 0 2 2 0 004 0 2 2 0 004 0"/><path d="M5 9v11h14V9"/><path d="M10 14h4v6h-4z"/></svg>
 }
