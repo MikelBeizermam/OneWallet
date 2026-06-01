@@ -62,29 +62,33 @@ export default function BuyMeStoresPage() {
 
       {/* Search bar */}
       <div className={styles.searchBar}>
-        <div className={styles.searchInputWrap}>
-          <SearchIcon />
-          <input
-            className={styles.searchInput}
-            placeholder="חיפוש בית עסק"
-            value={searchInput}
-            onChange={e => setSearchInput(e.target.value)}
-            onKeyDown={e => e.key === 'Enter' && handleSearch()}
-            aria-label="חיפוש בית עסק"
-          />
+        <div className={styles.searchRow1}>
+          <div className={styles.searchInputWrap}>
+            <SearchIcon />
+            <input
+              className={styles.searchInput}
+              placeholder="חיפוש בית עסק"
+              value={searchInput}
+              onChange={e => setSearchInput(e.target.value)}
+              onKeyDown={e => e.key === 'Enter' && handleSearch()}
+              aria-label="חיפוש בית עסק"
+            />
+          </div>
         </div>
-        <select
-          className={styles.areaSelect}
-          value={selectedArea}
-          onChange={e => setSelectedArea(e.target.value)}
-          aria-label="סינון לפי אזור"
-          title="סינון לפי אזור"
-        >
-          {AREAS.map(a => <option key={a} value={a}>{a}</option>)}
-        </select>
-        <button type="button" className={styles.searchBtn} onClick={handleSearch}>
-          חיפוש
-        </button>
+        <div className={styles.searchRow2}>
+          <select
+            className={styles.areaSelect}
+            value={selectedArea}
+            onChange={e => setSelectedArea(e.target.value)}
+            aria-label="סינון לפי אזור"
+            title="סינון לפי אזור"
+          >
+            {AREAS.map(a => <option key={a} value={a}>{a}</option>)}
+          </select>
+          <button type="button" className={styles.searchBtn} onClick={handleSearch}>
+            חיפוש
+          </button>
+        </div>
       </div>
 
       {/* Categories */}
@@ -116,7 +120,7 @@ export default function BuyMeStoresPage() {
             className={`${styles.toggle} ${onlineOnly ? styles.toggleOn : ''}`}
             onClick={() => setOnlineOnly(v => !v)}
             role="switch"
-            aria-checked={onlineOnly}
+            aria-checked={onlineOnly === true ? 'true' : 'false'}
             aria-label="מימוש אונליין בלבד"
             title="מימוש אונליין"
           >
