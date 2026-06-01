@@ -141,18 +141,13 @@ Deno.serve(async (req) => {
 
     const apiKey = Deno.env.get('OCR_SPACE_API_KEY') ?? 'helloworld'
 
-    // Hebrew-dominant cards use 'heb' language + Engine 1 (better for Hebrew print)
-    const hebrewCategories = new Set(['loyalty', 'id', 'student'])
-    const language  = hebrewCategories.has(category) ? 'heb' : 'eng'
-    const ocrEngine = hebrewCategories.has(category) ? '1' : '2'
-
     const form = new FormData()
     form.append('base64Image', `data:${mediaType};base64,${imageBase64}`)
-    form.append('language', language)
+    form.append('language', 'eng')
     form.append('isOverlayRequired', 'false')
     form.append('detectOrientation', 'true')
     form.append('scale', 'true')
-    form.append('OCREngine', ocrEngine)
+    form.append('OCREngine', '2')
 
     const response = await fetch('https://api.ocr.space/parse/image', {
       method: 'POST',
@@ -161,12 +156,14 @@ Deno.serve(async (req) => {
     })
 
     const data = await response.json()
+    console.log('OCR full response:', JSON.stringify(data).slice(0, 500))
 
     if (data.IsErroredOnProcessing) {
       throw new Error(data.ErrorMessage?.[0] ?? 'OCR failed')
     }
 
     const rawText = data.ParsedResults?.[0]?.ParsedText ?? ''
+    console.log('OCR raw text:', rawText.slice(0, 300))
     const parsed  = parseCardData(rawText, category)
 
     return new Response(JSON.stringify({ ...parsed, _raw: rawText }), {
