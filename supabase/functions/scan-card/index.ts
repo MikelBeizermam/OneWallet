@@ -141,13 +141,18 @@ Deno.serve(async (req) => {
 
     const apiKey = Deno.env.get('OCR_SPACE_API_KEY') ?? 'helloworld'
 
+    // Hebrew-dominant cards use 'heb' language + Engine 1 (better for Hebrew print)
+    const hebrewCategories = new Set(['loyalty', 'id', 'student'])
+    const language  = hebrewCategories.has(category) ? 'heb' : 'eng'
+    const ocrEngine = hebrewCategories.has(category) ? '1' : '2'
+
     const form = new FormData()
     form.append('base64Image', `data:${mediaType};base64,${imageBase64}`)
-    form.append('language', 'eng')
+    form.append('language', language)
     form.append('isOverlayRequired', 'false')
     form.append('detectOrientation', 'true')
     form.append('scale', 'true')
-    form.append('OCREngine', '2')
+    form.append('OCREngine', ocrEngine)
 
     const response = await fetch('https://api.ocr.space/parse/image', {
       method: 'POST',
