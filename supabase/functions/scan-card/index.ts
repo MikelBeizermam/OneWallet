@@ -22,10 +22,27 @@ function parsePhone(text: string): string | null {
   return m ? m[0].replace(/\s/g, '-') : null
 }
 
+// Extract person name: two consecutive ALL-CAPS words (first + last name)
+function parsePersonName(text: string): string | null {
+  // Look for "FIRSTNAME LASTNAME" or "LASTNAME\nFIRSTNAME" pattern in ALL CAPS
+  const capsWords = text.match(/\b[A-Z]{2,15}\b/g) ?? []
+  // Filter out known non-name words
+  const skipWords = new Set(['ID', 'STATE', 'ISRAEL', 'DRIVING', 'LICENCE', 'LICENSE', 'PASSPORT', 'VALID'])
+  const nameWords = capsWords.filter(w => !skipWords.has(w))
+  if (nameWords.length >= 2) return `${nameWords[0]} ${nameWords[1]}`
+  if (nameWords.length === 1) return nameWords[0]
+  return null
+}
+
+// Extract ID number after "ID" keyword (e.g. "4d.ID 206466781")
+function parseIdAfterKeyword(text: string): string | null {
+  const m = text.match(/\bID\s+(\d{7,10})\b/i)
+  return m ? m[1] : null
+}
+
 function parseCardData(text: string, category: string): Record<string, string | null> {
   const dates   = parseDates(text)
   const numbers = parseNumbers(text)
-  const lines   = text.split(/\r?\n/).map(l => l.trim()).filter(l => l.length > 2)
 
   const result: Record<string, string | null> = {
     name: null, card_number: null, expiry_date: null,
@@ -33,55 +50,58 @@ function parseCardData(text: string, category: string): Record<string, string | 
     id_expiry: null, license_expiry: null, valid_year: null,
   }
 
-  // Name: longest non-numeric line
-  const nameLine = lines
-    .filter(l => /[a-zA-Z֐-׿]/.test(l) && !/^\d+$/.test(l))
-    .sort((a, b) => b.length - a.length)[0] ?? null
-  result.name = nameLine
+  const personName = parsePersonName(text)
 
   switch (category) {
     case 'id':
-      result.card_number = numbers[0] ?? null
+      // Israeli ID: number is 9 digits, name is FIRSTNAME LASTNAME in caps
+      result.name        = personName
+      result.card_number = parseIdAfterKeyword(text) ?? numbers.find(n => n.length === 9) ?? numbers[0] ?? null
       result.expiry_date = dates[0] ?? null
       result.id_expiry   = dates[1] ?? dates[0] ?? null
       break
 
     case 'license':
-      result.card_number    = numbers[0] ?? null
+      // Driving license: card_number = ID number (after "ID" keyword), name = person name
+      result.name           = personName
+      result.card_number    = parseIdAfterKeyword(text) ?? numbers.find(n => n.length === 9) ?? numbers[0] ?? null
       result.expiry_date    = dates[0] ?? null
       result.license_expiry = dates[1] ?? dates[0] ?? null
       break
 
     case 'loyalty':
+      result.name        = personName ?? null
       result.card_number = numbers[0] ?? null
       result.expiry_date = dates[0] ?? null
-      result.holder_name = nameLine
+      result.holder_name = personName
       break
 
-    case 'gift':
-      // Gift card codes often have dashes
+    case 'gift': {
       const giftCode = text.match(/\b[A-Z0-9]{4}[-\s]?[A-Z0-9]{4}[-\s]?[A-Z0-9]{4,}\b/)
       result.card_number = giftCode?.[0] ?? numbers[0] ?? null
       result.expiry_date = dates[0] ?? null
-      result.name = nameLine ?? 'כרטיס מתנה'
+      result.name        = personName ?? 'כרטיס מתנה'
       break
+    }
 
-    case 'student':
-      result.card_number = numbers[0] ?? null
+    case 'student': {
+      result.name        = personName
+      result.card_number = numbers.find(n => n.length === 9) ?? numbers[0] ?? null
       result.expiry_date = dates[0] ?? null
-      // Academic year pattern e.g. 2024-2025 or תשפ"ה
-      const yearMatch = text.match(/\b(20\d{2})[-–](20\d{2})\b/)
-      result.valid_year = yearMatch ? yearMatch[0] : null
+      const yearMatch    = text.match(/\b(20\d{2})[-–](20\d{2})\b/)
+      result.valid_year  = yearMatch ? yearMatch[0] : null
       break
+    }
 
     case 'visit':
       result.phone = parsePhone(text)
-      result.name  = nameLine
+      result.name  = personName
       break
 
     default:
       result.card_number = numbers[0] ?? null
       result.expiry_date = dates[0] ?? null
+      result.name        = personName
   }
 
   return result
