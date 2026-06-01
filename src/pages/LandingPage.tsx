@@ -193,6 +193,13 @@ export default function LandingPage() {
                     <span>המסמכים שלך תמיד זמינים</span>
                   </div>
                 </div>
+                <div className={styles.ctaFeatureItem}>
+                  <div className={styles.ctaFeatureIcon}><CreditCard size={16} color="#6f583c" /></div>
+                  <div className={styles.ctaFeatureInfo}>
+                    <strong>חינמי: 2 כרטיסים · Pro: עד 10 כרטיסים</strong>
+                    <span>שדרג ב-₪10 חד-פעמי בלבד</span>
+                  </div>
+                </div>
               </div>
               <button type="button" className={styles.heroBtnPrimary} onClick={() => navigate('/login')}>
                 התחל בחינם

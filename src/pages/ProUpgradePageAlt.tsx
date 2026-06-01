@@ -7,7 +7,7 @@ import { CreditCard, Unlock, Cloud, Zap, Heart } from 'lucide-react'
 import styles from './ProUpgradePageAlt.module.css'
 
 const FEATURES: { icon: LucideIcon; text: string }[] = [
-  { icon: CreditCard, text: 'עד 10 כרטיסים במקום 3' },
+  { icon: CreditCard, text: 'עד 10 כרטיסים במקום 2' },
   { icon: Unlock,     text: 'גישה לכל סוגי הכרטיסים' },
   { icon: Cloud,      text: 'גיבוי מאובטח בענן' },
   { icon: Zap,        text: 'עדכונים ופיצ׳רים עתידיים ללא תשלום נוסף' },
