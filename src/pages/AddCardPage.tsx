@@ -124,6 +124,8 @@ export default function AddCardPage() {
         }
       )
       const result = await response.json()
+      console.log('OCR RAW TEXT:', result._raw)
+      console.log('OCR RESULT:', result)
       if (result.error) throw new Error(result.error)
       if (result.name)          setName(result.name)
       if (result.card_number)   setCardNumber(result.card_number)
