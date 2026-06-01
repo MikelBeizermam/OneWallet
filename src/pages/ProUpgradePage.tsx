@@ -7,7 +7,7 @@ import styles from './ProUpgradePage.module.css'
 const BIT_PAYMENT_URL = 'https://www.bitpay.co.il/app/me/8ABC9095-092B-0CFC-3585-B33B1BA1690295A9'
 
 const FEATURES: { icon: LucideIcon; text: string }[] = [
-  { icon: CreditCard, text: 'עד 10 כרטיסים במקום 3' },
+  { icon: CreditCard, text: 'עד 10 כרטיסים במקום 2' },
   { icon: Unlock,     text: 'גישה לכל סוגי הכרטיסים' },
   { icon: Cloud,      text: 'גיבוי מאובטח בענן' },
   { icon: Zap,        text: 'עדכונים ופיצ׳רים עתידיים ללא תשלום נוסף' },

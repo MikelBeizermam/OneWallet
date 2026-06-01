@@ -329,7 +329,14 @@ export default function AddCardPage() {
     )
   }
 
-  if (plan === 'free' && cards.length >= 3) {
+  const ADMIN_EMAIL = 'miki199838@gmail.com'
+  const isAdmin = user?.email === ADMIN_EMAIL
+  const FREE_LIMIT = 2
+  const PRO_LIMIT = 10
+  const reachedFreeLimit = !isAdmin && plan === 'free' && cards.length >= FREE_LIMIT
+  const reachedProLimit  = !isAdmin && plan === 'pro'  && cards.length >= PRO_LIMIT
+
+  if (reachedFreeLimit) {
     return (
       <div className={styles.page}>
         <header className={styles.header}>
@@ -343,11 +350,35 @@ export default function AddCardPage() {
           <div className={styles.limitGateEmoji}>🔒</div>
           <h2 className={styles.limitGateTitle}>הגעת למגבלת הכרטיסים</h2>
           <p className={styles.limitGateText}>
-            במסלול החינמי ניתן לשמור עד 3 כרטיסים.<br />שדרג ל-Pro לכרטיסים ללא הגבלה.
+            במסלול החינמי ניתן לשמור עד {FREE_LIMIT} כרטיסים.<br />שדרג ל-Pro לעד {PRO_LIMIT} כרטיסים.
           </p>
           <button type="button" className={`btn btn-primary ${styles.limitGateUpgradeBtn}`} onClick={() => navigate('/pro')}>
             ✨ שדרג ל-Pro
           </button>
+          <button type="button" className={styles.limitGateBackBtn} onClick={() => navigate(-1)}>
+            חזרה
+          </button>
+        </div>
+      </div>
+    )
+  }
+
+  if (reachedProLimit) {
+    return (
+      <div className={styles.page}>
+        <header className={styles.header}>
+          <button type="button" className={styles.backBtn} aria-label="חזרה" onClick={() => navigate(-1)}>
+            <ChevronIcon />
+          </button>
+          <h1 className={styles.title}>הוספת כרטיס</h1>
+          <div className={styles.headerSpacer} />
+        </header>
+        <div className={styles.limitGate}>
+          <div className={styles.limitGateEmoji}>💳</div>
+          <h2 className={styles.limitGateTitle}>הגעת ל-{PRO_LIMIT} כרטיסים</h2>
+          <p className={styles.limitGateText}>
+            במסלול Pro ניתן לשמור עד {PRO_LIMIT} כרטיסים.<br />מחק כרטיס קיים כדי להוסיף חדש.
+          </p>
           <button type="button" className={styles.limitGateBackBtn} onClick={() => navigate(-1)}>
             חזרה
           </button>
