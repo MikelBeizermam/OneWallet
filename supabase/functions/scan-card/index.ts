@@ -1,26 +1,26 @@
 import { corsHeaders } from '../_shared/cors.ts'
 
 const PROMPTS: Record<string, string> = {
-  id: `זהו כרטיס תעודת זהות ישראלי. חלץ את הפרטים הבאים והחזר JSON בלבד:
-{"name":"שם מלא","card_number":"מספר תעודת זהות 9 ספרות","expiry_date":"תאריך הנפקה DD/MM/YYYY","id_expiry":"תאריך תפוגה DD/MM/YYYY"}`,
+  id: `This is an Israeli ID card. Extract the actual values and return ONLY this JSON (no explanation):
+{"name": "actual full name from card", "card_number": "actual 9-digit ID number", "expiry_date": "actual issue date as DD/MM/YYYY or null", "id_expiry": "actual expiry date as DD/MM/YYYY or null"}`,
 
-  license: `זהו רישיון נהיגה ישראלי. חלץ את הפרטים הבאים והחזר JSON בלבד:
-{"name":"שם מלא","card_number":"מספר תעודת זהות 9 ספרות","expiry_date":"תאריך הנפקה DD/MM/YYYY","license_expiry":"תאריך תפוגה DD/MM/YYYY"}`,
+  license: `This is an Israeli driving license. Extract the actual values and return ONLY this JSON (no explanation):
+{"name": "actual full name from card", "card_number": "actual 9-digit ID number", "expiry_date": "actual issue date as DD/MM/YYYY or null", "license_expiry": "actual expiry date as DD/MM/YYYY or null"}`,
 
-  loyalty: `זהו רישיון נשק ישראלי. חלץ את הפרטים הבאים והחזר JSON בלבד:
-{"name":"שם בעל הרישיון","holder_name":"שם בעל הרישיון","card_number":"מספר הרישיון","expiry_date":"תאריך תפוגה DD/MM/YYYY"}`,
+  loyalty: `This is an Israeli weapon license. Extract the actual values and return ONLY this JSON (no explanation):
+{"name": "actual full name of license holder", "holder_name": "actual full name of license holder", "card_number": "actual license number", "expiry_date": "actual expiry date as DD/MM/YYYY or null"}`,
 
-  gift: `זהו כרטיס מתנה. חלץ את הפרטים הבאים והחזר JSON בלבד:
-{"name":"שם המותג או החנות","card_number":"קוד הכרטיס","expiry_date":"תאריך תפוגה DD/MM/YYYY"}`,
+  gift: `This is a gift card. Extract the actual values and return ONLY this JSON (no explanation):
+{"name": "actual brand or store name", "card_number": "actual card code or number", "expiry_date": "actual expiry date as DD/MM/YYYY or null"}`,
 
-  student: `זהו כרטיס סטודנט. חלץ את הפרטים הבאים והחזר JSON בלבד:
-{"name":"שם מלא של הסטודנט","card_number":"מספר תעודת זהות","expiry_date":"תאריך לידה DD/MM/YYYY","valid_year":"שנת לימודים למשל 2024-2025"}`,
+  student: `This is a student ID card. Extract the actual values and return ONLY this JSON (no explanation):
+{"name": "actual full name of student", "card_number": "actual ID number", "expiry_date": "actual birth date as DD/MM/YYYY or null", "valid_year": "actual academic year e.g. 2024-2025 or null"}`,
 
-  visit: `זהו כרטיס ביקור. חלץ את הפרטים הבאים והחזר JSON בלבד:
-{"name":"שם האדם או העסק","phone":"מספר טלפון"}`,
+  visit: `This is a business card. Extract the actual values and return ONLY this JSON (no explanation):
+{"name": "actual person or business name", "phone": "actual phone number or null"}`,
 
-  other: `זהו כרטיס. חלץ את הפרטים הנראים לעין והחזר JSON בלבד:
-{"name":"שם הכרטיס או המנפיק","card_number":"מספר כלשהו על הכרטיס","expiry_date":"תאריך תפוגה DD/MM/YYYY"}`,
+  other: `This is a card. Extract visible information and return ONLY this JSON (no explanation):
+{"name": "actual card name or issuer", "card_number": "actual number on card or null", "expiry_date": "actual expiry date as DD/MM/YYYY or null"}`,
 }
 
 Deno.serve(async (req) => {
