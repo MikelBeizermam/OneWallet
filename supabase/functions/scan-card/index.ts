@@ -22,11 +22,20 @@ function parsePhone(text: string): string | null {
   return m ? m[0].replace(/\s/g, '-') : null
 }
 
-// Extract person name: two consecutive ALL-CAPS words (first + last name)
+// Extract person name: English ALL-CAPS or Hebrew words
 function parsePersonName(text: string): string | null {
-  // Look for "FIRSTNAME LASTNAME" or "LASTNAME\nFIRSTNAME" pattern in ALL CAPS
+  // Try Hebrew name first (2+ Hebrew words on same line)
+  const hebrewLine = text.split(/\r?\n/).find(l => {
+    const hebrewWords = l.match(/[א-ת]{2,}/g) ?? []
+    return hebrewWords.length >= 2
+  })
+  if (hebrewLine) {
+    const hw = hebrewLine.match(/[א-ת]{2,}/g) ?? []
+    if (hw.length >= 2) return hw.slice(0, 2).join(' ')
+  }
+
+  // Fallback: English ALL-CAPS words
   const capsWords = text.match(/\b[A-Z]{2,15}\b/g) ?? []
-  // Filter out known non-name words
   const skipWords = new Set(['ID', 'STATE', 'ISRAEL', 'DRIVING', 'LICENCE', 'LICENSE', 'PASSPORT', 'VALID'])
   const nameWords = capsWords.filter(w => !skipWords.has(w))
   if (nameWords.length >= 2) return `${nameWords[0]} ${nameWords[1]}`
@@ -142,14 +151,15 @@ Deno.serve(async (req) => {
     const apiKey = Deno.env.get('OCR_SPACE_API_KEY') || 'helloworld'
     console.log('Using API key prefix:', apiKey.slice(0, 4))
 
-    // Engine 1 handles complex/busy backgrounds better
-    // Engine 2 is faster but fails on security watermarks
-    const busyBackground = new Set(['loyalty', 'id'])
-    const ocrEngine = busyBackground.has(category) ? '1' : '2'
+    // Engine 2: fast, English only (license, gift, visit, other)
+    // Engine 1: slower, supports Hebrew (student, id, loyalty)
+    const hebrewCategories = new Set(['student', 'id', 'loyalty'])
+    const language  = hebrewCategories.has(category) ? 'heb' : 'eng'
+    const ocrEngine = hebrewCategories.has(category) ? '1' : '2'
 
     const form = new FormData()
     form.append('base64Image', `data:${mediaType};base64,${imageBase64}`)
-    form.append('language', 'eng')
+    form.append('language', language)
     form.append('isOverlayRequired', 'false')
     form.append('detectOrientation', 'true')
     form.append('scale', 'true')
