@@ -139,7 +139,13 @@ Deno.serve(async (req) => {
       })
     }
 
-    const apiKey = Deno.env.get('OCR_SPACE_API_KEY') ?? 'helloworld'
+    const apiKey = Deno.env.get('OCR_SPACE_API_KEY') || 'helloworld'
+    console.log('Using API key prefix:', apiKey.slice(0, 4))
+
+    // Engine 1 handles complex/busy backgrounds better
+    // Engine 2 is faster but fails on security watermarks
+    const busyBackground = new Set(['loyalty', 'id'])
+    const ocrEngine = busyBackground.has(category) ? '1' : '2'
 
     const form = new FormData()
     form.append('base64Image', `data:${mediaType};base64,${imageBase64}`)
@@ -147,7 +153,8 @@ Deno.serve(async (req) => {
     form.append('isOverlayRequired', 'false')
     form.append('detectOrientation', 'true')
     form.append('scale', 'true')
-    form.append('OCREngine', '2')
+    form.append('isTable', 'false')
+    form.append('OCREngine', ocrEngine)
 
     const response = await fetch('https://api.ocr.space/parse/image', {
       method: 'POST',
