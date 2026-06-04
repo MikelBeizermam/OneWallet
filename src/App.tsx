@@ -23,6 +23,7 @@ import EditCardPage from '@/pages/EditCardPage'
 import NotificationsPage from '@/pages/NotificationsPage'
 import LandingPage from '@/pages/LandingPage'
 import BuyMeStoresPage from '@/pages/BuyMeStoresPage'
+import LostWalletPage from '@/pages/LostWalletPage'
 
 function AppLayout() {
   return (
@@ -76,6 +77,7 @@ export default function App() {
             <Route path="/settings" element={<Protected><SettingsPage /></Protected>} />
             <Route path="/notifications" element={<Protected><NotificationsPage /></Protected>} />
             <Route path="/buyme-stores" element={<Protected><BuyMeStoresPage /></Protected>} />
+            <Route path="/lost-wallet" element={<Protected><LostWalletPage /></Protected>} />
           </Route>
 
           {/* Root: logged in → app, guest → login */}

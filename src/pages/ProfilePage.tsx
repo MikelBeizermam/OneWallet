@@ -4,7 +4,7 @@ import { useAuth } from '@/contexts/AuthContext'
 import { supabase } from '@/lib/supabase'
 import type { Profile } from '@/types/database'
 import type { LucideIcon } from 'lucide-react'
-import { Star, CreditCard, Bell, Lock, HelpCircle, Settings, Pencil } from 'lucide-react'
+import { Star, CreditCard, Bell, Lock, HelpCircle, Settings, Pencil, AlertTriangle } from 'lucide-react'
 import styles from './ProfilePage.module.css'
 
 export default function ProfilePage() {
@@ -116,6 +116,7 @@ export default function ProfilePage() {
         <MenuItem icon={Bell} label="התראות" onClick={() => navigate('/notifications')} />
         <MenuItem icon={Lock} label="אבטחה" onClick={() => navigate('/settings')} />
         <MenuItem icon={HelpCircle} label="עזרה ותמיכה" onClick={() => window.location.href = 'mailto:onewallet2026@gmail.com?subject=פנייה לתמיכה - OneWallet'} />
+        <MenuItem icon={AlertTriangle} label="ארנק אבד — חירום" accent onClick={() => navigate('/lost-wallet')} />
         {user?.email === 'miki199838@gmail.com' && (
           <MenuItem icon={Settings} label="ניהול מנהל" accent onClick={() => navigate('/admin')} />
         )}
