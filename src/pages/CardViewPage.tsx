@@ -27,15 +27,37 @@ export default function CardViewPage() {
     if (!card?.image_url) return
     setCopying(true)
     try {
+      // Get image as blob (handles both base64 and URL)
+      let blob: Blob
+      if (card.image_url.startsWith('data:')) {
+        const [header, data] = card.image_url.split(',')
+        const mime = header.match(/:(.*?);/)?.[1] || 'image/jpeg'
+        const bytes = Uint8Array.from(atob(data), c => c.charCodeAt(0))
+        blob = new Blob([bytes], { type: mime })
+      } else {
+        const res = await fetch(card.image_url)
+        blob = await res.blob()
+      }
+
+      // Draw to canvas to get PNG (required for clipboard)
+      const blobUrl = URL.createObjectURL(blob)
       const img = new Image()
-      img.src = card.image_url
-      await new Promise(resolve => { img.onload = resolve })
+      img.crossOrigin = 'anonymous'
+      await new Promise<void>((resolve, reject) => {
+        img.onload = () => resolve()
+        img.onerror = reject
+        img.src = blobUrl
+      })
       const canvas = document.createElement('canvas')
       canvas.width = img.naturalWidth
       canvas.height = img.naturalHeight
       canvas.getContext('2d')!.drawImage(img, 0, 0)
-      const blob = await new Promise<Blob>(resolve => canvas.toBlob(b => resolve(b!), 'image/png'))
-      await navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })])
+      URL.revokeObjectURL(blobUrl)
+
+      const png = await new Promise<Blob>((resolve, reject) =>
+        canvas.toBlob(b => b ? resolve(b) : reject(), 'image/png')
+      )
+      await navigator.clipboard.write([new ClipboardItem({ 'image/png': png })])
       setCopySuccess(true)
       setTimeout(() => setCopySuccess(false), 2500)
     } catch {
