@@ -7,13 +7,16 @@ import type { LucideIcon } from 'lucide-react'
 import { Star, CreditCard, Bell, Lock, HelpCircle, Settings, Pencil, AlertTriangle } from 'lucide-react'
 import styles from './ProfilePage.module.css'
 
+const CACHE_KEY = (uid: string) => `profile_name_${uid}`
+
 export default function ProfilePage() {
   const { user, signOut } = useAuth()
   const navigate = useNavigate()
+  const cachedName = user ? (localStorage.getItem(CACHE_KEY(user.id)) ?? '') : ''
   const [profile, setProfile] = useState<Profile | null>(null)
-  const [profileLoading, setProfileLoading] = useState(true)
+  const [profileLoading, setProfileLoading] = useState(!cachedName)
   const [editing, setEditing] = useState(false)
-  const [fullName, setFullName] = useState('')
+  const [fullName, setFullName] = useState(cachedName)
   const [saving, setSaving] = useState(false)
   const [saveMsg, setSaveMsg] = useState('')
 
@@ -28,6 +31,7 @@ export default function ProfilePage() {
         if (data) {
           setProfile(data)
           setFullName(data.full_name ?? '')
+          if (data.full_name) localStorage.setItem(CACHE_KEY(user.id), data.full_name)
         }
         setProfileLoading(false)
       })
@@ -41,7 +45,9 @@ export default function ProfilePage() {
       .update({ full_name: fullName.trim() })
       .eq('id', user.id)
     if (!error) {
-      setProfile(p => p ? { ...p, full_name: fullName.trim() } : p)
+      const trimmed = fullName.trim()
+      setProfile(p => p ? { ...p, full_name: trimmed } : p)
+      if (user && trimmed) localStorage.setItem(CACHE_KEY(user.id), trimmed)
       setSaveMsg('נשמר בהצלחה')
       setTimeout(() => setSaveMsg(''), 2000)
       setEditing(false)
@@ -56,7 +62,8 @@ export default function ProfilePage() {
 
   const isAdmin = user?.email === 'miki199838@gmail.com'
   const isPro = profile?.plan === 'pro'
-  const initial = (profile?.full_name ?? user?.email ?? '?')[0].toUpperCase()
+  const displayName = fullName || profile?.full_name || null
+  const initial = (displayName ?? user?.email ?? '?')[0].toUpperCase()
 
   return (
     <div className={styles.page}>
@@ -84,10 +91,10 @@ export default function ProfilePage() {
           </div>
         ) : (
           <>
-            {profileLoading
-            ? <span className={styles.nameSkeleton} />
-            : <h2 className={styles.name}>{profile?.full_name ?? 'משתמש'}</h2>
-          }
+            {profileLoading && !displayName
+              ? <span className={styles.nameSkeleton} />
+              : <h2 className={styles.name}>{displayName ?? 'משתמש'}</h2>
+            }
             <p className={styles.email}>{user?.email}</p>
           </>
         )}
