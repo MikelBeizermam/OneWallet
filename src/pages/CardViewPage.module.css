@@ -675,3 +675,29 @@
     border-radius: var(--radius-lg);
   }
 }
+
+/* Expiry badge */
+.expiryBadge {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 12px 16px 0;
+  padding: 12px 16px;
+  border-radius: 10px;
+  background: #f0fdf4;
+}
+.expiryBadge[data-status="warning"]  { background: #fefce8; }
+.expiryBadge[data-status="danger"]   { background: #fff7ed; }
+.expiryBadge[data-status="expired"]  { background: #fef2f2; }
+
+.expiryIcon { font-size: 20px; flex-shrink: 0; }
+
+.expiryMsg {
+  font-size: 14px;
+  font-weight: 600;
+  font-family: var(--font-family);
+  color: #166534;
+}
+.expiryBadge[data-status="warning"]  .expiryMsg { color: #854d0e; }
+.expiryBadge[data-status="danger"]   .expiryMsg { color: #92400e; }
+.expiryBadge[data-status="expired"]  .expiryMsg { color: #991b1b; }

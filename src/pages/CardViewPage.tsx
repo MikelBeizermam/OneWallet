@@ -293,6 +293,9 @@ export default function CardViewPage() {
             </button>
           )}
 
+          {/* Expiry countdown */}
+          <ExpiryBadge card={card} />
+
           {/* Gift balance */}
           {card.category === 'gift' && (
             <div className={styles.giftBalanceBox}>
@@ -448,6 +451,61 @@ export default function CardViewPage() {
           </div>
         </div>
       )}
+    </div>
+  )
+}
+
+function getExpiryDate(card: Card): string | null {
+  const meta = card.metadata as Record<string, string>
+  if (card.category === 'id')      return meta?.id_expiry      || null
+  if (card.category === 'license') return meta?.license_expiry || null
+  return card.expiry_date || null
+}
+
+function parseDDMMYYYY(dateStr: string): Date | null {
+  const parts = dateStr.split('/')
+  if (parts.length !== 3) return null
+  const [d, m, y] = parts.map(Number)
+  if (!d || !m || !y) return null
+  return new Date(y, m - 1, d)
+}
+
+function ExpiryBadge({ card }: { card: Card }) {
+  const expiryStr = getExpiryDate(card)
+  if (!expiryStr) return null
+
+  const expiry = parseDDMMYYYY(expiryStr)
+  if (!expiry) return null
+
+  const today = new Date()
+  today.setHours(0, 0, 0, 0)
+  const days = Math.ceil((expiry.getTime() - today.getTime()) / (1000 * 60 * 60 * 24))
+
+  let color: string
+  let bg: string
+  let icon: string
+  let msg: string
+
+  if (days < 0) {
+    color = '#991b1b'; bg = '#fef2f2'; icon = '🔴'
+    msg = `פג תוקף לפני ${Math.abs(days)} ימים`
+  } else if (days <= 30) {
+    color = '#92400e'; bg = '#fff7ed'; icon = '🔴'
+    msg = `פג תוקף בעוד ${days} ימים — דחוף!`
+  } else if (days <= 90) {
+    color = '#92400e'; bg = '#fefce8'; icon = '🟡'
+    msg = `פג תוקף בעוד ${days} ימים`
+  } else {
+    color = '#166534'; bg = '#f0fdf4'; icon = '🟢'
+    msg = `בתוקף עד ${expiryStr} (${days} ימים)`
+  }
+
+  const status = days < 0 ? 'expired' : days <= 30 ? 'danger' : days <= 90 ? 'warning' : 'ok'
+
+  return (
+    <div className={styles.expiryBadge} data-status={status}>
+      <span className={styles.expiryIcon}>{icon}</span>
+      <span className={styles.expiryMsg}>{msg}</span>
     </div>
   )
 }
