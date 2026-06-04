@@ -1,72 +1,46 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from 'react'
 import type { Session, User } from '@supabase/supabase-js'
 import { supabase } from '@/lib/supabase'
-import type { Profile } from '@/types/database'
 
 interface AuthContextType {
   session: Session | null
   user: User | null
-  profile: Profile | null
   loading: boolean
-  refreshProfile: () => Promise<void>
   signOut: () => Promise<void>
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
-async function fetchOrCreateProfile(user: User): Promise<Profile | null> {
+async function ensureProfile(user: User) {
   const { data } = await supabase
     .from('profiles')
-    .select('*')
+    .select('id')
     .eq('id', user.id)
     .maybeSingle()
 
-  if (data) return data
-
-  const { data: created } = await supabase
-    .from('profiles')
-    .insert({
+  if (!data) {
+    await supabase.from('profiles').insert({
       id: user.id,
       full_name: user.user_metadata?.full_name ?? null,
       avatar_url: user.user_metadata?.avatar_url ?? null,
     })
-    .select('*')
-    .single()
-
-  return created ?? null
+  }
 }
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [session, setSession] = useState<Session | null>(null)
-  const [profile, setProfile] = useState<Profile | null>(null)
   const [loading, setLoading] = useState(true)
-
-  const loadProfile = async (user: User) => {
-    const p = await fetchOrCreateProfile(user)
-    setProfile(p)
-  }
-
-  const refreshProfile = async () => {
-    if (!session?.user) return
-    const { data } = await supabase
-      .from('profiles')
-      .select('*')
-      .eq('id', session.user.id)
-      .single()
-    if (data) setProfile(data)
-  }
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session)
-      if (session?.user) loadProfile(session.user).finally(() => setLoading(false))
-      else setLoading(false)
+      if (session?.user) ensureProfile(session.user)
+      setLoading(false)
     })
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       setSession(session)
-      if (session?.user) loadProfile(session.user)
-      else setProfile(null)
+      if (session?.user) ensureProfile(session.user)
     })
 
     return () => subscription.unsubscribe()
@@ -74,11 +48,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const signOut = async () => {
     await supabase.auth.signOut()
-    setProfile(null)
   }
 
   return (
-    <AuthContext.Provider value={{ session, user: session?.user ?? null, profile, loading, refreshProfile, signOut }}>
+    <AuthContext.Provider value={{ session, user: session?.user ?? null, loading, signOut }}>
       {children}
     </AuthContext.Provider>
   )
