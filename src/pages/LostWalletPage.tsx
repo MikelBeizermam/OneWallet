@@ -1,33 +1,31 @@
 import { useNavigate } from 'react-router-dom'
-import { CreditCard, Car, Shield, Gift } from 'lucide-react'
-import type { LucideIcon } from 'lucide-react'
 import styles from './LostWalletPage.module.css'
 
-const ITEMS: { id: string; icon: LucideIcon; title: string; desc: string; action: { type: string; value: string; subject?: string } }[] = [
+const ITEMS = [
   {
     id: 'id',
-    icon: CreditCard,
+    emoji: '🪪',
     title: 'תעודת זהות',
     desc: 'הזמנת תעודת זהות חדשה במשרד הפנים',
     action: { type: 'url', value: 'https://www.gov.il/he/service/biometric_smart_id_request' },
   },
   {
     id: 'license',
-    icon: Car,
+    emoji: '🚗',
     title: 'רישיון נהיגה',
     desc: 'בקשת רישיון נהיגה חלופי במקרה אובדן',
     action: { type: 'url', value: 'https://www.gov.il/he/service/duplicate_drivers_license_in_case_of_loss' },
   },
   {
     id: 'weapon',
-    icon: Shield,
+    emoji: '🔫',
     title: 'רישיון נשק',
     desc: 'קבלת עותק רישיון נשק במקרה אובדן',
     action: { type: 'url', value: 'https://www.gov.il/he/service/get_firearm_license_copy' },
   },
   {
     id: 'buyme',
-    icon: Gift,
+    emoji: '🎁',
     title: 'כרטיס BuyMe',
     desc: 'פנייה לתמיכה של BuyMe לדיווח על כרטיס אבוד',
     action: { type: 'email', value: 'support@buyme.co.il', subject: 'דיווח על כרטיס אבוד' },
@@ -72,7 +70,7 @@ export default function LostWalletPage() {
             onClick={() => handleAction(item)}
           >
             <span className={styles.cardIcon}>
-              <item.icon size={28} strokeWidth={1.6} />
+              {item.emoji}
             </span>
             <div className={styles.cardBody}>
               <span className={styles.cardTitle}>{item.title}</span>

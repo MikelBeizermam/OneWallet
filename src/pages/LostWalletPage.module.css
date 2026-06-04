@@ -1,9 +1,11 @@
 .page {
   display: flex;
   flex-direction: column;
-  min-height: 100dvh;
+  height: 100%;
+  min-height: 0;
   background: var(--color-background);
-  padding-bottom: var(--space-8);
+  padding-bottom: calc(var(--nav-height, 70px) + var(--space-8));
+  overflow-y: auto;
 }
 
 .header {
@@ -101,7 +103,8 @@
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  color: #dc2626;
+  font-size: 26px;
+  line-height: 1;
 }
 
 .cardBody {
