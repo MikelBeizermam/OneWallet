@@ -6,6 +6,18 @@ import { useCards } from '@/contexts/CardsContext'
 import type { Card } from '@/types/database'
 import styles from './CardViewPage.module.css'
 
+const RENEWAL_URLS: Partial<Record<string, string>> = {
+  id:      'https://www.gov.il/he/service/biometric_smart_id_request',
+  license: 'https://www.gov.il/he/service/driving_license_renewal',
+  loyalty: 'https://www.gov.il/he/service/private_firearm_license_renewal',
+}
+
+const RENEWAL_LABELS: Partial<Record<string, string>> = {
+  id:      'חידוש ת.ז',
+  license: 'חידוש רישיון נהיגה',
+  loyalty: 'חידוש רישיון נשק',
+}
+
 export default function CardViewPage() {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
@@ -241,6 +253,17 @@ export default function CardViewPage() {
                 <span>{copySuccess ? 'הועתק!' : 'העתק כרטיס'}</span>
               </button>
             )}
+            {RENEWAL_URLS[card.category] && (
+              <a
+                href={RENEWAL_URLS[card.category]}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={styles.actionBtn}
+              >
+                <RenewIcon />
+                <span>{RENEWAL_LABELS[card.category]}</span>
+              </a>
+            )}
           </div>
 
           {isIOS && (
@@ -464,4 +487,7 @@ function CopyIcon() {
 }
 function CheckIcon() {
   return <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+}
+function RenewIcon() {
+  return <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
 }
