@@ -39,7 +39,7 @@ export default function CardViewPage() {
       setCopySuccess(true)
       setTimeout(() => setCopySuccess(false), 2500)
     } catch {
-      setError('לא ניתן להעתיק — נסה להגדיל את התמונה ולשמור ידנית')
+      alert('לא ניתן להעתיק — נסה להגדיל את התמונה ולשמור ידנית')
     }
     setCopying(false)
   }
