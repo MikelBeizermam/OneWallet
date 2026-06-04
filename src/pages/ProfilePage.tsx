@@ -2,36 +2,21 @@ import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '@/contexts/AuthContext'
 import { supabase } from '@/lib/supabase'
-import type { Profile } from '@/types/database'
 import type { LucideIcon } from 'lucide-react'
 import { Star, CreditCard, Bell, Lock, HelpCircle, Settings, Pencil, AlertTriangle } from 'lucide-react'
 import styles from './ProfilePage.module.css'
 
 export default function ProfilePage() {
-  const { user, signOut } = useAuth()
+  const { user, profile, refreshProfile, signOut } = useAuth()
   const navigate = useNavigate()
-  const [profile, setProfile] = useState<Profile | null>(null)
-  const [profileLoading, setProfileLoading] = useState(true)
   const [editing, setEditing] = useState(false)
-  const [fullName, setFullName] = useState('')
+  const [fullName, setFullName] = useState(profile?.full_name ?? '')
   const [saving, setSaving] = useState(false)
   const [saveMsg, setSaveMsg] = useState('')
 
   useEffect(() => {
-    if (!user) return
-    supabase
-      .from('profiles')
-      .select('*')
-      .eq('id', user.id)
-      .single()
-      .then(({ data }) => {
-        if (data) {
-          setProfile(data)
-          setFullName(data.full_name ?? '')
-        }
-        setProfileLoading(false)
-      })
-  }, [user])
+    setFullName(profile?.full_name ?? '')
+  }, [profile?.full_name])
 
   const handleSave = async () => {
     if (!user) return
@@ -41,7 +26,7 @@ export default function ProfilePage() {
       .update({ full_name: fullName.trim() })
       .eq('id', user.id)
     if (!error) {
-      setProfile(p => p ? { ...p, full_name: fullName.trim() } : p)
+      await refreshProfile()
       setSaveMsg('נשמר בהצלחה')
       setTimeout(() => setSaveMsg(''), 2000)
       setEditing(false)
@@ -84,10 +69,7 @@ export default function ProfilePage() {
           </div>
         ) : (
           <>
-            {profileLoading
-            ? <span className={styles.nameSkeleton} />
-            : <h2 className={styles.name}>{profile?.full_name ?? 'משתמש'}</h2>
-          }
+            <h2 className={styles.name}>{profile?.full_name ?? 'משתמש'}</h2>
             <p className={styles.email}>{user?.email}</p>
           </>
         )}
