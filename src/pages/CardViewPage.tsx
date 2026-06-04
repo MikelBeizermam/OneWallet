@@ -19,6 +19,30 @@ export default function CardViewPage() {
   const [addingToWallet, setAddingToWallet] = useState(false)
 
   const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent)
+  const isMobile = /iphone|ipad|ipod|android/i.test(navigator.userAgent)
+  const [copying, setCopying] = useState(false)
+  const [copySuccess, setCopySuccess] = useState(false)
+
+  const handleCopyImage = async () => {
+    if (!card?.image_url) return
+    setCopying(true)
+    try {
+      const img = new Image()
+      img.src = card.image_url
+      await new Promise(resolve => { img.onload = resolve })
+      const canvas = document.createElement('canvas')
+      canvas.width = img.naturalWidth
+      canvas.height = img.naturalHeight
+      canvas.getContext('2d')!.drawImage(img, 0, 0)
+      const blob = await new Promise<Blob>(resolve => canvas.toBlob(b => resolve(b!), 'image/png'))
+      await navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })])
+      setCopySuccess(true)
+      setTimeout(() => setCopySuccess(false), 2500)
+    } catch {
+      setError('לא ניתן להעתיק — נסה להגדיל את התמונה ולשמור ידנית')
+    }
+    setCopying(false)
+  }
 
   const handleAddToWallet = useCallback(async () => {
     if (!id) return
@@ -184,6 +208,17 @@ export default function CardViewPage() {
               <EditIcon />
               <span>עריכה</span>
             </button>
+            {!isMobile && card.image_url && (
+              <button
+                type="button"
+                className={`${styles.actionBtn} ${copySuccess ? styles.actionBtnSuccess : ''}`}
+                onClick={handleCopyImage}
+                disabled={copying}
+              >
+                {copySuccess ? <CheckIcon /> : <CopyIcon />}
+                <span>{copySuccess ? 'הועתק!' : 'העתק כרטיס'}</span>
+              </button>
+            )}
           </div>
 
           {isIOS && (
@@ -401,4 +436,7 @@ function WalletIcon() {
 }
 function StoreIcon() {
   return <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M3 9l1-5h16l1 5"/><path d="M3 9a2 2 0 004 0 2 2 0 004 0 2 2 0 004 0 2 2 0 004 0"/><path d="M5 9v11h14V9"/><path d="M10 14h4v6h-4z"/></svg>
+}
+function CopyIcon() {
+  return <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
 }
