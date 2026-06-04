@@ -143,6 +143,9 @@
 .menuItem:hover { background: var(--color-accent); }
 
 .menuItemAccent .menuLabel { color: var(--color-primary); font-weight: 600; }
+.menuItemDanger { background: #fff5f5; border: 1px solid #fecaca; }
+.menuItemDanger .menuLabel { color: #dc2626; font-weight: 700; }
+.menuItemDanger .menuIcon { color: #dc2626; }
 
 .menuIcon { font-size: 20px; }
 

@@ -1,38 +1,36 @@
 import { useNavigate } from 'react-router-dom'
+import { CreditCard, Car, Shield, Gift } from 'lucide-react'
+import type { LucideIcon } from 'lucide-react'
 import styles from './LostWalletPage.module.css'
 
-const ITEMS = [
+const ITEMS: { id: string; icon: LucideIcon; title: string; desc: string; action: { type: string; value: string; subject?: string } }[] = [
   {
     id: 'id',
-    emoji: '🪪',
+    icon: CreditCard,
     title: 'תעודת זהות',
     desc: 'הזמנת תעודת זהות חדשה במשרד הפנים',
     action: { type: 'url', value: 'https://www.gov.il/he/service/biometric_smart_id_request' },
-    label: 'לדיווח ובקשה',
   },
   {
     id: 'license',
-    emoji: '🚗',
+    icon: Car,
     title: 'רישיון נהיגה',
     desc: 'בקשת רישיון נהיגה חלופי במקרה אובדן',
     action: { type: 'url', value: 'https://www.gov.il/he/service/duplicate_drivers_license_in_case_of_loss' },
-    label: 'לדיווח ובקשה',
   },
   {
     id: 'weapon',
-    emoji: '🔫',
+    icon: Shield,
     title: 'רישיון נשק',
     desc: 'קבלת עותק רישיון נשק במקרה אובדן',
     action: { type: 'url', value: 'https://www.gov.il/he/service/get_firearm_license_copy' },
-    label: 'לדיווח ובקשה',
   },
   {
     id: 'buyme',
-    emoji: '🎁',
+    icon: Gift,
     title: 'כרטיס BuyMe',
     desc: 'פנייה לתמיכה של BuyMe לדיווח על כרטיס אבוד',
     action: { type: 'email', value: 'support@buyme.co.il', subject: 'דיווח על כרטיס אבוד' },
-    label: 'שלח מייל לתמיכה',
   },
 ]
 
@@ -58,10 +56,11 @@ export default function LostWalletPage() {
       </header>
 
       <div className={styles.alert}>
-        <span className={styles.alertIcon}>🚨</span>
-        <p className={styles.alertText}>
-          אבד לך הארנק? לחץ על הכרטיס הרלוונטי לדיווח מיידי והזמנת תחליף.
-        </p>
+        <WarningIcon />
+        <div>
+          <p className={styles.alertTitle}>אבד לך הארנק?</p>
+          <p className={styles.alertText}>לחץ על הכרטיס הרלוונטי לדיווח מיידי</p>
+        </div>
       </div>
 
       <div className={styles.list}>
@@ -72,12 +71,14 @@ export default function LostWalletPage() {
             className={styles.card}
             onClick={() => handleAction(item)}
           >
-            <span className={styles.cardEmoji}>{item.emoji}</span>
+            <span className={styles.cardIcon}>
+              <item.icon size={28} strokeWidth={1.6} />
+            </span>
             <div className={styles.cardBody}>
               <span className={styles.cardTitle}>{item.title}</span>
               <span className={styles.cardDesc}>{item.desc}</span>
             </div>
-            <span className={styles.cardAction}>{item.label} ←</span>
+            <span className={styles.cardAction}>לדיווח ←</span>
           </button>
         ))}
       </div>
@@ -87,4 +88,8 @@ export default function LostWalletPage() {
 
 function ChevronIcon() {
   return <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+}
+
+function WarningIcon() {
+  return <svg className={styles.warningIcon} width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#dc2626" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
 }

@@ -116,7 +116,7 @@ export default function ProfilePage() {
         <MenuItem icon={Bell} label="התראות" onClick={() => navigate('/notifications')} />
         <MenuItem icon={Lock} label="אבטחה" onClick={() => navigate('/settings')} />
         <MenuItem icon={HelpCircle} label="עזרה ותמיכה" onClick={() => window.location.href = 'mailto:onewallet2026@gmail.com?subject=פנייה לתמיכה - OneWallet'} />
-        <MenuItem icon={AlertTriangle} label="ארנק אבד — חירום" accent onClick={() => navigate('/lost-wallet')} />
+        <MenuItem icon={AlertTriangle} label="ארנק אבד — חירום" danger onClick={() => navigate('/lost-wallet')} />
         {user?.email === 'miki199838@gmail.com' && (
           <MenuItem icon={Settings} label="ניהול מנהל" accent onClick={() => navigate('/admin')} />
         )}
@@ -133,11 +133,11 @@ export default function ProfilePage() {
   )
 }
 
-function MenuItem({ icon: Icon, label, sub, accent, onClick }: {
-  icon: LucideIcon; label: string; sub?: string; accent?: boolean; onClick: () => void
+function MenuItem({ icon: Icon, label, sub, accent, danger, onClick }: {
+  icon: LucideIcon; label: string; sub?: string; accent?: boolean; danger?: boolean; onClick: () => void
 }) {
   return (
-    <button type="button" className={`${styles.menuItem} ${accent ? styles.menuItemAccent : ''}`} onClick={onClick}>
+    <button type="button" className={`${styles.menuItem} ${accent ? styles.menuItemAccent : ''} ${danger ? styles.menuItemDanger : ''}`} onClick={onClick}>
       <span className={styles.menuIcon}><Icon size={20} strokeWidth={1.8} /></span>
       <span className={styles.menuContent}>
         <span className={styles.menuLabel}>{label}</span>
