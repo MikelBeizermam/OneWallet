@@ -11,6 +11,7 @@ export default function ProfilePage() {
   const { user, signOut } = useAuth()
   const navigate = useNavigate()
   const [profile, setProfile] = useState<Profile | null>(null)
+  const [profileLoading, setProfileLoading] = useState(true)
   const [editing, setEditing] = useState(false)
   const [fullName, setFullName] = useState('')
   const [saving, setSaving] = useState(false)
@@ -28,6 +29,7 @@ export default function ProfilePage() {
           setProfile(data)
           setFullName(data.full_name ?? '')
         }
+        setProfileLoading(false)
       })
   }, [user])
 
@@ -82,7 +84,10 @@ export default function ProfilePage() {
           </div>
         ) : (
           <>
-            <h2 className={styles.name}>{profile?.full_name ?? 'משתמש'}</h2>
+            {profileLoading
+            ? <span className={styles.nameSkeleton} />
+            : <h2 className={styles.name}>{profile?.full_name ?? 'משתמש'}</h2>
+          }
             <p className={styles.email}>{user?.email}</p>
           </>
         )}

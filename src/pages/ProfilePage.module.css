@@ -49,6 +49,20 @@
 }
 
 .name { font-size: 18px; font-weight: 700; }
+
+.nameSkeleton {
+  display: block;
+  width: 80px;
+  height: 20px;
+  border-radius: 6px;
+  background: #e5e7eb;
+  animation: pulse 1.2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
 .email { font-size: 13px; color: var(--color-text-muted); font-family: var(--font-family); }
 
 .editRow {
