@@ -1,39 +1,40 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 856 540" preserveAspectRatio="xMidYMid slice">
   <defs>
-    <linearGradient id="disGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#1E3A8A"/>
-      <stop offset="100%" stop-color="#1E40AF"/>
+    <linearGradient id="disGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#C8B8E8"/>
+      <stop offset="60%" stop-color="#DDD0F5"/>
+      <stop offset="100%" stop-color="#F5F0FF"/>
     </linearGradient>
   </defs>
   <rect width="856" height="540" fill="url(#disGrad)"/>
 
   <!-- Wheelchair accessibility symbol -->
   <!-- Head -->
-  <circle cx="300" cy="148" r="38" fill="white"/>
+  <circle cx="300" cy="148" r="38" fill="#2D1B6B"/>
   <!-- Body -->
-  <path d="M300 190 L300 310 L240 390" stroke="white" stroke-width="28" stroke-linecap="round" fill="none"/>
+  <path d="M300 190 L300 310 L240 390" stroke="#2D1B6B" stroke-width="28" stroke-linecap="round" fill="none"/>
   <!-- Arm holding wheel -->
-  <path d="M300 240 L380 270" stroke="white" stroke-width="24" stroke-linecap="round" fill="none"/>
+  <path d="M300 240 L380 270" stroke="#2D1B6B" stroke-width="24" stroke-linecap="round" fill="none"/>
   <!-- Seat -->
-  <path d="M300 310 L390 310" stroke="white" stroke-width="24" stroke-linecap="round" fill="none"/>
+  <path d="M300 310 L390 310" stroke="#2D1B6B" stroke-width="24" stroke-linecap="round" fill="none"/>
   <!-- Wheel -->
-  <circle cx="370" cy="390" r="70" fill="none" stroke="white" stroke-width="22"/>
+  <circle cx="370" cy="390" r="70" fill="none" stroke="#2D1B6B" stroke-width="22"/>
   <!-- Small front wheel -->
-  <circle cx="230" cy="395" r="28" fill="none" stroke="white" stroke-width="18"/>
+  <circle cx="230" cy="395" r="28" fill="none" stroke="#2D1B6B" stroke-width="18"/>
 
   <!-- תעודת נכה text -->
   <text x="600" y="290"
         font-family="'Arial', 'Helvetica', sans-serif"
         font-size="88"
         font-weight="900"
-        fill="white"
+        fill="#2D1B6B"
         text-anchor="middle"
         direction="rtl">תעודת</text>
   <text x="600" y="390"
         font-family="'Arial', 'Helvetica', sans-serif"
         font-size="88"
         font-weight="900"
-        fill="white"
+        fill="#2D1B6B"
         text-anchor="middle"
         direction="rtl">נכה</text>
 </svg>
