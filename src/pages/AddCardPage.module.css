@@ -314,6 +314,21 @@
   display: block;
 }
 
+.brandImageContain {
+  width: 100%;
+  aspect-ratio: 856 / 540;
+  object-fit: contain;
+  display: block;
+  background: #2B5CB8;
+}
+
+.brandImageFill {
+  width: 100%;
+  aspect-ratio: 856 / 540;
+  object-fit: fill;
+  display: block;
+}
+
 .brandLabel {
   font-size: 15px;
   font-weight: 700;

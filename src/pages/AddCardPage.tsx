@@ -333,7 +333,7 @@ export default function AddCardPage() {
             aria-label="תעודת נכה"
             onClick={() => handleDisabilityTypeSelect('card')}
           >
-            <img src={CARD_TEMPLATES.find(t => t.id === 'disability-card')?.bgImageUrl} alt="" className={styles.brandImage} aria-hidden="true" />
+            <img src={CARD_TEMPLATES.find(t => t.id === 'disability-card')?.bgImageUrl} alt="" className={styles.brandImageContain} aria-hidden="true" />
             <span className={styles.brandLabel}>תעודת נכה</span>
           </button>
 
@@ -343,7 +343,7 @@ export default function AddCardPage() {
             aria-label="פטור מתור"
             onClick={() => handleDisabilityTypeSelect('queue')}
           >
-            <img src={CARD_TEMPLATES.find(t => t.id === 'disability-queue')?.bgImageUrl} alt="" className={styles.brandImage} aria-hidden="true" />
+            <img src={CARD_TEMPLATES.find(t => t.id === 'disability-queue')?.bgImageUrl} alt="" className={styles.brandImageFill} aria-hidden="true" />
             <span className={styles.brandLabel}>פטור מתור</span>
           </button>
         </div>
