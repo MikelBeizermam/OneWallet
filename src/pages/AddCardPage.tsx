@@ -163,7 +163,7 @@ export default function AddCardPage() {
     }
   }
 
-  const handleGiftBrandSelect = async (brand: 'general' | 'buyme') => {
+  const handleGiftBrandSelect = async (brand: 'general' | 'buyme' | 'htz' | 'kaveret') => {
     if (brand === 'buyme') {
       setSelectedTemplate('gift-buyme')
       setName('BuyMe')
@@ -186,6 +186,12 @@ export default function AddCardPage() {
           }
         } catch {}
       }
+    } else if (brand === 'htz') {
+      setSelectedTemplate('gift-htz')
+      setName('HTZ Gift Card')
+    } else if (brand === 'kaveret') {
+      setSelectedTemplate('gift-kaveret')
+      setName('כוורת צה"ל')
     } else {
       setSelectedTemplate('gift-general')
     }
@@ -326,6 +332,26 @@ export default function AddCardPage() {
           >
             <img src={CARD_TEMPLATES.find(t => t.id === 'gift-buyme')?.bgImageUrl} alt="" className={styles.brandImage} aria-hidden="true" />
             <span className={styles.brandLabel}>BuyMe</span>
+          </button>
+
+          <button
+            type="button"
+            className={styles.brandCard}
+            aria-label="HTZ Gift Card"
+            onClick={() => handleGiftBrandSelect('htz')}
+          >
+            <img src={CARD_TEMPLATES.find(t => t.id === 'gift-htz')?.bgImageUrl} alt="" className={styles.brandImage} aria-hidden="true" />
+            <span className={styles.brandLabel}>HTZ Gift Card</span>
+          </button>
+
+          <button
+            type="button"
+            className={styles.brandCard}
+            aria-label='כוורת צה"ל'
+            onClick={() => handleGiftBrandSelect('kaveret')}
+          >
+            <img src={CARD_TEMPLATES.find(t => t.id === 'gift-kaveret')?.bgImageUrl} alt="" className={styles.brandImage} aria-hidden="true" />
+            <span className={styles.brandLabel}>כוורת צה״ל</span>
           </button>
         </div>
       </div>

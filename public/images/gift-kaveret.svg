@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 856 540" preserveAspectRatio="xMidYMid slice">
+  <!-- Yellow background -->
+  <rect width="856" height="540" fill="#F5C400"/>
+
+  <!-- Simple bee icon (hexagon body) -->
+  <ellipse cx="428" cy="195" rx="62" ry="80" fill="#1A1A1A"/>
+  <!-- Bee stripes -->
+  <rect x="366" y="210" width="124" height="22" rx="4" fill="#F5C400"/>
+  <rect x="366" y="245" width="124" height="22" rx="4" fill="#F5C400"/>
+  <!-- Wings -->
+  <ellipse cx="340" cy="180" rx="52" ry="30" fill="white" fill-opacity="0.85" transform="rotate(-20, 340, 180)"/>
+  <ellipse cx="516" cy="180" rx="52" ry="30" fill="white" fill-opacity="0.85" transform="rotate(20, 516, 180)"/>
+  <!-- Antennae -->
+  <line x1="405" y1="118" x2="380" y2="88" stroke="#1A1A1A" stroke-width="6" stroke-linecap="round"/>
+  <line x1="451" y1="118" x2="476" y2="88" stroke="#1A1A1A" stroke-width="6" stroke-linecap="round"/>
+  <circle cx="378" cy="85" r="7" fill="#1A1A1A"/>
+  <circle cx="478" cy="85" r="7" fill="#1A1A1A"/>
+
+  <!-- כוורת text -->
+  <text x="428" y="365"
+        font-family="'Arial', 'Helvetica', sans-serif"
+        font-size="100"
+        font-weight="900"
+        fill="#1A1A1A"
+        text-anchor="middle"
+        direction="rtl">כוורת</text>
+
+  <!-- Subtitle -->
+  <text x="428" y="430"
+        font-family="'Arial', 'Helvetica', sans-serif"
+        font-size="32"
+        font-weight="500"
+        fill="#1A1A1A"
+        fill-opacity="0.7"
+        text-anchor="middle"
+        direction="rtl">רשת חנויות האגודה לחייל</text>
+</svg>
