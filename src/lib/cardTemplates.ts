@@ -108,9 +108,9 @@ export const CARD_TEMPLATES: CardTemplate[] = [
     id: 'student',
     name: 'כרטיס סטודנט',
     category: 'student',
-    bgColor: '#1E3A8A',
+    bgColor: '#A8C94A',
     textColor: '#FFFFFF',
-    accentColor: '#93C5FD',
+    accentColor: '#D4E89A',
     icon: GraduationCap,
   },
   {
