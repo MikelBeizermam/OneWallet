@@ -1,40 +1,45 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 856 540" preserveAspectRatio="xMidYMid slice">
-  <defs>
-    <linearGradient id="disGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-      <stop offset="0%" stop-color="#C8B8E8"/>
-      <stop offset="60%" stop-color="#DDD0F5"/>
-      <stop offset="100%" stop-color="#F5F0FF"/>
-    </linearGradient>
-  </defs>
-  <rect width="856" height="540" fill="url(#disGrad)"/>
+  <!-- Blue background like standard ISA sign -->
+  <rect width="856" height="540" fill="#2B5CB8" rx="0"/>
 
-  <!-- Wheelchair accessibility symbol -->
-  <!-- Head -->
-  <circle cx="300" cy="148" r="38" fill="#2D1B6B"/>
-  <!-- Body -->
-  <path d="M300 190 L300 310 L240 390" stroke="#2D1B6B" stroke-width="28" stroke-linecap="round" fill="none"/>
-  <!-- Arm holding wheel -->
-  <path d="M300 240 L380 270" stroke="#2D1B6B" stroke-width="24" stroke-linecap="round" fill="none"/>
-  <!-- Seat -->
-  <path d="M300 310 L390 310" stroke="#2D1B6B" stroke-width="24" stroke-linecap="round" fill="none"/>
-  <!-- Wheel -->
-  <circle cx="370" cy="390" r="70" fill="none" stroke="#2D1B6B" stroke-width="22"/>
-  <!-- Small front wheel -->
-  <circle cx="230" cy="395" r="28" fill="none" stroke="#2D1B6B" stroke-width="18"/>
+  <!-- ISA Wheelchair symbol (centered left side) -->
+  <g transform="translate(200, 50) scale(2.2)">
+    <!-- Head -->
+    <circle cx="80" cy="28" r="18" fill="white"/>
+    <!-- Body / torso leaning forward -->
+    <path d="M80 46 L80 110 L55 145" stroke="white" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+    <!-- Upper arm forward -->
+    <path d="M80 78 L118 95" stroke="white" stroke-width="14" stroke-linecap="round" fill="none"/>
+    <!-- Seat -->
+    <path d="M80 110 L128 110" stroke="white" stroke-width="14" stroke-linecap="round" fill="none"/>
+    <!-- Big wheel -->
+    <circle cx="118" cy="155" r="48" fill="none" stroke="white" stroke-width="14"/>
+    <!-- Small front wheel -->
+    <circle cx="50" cy="158" r="18" fill="none" stroke="white" stroke-width="11"/>
+    <!-- Wheel hub dot -->
+    <circle cx="118" cy="155" r="7" fill="white"/>
+  </g>
 
-  <!-- תעודת נכה text -->
-  <text x="600" y="290"
+  <!-- תעודת נכה text (right side) -->
+  <text x="590" y="230"
         font-family="'Arial', 'Helvetica', sans-serif"
-        font-size="88"
+        font-size="80"
         font-weight="900"
-        fill="#2D1B6B"
+        fill="white"
         text-anchor="middle"
         direction="rtl">תעודת</text>
-  <text x="600" y="390"
+  <text x="590" y="330"
         font-family="'Arial', 'Helvetica', sans-serif"
-        font-size="88"
+        font-size="80"
         font-weight="900"
-        fill="#2D1B6B"
+        fill="white"
         text-anchor="middle"
         direction="rtl">נכה</text>
+  <text x="590" y="400"
+        font-family="'Arial', 'Helvetica', sans-serif"
+        font-size="38"
+        font-weight="400"
+        fill="white"
+        fill-opacity="0.85"
+        text-anchor="middle">Disability Card</text>
 </svg>
