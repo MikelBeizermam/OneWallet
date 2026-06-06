@@ -145,6 +145,15 @@ export const CARD_TEMPLATES: CardTemplate[] = [
     hidden: true,
   },
   {
+    id: 'medical',
+    name: 'כרטיס קופת חולים',
+    category: 'medical',
+    bgColor: '#0E7490',
+    textColor: '#FFFFFF',
+    accentColor: '#A5F3FC',
+    icon: CreditCard,
+  },
+  {
     id: 'visit',
     name: 'כרטיס ביקור',
     category: 'visit',
@@ -171,6 +180,7 @@ export const CATEGORY_LABELS: Record<CardCategory, string> = {
   gift: 'גיפט קארד',
   student: 'סטודנט',
   disability: 'נכה',
+  medical: 'רפואה',
   visit: 'ביקור',
   other: 'אחר',
 }
@@ -215,6 +225,12 @@ export const FIELD_LABELS: Record<CardCategory, FieldLabels> = {
   },
   disability: {
     numberLabel: 'מספר תעודה',
+    numberPlaceholder: '000000000',
+    dateLabel: 'תאריך תפוגה',
+    datePlaceholder: 'DD/MM/YYYY',
+  },
+  medical: {
+    numberLabel: 'תעודת זהות',
     numberPlaceholder: '000000000',
     dateLabel: 'תאריך תפוגה',
     datePlaceholder: 'DD/MM/YYYY',

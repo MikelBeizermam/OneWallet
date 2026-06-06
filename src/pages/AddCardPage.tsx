@@ -298,7 +298,7 @@ export default function AddCardPage() {
       template_id: selectedTemplate,
       metadata: {
         ...(selectedCategory === 'gift' && giftBalance ? { balance: giftBalance } : {}),
-        ...(selectedCategory === 'loyalty' && holderName.trim() ? { holder_name: holderName.trim() } : {}),
+        ...((selectedCategory === 'loyalty' || selectedCategory === 'medical') && holderName.trim() ? { holder_name: holderName.trim() } : {}),
         ...(selectedCategory === 'student' && validYear ? { valid_year: validYear } : {}),
         ...(selectedCategory === 'license' && licenseExpiry.trim() ? { license_expiry: licenseExpiry.trim() } : {}),
         ...(selectedCategory === 'visit' && phone.trim() ? { phone: phone.trim() } : {}),
@@ -577,11 +577,11 @@ export default function AddCardPage() {
         </label>
 
         <div className="input-group">
-          <label className="input-label" htmlFor="card-name">{selectedCategory === 'id' ? 'שם בעל הכרטיס *' : 'שם הכרטיס *'}</label>
+          <label className="input-label" htmlFor="card-name">{selectedCategory === 'id' ? 'שם בעל הכרטיס *' : selectedCategory === 'medical' ? 'שם קופת החולים *' : 'שם הכרטיס *'}</label>
           <input
             id="card-name"
             className="input-field"
-            placeholder={selectedCategory === 'id' ? 'הכנס שם מלא' : 'הכנס שם כרטיס'}
+            placeholder={selectedCategory === 'id' ? 'הכנס שם מלא' : selectedCategory === 'medical' ? 'מכבי / כללית / מאוחדת / לאומית' : 'הכנס שם כרטיס'}
             value={name}
             onChange={e => setName(e.target.value)}
             required
@@ -603,9 +603,9 @@ export default function AddCardPage() {
           </div>
         )}
 
-        {selectedCategory === 'loyalty' && (
+        {(selectedCategory === 'loyalty' || selectedCategory === 'medical') && (
           <div className="input-group">
-            <label className="input-label" htmlFor="holder-name">שם הבעלים</label>
+            <label className="input-label" htmlFor="holder-name">{selectedCategory === 'medical' ? 'שם בעל הכרטיס' : 'שם הבעלים'}</label>
             <input
               id="holder-name"
               className="input-field"

@@ -87,7 +87,7 @@ export interface Database {
   }
 }
 
-export type CardCategory = 'id' | 'license' | 'loyalty' | 'gift' | 'visit' | 'other' | 'student' | 'disability'
+export type CardCategory = 'id' | 'license' | 'loyalty' | 'gift' | 'visit' | 'other' | 'student' | 'disability' | 'medical'
 
 export type Profile = Database['public']['Tables']['profiles']['Row']
 export type Card = Database['public']['Tables']['cards']['Row']
