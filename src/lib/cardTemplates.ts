@@ -117,9 +117,9 @@ export const CARD_TEMPLATES: CardTemplate[] = [
     id: 'disability',
     name: 'תעודת נכה',
     category: 'disability',
-    bgColor: '#1E40AF',
-    textColor: '#FFFFFF',
-    accentColor: '#BFDBFE',
+    bgColor: '#DDD0F5',
+    textColor: '#2D1B6B',
+    accentColor: '#C8B8E8',
     icon: CreditCard,
   },
   {
