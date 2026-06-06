@@ -130,7 +130,7 @@ export const CARD_TEMPLATES: CardTemplate[] = [
     textColor: '#2D1B6B',
     accentColor: '#C8B8E8',
     icon: CreditCard,
-    bgImageUrl: '/images/disability-card.svg',
+    bgImageUrl: '/images/disability-card.jpg',
     hidden: true,
   },
   {
@@ -141,7 +141,7 @@ export const CARD_TEMPLATES: CardTemplate[] = [
     textColor: '#FFFFFF',
     accentColor: '#A7F3D0',
     icon: CreditCard,
-    bgImageUrl: '/images/disability-queue.svg',
+    bgImageUrl: '/images/disability-queue.webp',
     hidden: true,
   },
   {
