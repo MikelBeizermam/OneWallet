@@ -610,6 +610,7 @@
   transition: opacity 0.15s;
 }
 .storesBtn:hover { opacity: 0.9; }
+.storesBtnHtz { background: #00CDB8; }
 
 /* BuyMe stores modal */
 .storesOverlay {

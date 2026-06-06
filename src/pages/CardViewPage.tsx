@@ -293,6 +293,14 @@ export default function CardViewPage() {
             </button>
           )}
 
+          {/* HTZ stores button */}
+          {card.template_id === 'gift-htz' && (
+            <button type="button" className={`${styles.storesBtn} ${styles.storesBtnHtz}`} onClick={() => navigate('/htz-stores')}>
+              <StoreIcon />
+              <span>בתי עסק שמקבלים HTZ</span>
+            </button>
+          )}
+
           {/* Expiry countdown */}
           <ExpiryBadge card={card} />
 
