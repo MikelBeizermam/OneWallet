@@ -337,21 +337,21 @@ export default function AddCardPage() {
           <button
             type="button"
             className={styles.brandCard}
-            aria-label="HTZ Gift Card"
-            onClick={() => handleGiftBrandSelect('htz')}
-          >
-            <img src={CARD_TEMPLATES.find(t => t.id === 'gift-htz')?.bgImageUrl} alt="" className={styles.brandImage} aria-hidden="true" />
-            <span className={styles.brandLabel}>HTZ Gift Card</span>
-          </button>
-
-          <button
-            type="button"
-            className={styles.brandCard}
             aria-label='כוורת צה"ל'
             onClick={() => handleGiftBrandSelect('kaveret')}
           >
             <img src={CARD_TEMPLATES.find(t => t.id === 'gift-kaveret')?.bgImageUrl} alt="" className={styles.brandImage} aria-hidden="true" />
             <span className={styles.brandLabel}>כוורת צה״ל</span>
+          </button>
+
+          <button
+            type="button"
+            className={styles.brandCard}
+            aria-label="HTZ Gift Card"
+            onClick={() => handleGiftBrandSelect('htz')}
+          >
+            <img src={CARD_TEMPLATES.find(t => t.id === 'gift-htz')?.bgImageUrl} alt="" className={styles.brandImage} aria-hidden="true" />
+            <span className={styles.brandLabel}>HTZ Gift Card</span>
           </button>
         </div>
       </div>
