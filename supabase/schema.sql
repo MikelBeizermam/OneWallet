@@ -51,7 +51,7 @@ create table if not exists public.cards (
   user_id uuid references public.profiles(id) on delete cascade not null,
   name text not null,
   category text not null default 'other'
-    check (category in ('id', 'license', 'loyalty', 'credit', 'visit', 'other')),
+    check (category in ('id', 'license', 'loyalty', 'credit', 'gift', 'student', 'visit', 'other', 'disability')),
   card_number text,
   expiry_date text,
   image_url text,

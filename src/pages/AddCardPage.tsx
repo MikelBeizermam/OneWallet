@@ -75,7 +75,7 @@ export default function AddCardPage() {
   const expiryCalendarRef = useRef<HTMLInputElement>(null)
   const idExpiryCalendarRef = useRef<HTMLInputElement>(null)
 
-  const [step, setStep] = useState<'template' | 'gift-brand' | 'form'>('template')
+  const [step, setStep] = useState<'template' | 'gift-brand' | 'disability-brand' | 'form'>('template')
   const [selectedTemplate, setSelectedTemplate] = useState<string | null>(null)
   const [selectedCategory, setSelectedCategory] = useState<CardCategory>('other')
   const [name, setName] = useState('')
@@ -156,7 +156,9 @@ export default function AddCardPage() {
     setGiftBalance('')
     setImageFile(null)
     setImagePreview(null)
-    if (category === 'gift') {
+    if (category === 'disability') {
+      setStep('disability-brand')
+    } else if (category === 'gift') {
       setStep('gift-brand')
     } else {
       setStep('form')
@@ -194,6 +196,17 @@ export default function AddCardPage() {
       setName('כוורת צה"ל')
     } else {
       setSelectedTemplate('gift-general')
+    }
+    setStep('form')
+  }
+
+  const handleDisabilityTypeSelect = (type: 'card' | 'queue') => {
+    if (type === 'card') {
+      setSelectedTemplate('disability-card')
+      setName('תעודת נכה')
+    } else {
+      setSelectedTemplate('disability-queue')
+      setName('פטור מתור')
     }
     setStep('form')
   }
@@ -300,6 +313,42 @@ export default function AddCardPage() {
       refetch()
     }
     setLoading(false)
+  }
+
+  if (step === 'disability-brand') {
+    return (
+      <div className={styles.page}>
+        <header className={styles.header}>
+          <button type="button" className={styles.backBtn} aria-label="חזרה" onClick={() => setStep('template')}>
+            <ChevronIcon />
+          </button>
+          <h1 className={styles.title}>בחר סוג תעודה</h1>
+          <div className={styles.headerSpacer} />
+        </header>
+
+        <div className={styles.brandGrid}>
+          <button
+            type="button"
+            className={styles.brandCard}
+            aria-label="תעודת נכה"
+            onClick={() => handleDisabilityTypeSelect('card')}
+          >
+            <img src={CARD_TEMPLATES.find(t => t.id === 'disability-card')?.bgImageUrl} alt="" className={styles.brandImage} aria-hidden="true" />
+            <span className={styles.brandLabel}>תעודת נכה</span>
+          </button>
+
+          <button
+            type="button"
+            className={styles.brandCard}
+            aria-label="פטור מתור"
+            onClick={() => handleDisabilityTypeSelect('queue')}
+          >
+            <img src={CARD_TEMPLATES.find(t => t.id === 'disability-queue')?.bgImageUrl} alt="" className={styles.brandImage} aria-hidden="true" />
+            <span className={styles.brandLabel}>פטור מתור</span>
+          </button>
+        </div>
+      </div>
+    )
   }
 
   if (step === 'gift-brand') {
