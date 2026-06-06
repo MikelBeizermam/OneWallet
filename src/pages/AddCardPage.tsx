@@ -1,4 +1,4 @@
-import { useState, useRef, type FormEvent, type ChangeEvent } from 'react'
+import React, { useState, useRef, type FormEvent, type ChangeEvent } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { supabase } from '@/lib/supabase'
 import { useAuth } from '@/contexts/AuthContext'
@@ -420,18 +420,20 @@ export default function AddCardPage() {
 
         <div className={styles.templateGrid}>
           {CARD_TEMPLATES.filter(t => !t.hidden).map(t => (
-            <button
-              type="button"
-              key={t.id}
-              className={styles.templateCard}
-              aria-label={`בחר תבנית ${t.name}`}
-              style={{ '--card-bg': t.bgColor, '--card-color': t.textColor, '--card-muted': t.textColor + 'aa' } as React.CSSProperties}
-              onClick={() => handleTemplateSelect(t.id, t.category, t.name)}
-            >
-              <t.icon size={28} strokeWidth={1.8} className={styles.templateIcon} />
-              <span className={styles.templateName}>{t.name}</span>
-              <span className={styles.templateCategory}>{CATEGORY_LABELS[t.category]}</span>
-            </button>
+            <React.Fragment key={t.id}>
+              <button
+                type="button"
+                className={styles.templateCard}
+                aria-label={`בחר תבנית ${t.name}`}
+                style={{ '--card-bg': t.bgColor, '--card-color': t.textColor, '--card-muted': t.textColor + 'aa' } as React.CSSProperties}
+                onClick={() => handleTemplateSelect(t.id, t.category, t.name)}
+              >
+                <t.icon size={28} strokeWidth={1.8} className={styles.templateIcon} />
+                <span className={styles.templateName}>{t.name}</span>
+                <span className={styles.templateCategory}>{CATEGORY_LABELS[t.category]}</span>
+              </button>
+              {t.id === 'medical' && <div className={styles.gridSpacer} aria-hidden="true" />}
+            </React.Fragment>
           ))}
         </div>
       </div>
