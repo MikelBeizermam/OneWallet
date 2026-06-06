@@ -432,7 +432,6 @@ export default function AddCardPage() {
                 <span className={styles.templateName}>{t.name}</span>
                 <span className={styles.templateCategory}>{CATEGORY_LABELS[t.category]}</span>
               </button>
-              {t.id === 'medical' && <div className={styles.gridSpacer} aria-hidden="true" />}
             </React.Fragment>
           ))}
         </div>
