@@ -489,22 +489,20 @@ function ExpiryBadge({ card }: { card: Card }) {
   today.setHours(0, 0, 0, 0)
   const days = Math.ceil((expiry.getTime() - today.getTime()) / (1000 * 60 * 60 * 24))
 
-  let color: string
-  let bg: string
   let icon: string
   let msg: string
 
   if (days < 0) {
-    color = '#991b1b'; bg = '#fef2f2'; icon = '🔴'
+    icon = '🔴'
     msg = `פג תוקף לפני ${Math.abs(days)} ימים`
   } else if (days <= 30) {
-    color = '#92400e'; bg = '#fff7ed'; icon = '🔴'
+    icon = '🔴'
     msg = `פג תוקף בעוד ${days} ימים — דחוף!`
   } else if (days <= 90) {
-    color = '#92400e'; bg = '#fefce8'; icon = '🟡'
+    icon = '🟡'
     msg = `פג תוקף בעוד ${days} ימים`
   } else {
-    color = '#166534'; bg = '#f0fdf4'; icon = '🟢'
+    icon = '🟢'
     msg = `בתוקף עד ${expiryStr} (${days} ימים)`
   }
 
