@@ -73,7 +73,10 @@ export default function ProfilePage() {
 
       {/* Avatar + name */}
       <div className={styles.avatarSection}>
-        <div className={styles.avatar}>{initial}</div>
+        {profile?.avatar_url
+          ? <img src={profile.avatar_url} alt="" referrerPolicy="no-referrer" className={styles.avatarImage} />
+          : <div className={styles.avatar}>{initial}</div>
+        }
         {editing ? (
           <div className={styles.editRow}>
             <input
@@ -163,3 +166,4 @@ function MenuItem({ icon: Icon, label, sub, accent, danger, onClick }: {
 function ChevronIcon() {
   return <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
 }
+

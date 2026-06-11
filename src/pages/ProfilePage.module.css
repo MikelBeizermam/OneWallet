@@ -48,6 +48,15 @@
   margin-bottom: var(--space-1);
 }
 
+.avatarImage {
+  width: 76px;
+  height: 76px;
+  border-radius: 50%;
+  object-fit: cover;
+  display: block;
+  margin-bottom: var(--space-1);
+}
+
 .name { font-size: 18px; font-weight: 700; }
 
 .nameSkeleton {
