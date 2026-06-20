@@ -88,7 +88,7 @@
 
 ## מודל הנתונים (ERD)
 
-ראה תרשים ERD בתיקיית הפרויקט או ב-Supabase Dashboard → Database → Schema Visualizer.
+![ERD](public/erd.png)
 
 **טבלאות עיקריות:**
 
