@@ -6,6 +6,8 @@
 
 🏠 **דף נחיתה:** [one-wallet-six.vercel.app/landing](https://one-wallet-six.vercel.app/landing)
 
+![OneWallet Screenshot](public/screenshot.png)
+
 ---
 
 ## הבעיה שאנחנו פותרים
