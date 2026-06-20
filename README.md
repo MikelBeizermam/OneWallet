@@ -4,6 +4,8 @@
 
 🔗 **פרויקט חי:** [one-wallet-six.vercel.app](https://one-wallet-six.vercel.app)
 
+🏠 **דף נחיתה:** [one-wallet-six.vercel.app/landing](https://one-wallet-six.vercel.app/landing)
+
 ---
 
 ## הבעיה שאנחנו פותרים
