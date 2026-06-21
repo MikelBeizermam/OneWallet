@@ -467,7 +467,11 @@ function getExpiryDate(card: Card): string | null {
   const meta = card.metadata as Record<string, string>
   if (card.category === 'id')      return meta?.id_expiry      || null
   if (card.category === 'license') return meta?.license_expiry || null
-  if (card.category === 'student') return null
+  if (card.category === 'student') {
+    const validYear = meta?.valid_year ? parseInt(String(meta.valid_year)) : null
+    if (validYear && validYear > 2000) return `31/12/${validYear - 1}`
+    return null
+  }
   return card.expiry_date || null
 }
 
