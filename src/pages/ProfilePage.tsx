@@ -7,14 +7,17 @@ import type { LucideIcon } from 'lucide-react'
 import { Star, CreditCard, Bell, Lock, HelpCircle, Settings, Pencil, AlertTriangle, MessageSquare } from 'lucide-react'
 import styles from './ProfilePage.module.css'
 
-const CACHE_KEY = (uid: string) => `profile_name_${uid}`
+const CACHE_KEY      = (uid: string) => `profile_name_${uid}`
+const PLAN_CACHE_KEY = (uid: string) => `profile_plan_${uid}`
 
 export default function ProfilePage() {
   const { user, signOut } = useAuth()
   const navigate = useNavigate()
   const cachedName = user ? (localStorage.getItem(CACHE_KEY(user.id)) ?? '') : ''
+  const cachedPlan = user ? (localStorage.getItem(PLAN_CACHE_KEY(user.id)) ?? 'free') : 'free'
   const [profile, setProfile] = useState<Profile | null>(null)
   const [profileLoading, setProfileLoading] = useState(!cachedName)
+  const [plan, setPlan] = useState<string>(cachedPlan)
   const [editing, setEditing] = useState(false)
   const [fullName, setFullName] = useState(cachedName)
   const [saving, setSaving] = useState(false)
@@ -32,6 +35,9 @@ export default function ProfilePage() {
           setProfile(data)
           setFullName(data.full_name ?? '')
           if (data.full_name) localStorage.setItem(CACHE_KEY(user.id), data.full_name)
+          const fetchedPlan = data.plan ?? 'free'
+          setPlan(fetchedPlan)
+          localStorage.setItem(PLAN_CACHE_KEY(user.id), fetchedPlan)
         }
         setProfileLoading(false)
       })
@@ -61,7 +67,7 @@ export default function ProfilePage() {
   }
 
   const isAdmin = user?.email === 'miki199838@gmail.com'
-  const isPro = profile?.plan === 'pro'
+  const isPro = plan === 'pro'
   const displayName = fullName || profile?.full_name || null
   const initial = (displayName ?? user?.email ?? '?')[0].toUpperCase()
 
