@@ -66,7 +66,8 @@ export default function ProfilePage() {
     navigate('/login')
   }
 
-  const isAdmin = user?.email === 'miki199838@gmail.com'
+  const ADMIN_EMAILS = ['miki199838@gmail.com', 'onewallet2026@gmail.com']
+  const isAdmin = ADMIN_EMAILS.includes(user?.email ?? '')
   const isPro = plan === 'pro'
   const displayName = fullName || profile?.full_name || null
   const initial = (displayName ?? user?.email ?? '?')[0].toUpperCase()
@@ -139,7 +140,7 @@ export default function ProfilePage() {
         <MenuItem icon={HelpCircle} label="עזרה ותמיכה" onClick={() => window.location.href = 'mailto:onewallet2026@gmail.com?subject=פנייה לתמיכה - OneWallet'} />
         <MenuItem icon={MessageSquare} label="שלח פידבק" sub="עזור לנו להשתפר" onClick={() => window.open('https://tally.so/r/WOQ0dL', '_blank')} />
         <MenuItem icon={AlertTriangle} label="ארנק אבד — חירום" danger onClick={() => navigate('/lost-wallet')} />
-        {user?.email === 'miki199838@gmail.com' && (
+        {isAdmin && (
           <MenuItem icon={Settings} label="ניהול מנהל" accent onClick={() => navigate('/admin')} />
         )}
       </div>

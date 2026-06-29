@@ -455,8 +455,8 @@ export default function AddCardPage() {
     )
   }
 
-  const ADMIN_EMAIL = 'miki199838@gmail.com'
-  const isAdmin = user?.email === ADMIN_EMAIL
+  const ADMIN_EMAILS = ['miki199838@gmail.com', 'onewallet2026@gmail.com']
+  const isAdmin = ADMIN_EMAILS.includes(user?.email ?? '')
   const FREE_LIMIT = 2
   const PRO_LIMIT = 10
   const reachedFreeLimit = !isAdmin && plan === 'free' && cards.length >= FREE_LIMIT

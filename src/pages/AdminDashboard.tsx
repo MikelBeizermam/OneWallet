@@ -5,7 +5,8 @@ import { useAuth } from '@/contexts/AuthContext'
 import { Users, Star, CreditCard, UserPlus, ChevronLeft, X, Calendar, Mail, TrendingUp } from 'lucide-react'
 import styles from './AdminDashboard.module.css'
 
-const ADMIN_EMAIL = 'miki199838@gmail.com'
+const ADMIN_EMAILS = ['miki199838@gmail.com', 'onewallet2026@gmail.com']
+const ADMIN_EMAIL = ADMIN_EMAILS[0]
 
 interface UserRow {
   id: string
@@ -33,7 +34,7 @@ export default function AdminDashboard() {
   const [loadingCards, setLoadingCards] = useState(false)
 
   useEffect(() => {
-    if (user?.email !== ADMIN_EMAIL) { navigate('/home'); return }
+    if (!ADMIN_EMAILS.includes(user?.email ?? '')) { navigate('/home'); return }
     fetchData()
   }, [user])
 
@@ -41,7 +42,7 @@ export default function AdminDashboard() {
     const { data } = await supabase.rpc('get_admin_users')
     const rows = (data ?? []) as Array<{ id: string; full_name: string | null; plan: string; created_at: string; email: string; card_count: number }>
     const mapped = rows.map(r => ({ id: r.id, full_name: r.full_name, plan: r.plan, created_at: r.created_at, email: r.email, cardCount: r.card_count }))
-    mapped.sort((a, b) => (a.email === ADMIN_EMAIL ? -1 : b.email === ADMIN_EMAIL ? 1 : 0))
+    mapped.sort((a, b) => (ADMIN_EMAILS.includes(a.email) ? -1 : ADMIN_EMAILS.includes(b.email) ? 1 : 0))
     setUsers(mapped)
     setLoading(false)
   }
@@ -58,7 +59,7 @@ export default function AdminDashboard() {
     setLoadingCards(false)
   }
 
-  const realUsers = users.filter(u => u.email !== ADMIN_EMAIL)
+  const realUsers = users.filter(u => !ADMIN_EMAILS.includes(u.email))
   const totalUsers = realUsers.length
   const proUsers = realUsers.filter(u => u.plan === 'pro').length
   const totalCards = realUsers.reduce((sum, u) => sum + u.cardCount, 0)
@@ -115,8 +116,8 @@ export default function AdminDashboard() {
                 <span className={styles.userEmail}>{u.email}</span>
               </span>
               <span className={styles.cardCount}>{u.cardCount}</span>
-              <span className={`${styles.plan} ${u.email === ADMIN_EMAIL ? styles.planAdmin : u.plan === 'pro' ? styles.planPro : ''}`}>
-                {u.email === ADMIN_EMAIL ? 'מנהל' : u.plan === 'pro' ? 'Pro' : 'חינמי'}
+              <span className={`${styles.plan} ${ADMIN_EMAILS.includes(u.email) ? styles.planAdmin : u.plan === 'pro' ? styles.planPro : ''}`}>
+                {ADMIN_EMAILS.includes(u.email) ? 'מנהל' : u.plan === 'pro' ? 'Pro' : 'חינמי'}
               </span>
               <span className={`${styles.date} ${styles.hideOnMobile}`}>
                 {new Date(u.created_at).toLocaleDateString('he-IL')}
@@ -137,8 +138,8 @@ export default function AdminDashboard() {
             </div>
 
             <div className={styles.modalMeta}>
-              <span className={`${styles.plan} ${selectedUser.email === ADMIN_EMAIL ? styles.planAdmin : selectedUser.plan === 'pro' ? styles.planPro : ''}`}>
-                {selectedUser.email === ADMIN_EMAIL ? 'מנהל' : selectedUser.plan === 'pro' ? 'Pro' : 'חינמי'}
+              <span className={`${styles.plan} ${ADMIN_EMAILS.includes(selectedUser.email) ? styles.planAdmin : selectedUser.plan === 'pro' ? styles.planPro : ''}`}>
+                {ADMIN_EMAILS.includes(selectedUser.email) ? 'מנהל' : selectedUser.plan === 'pro' ? 'Pro' : 'חינמי'}
               </span>
               <span className={styles.modalMetaItem}>
                 <Mail size={13} />
